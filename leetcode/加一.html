@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    /**
+     * @param {number[]} digits
+     * @return {number[]}
+     */
+    var plusOne = function(digits) {
+    	let res = []
+    	function fnc (arr) {
+    		let len = arr.length - 1
+    		if (arr[len] + 1 == 10) {
+    			if (len==0) {
+    				return [1,0,...res]
+    			}
+    			res.unshift(0)
+    			arr.pop()
+    			return fnc(arr)
+    		} else {
+    			digits[len]+=1
+    			return [...arr,...res]
+	    	}
+    	}
+    	return fnc(digits)
+    };
+    console.log(plusOne([9,9]))
+    </script>
+</body>
+
+</html>

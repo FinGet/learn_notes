@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>Service Worker</h1>
+	<script>
+		if(navigator.serviceWorker) {
+			navigator.serviceWorker.register('./sw.js').then(res => {
+				document.write('service worker 注册成功：' + res)
+			}).catch(err => {
+				document.write('service worker 注册失败：'+ err)
+			})
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		function maxStr(str) {
+			let map = {}
+			for(let v of str) {
+				map[v] = ~~map[v] + 1
+			}
+			let max = Math.max(...Object.values(map))
+			for (let key in map) {
+				if (map[key] == max){
+					return {[key]: max}
+				}
+			}
+		}
+		let str = 'aasdfasd,asdfjaslkdfjiqjwioaklsdf,asd,lqwejrio1ji3wioqjroiqqewslkasm'
+		console.log(maxStr(str))
+	</script>
+</body>
+</html>

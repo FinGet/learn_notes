@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+  function dateformat(micro_second) {
+
+    var second = micro_second; //总的秒数
+
+    // 天数位
+    var day = Math.floor(second / 3600 / 24);
+    var dayStr = day.toString();
+    if (dayStr.length == 1) dayStr = '0' + dayStr;
+
+    // 小时位
+    //var hr = Math.floor(second / 3600 % 24);
+    var hr = Math.floor(second / 3600); //直接转为小时 没有天 超过1天为24小时以上
+
+    var hrStr = hr.toString();
+    if (hrStr.length == 1) hrStr = '0' + hrStr;
+
+    // 分钟位
+    var min = Math.floor(second / 60 % 60);
+    var minStr = min.toString();
+    if (minStr.length == 1) minStr = '0' + minStr;
+
+    // 秒位
+    var sec = Math.floor(second % 60);
+    var secStr = sec.toString();
+    if (secStr.length == 1) secStr = '0' + secStr;
+
+    return hrStr + ":" + minStr + ":" + secStr;
+
+  }
+
+  function cutDown(second) {
+    let arr = []
+    second.forEach(item => {
+      item = dateformat(item)
+      // console.log(item)
+      arr.push(item)
+    })
+    console.log(arr)
+  }
+  cutDown(['10000', '26531', '30982'])
+
+  // var x = 20;
+  // var a = {
+  //   x: 15,
+  //   fn: function() {
+  //     var x = 30;
+  //     return function() {
+  //       return this.x
+  //     }
+  //   }
+  // }
+  // console.log(a.fn());
+  // console.log((a.fn())());
+  // console.log(a.fn()());
+  // console.log(a.fn()() == (a.fn())());
+  // console.log(a.fn().call(this));
+  // console.log(a.fn().call(a));
+  </script>
+</body>
+
+</html>

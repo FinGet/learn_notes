@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<ul>
+	    <li>一级域名：www.baidu.com</li>
+	    <li>二级域名：music.baidu.com</li>
+	</ul>
+	<iframe src="b.finget.cn:3000/b.html" id="frame" onload="load()"></iframe>
+
+	<script type="text/javascript">
+		document.domain = 'finget.cn';
+		function load() {
+			frame.contentWindow.a;
+		}
+	</script>
+</body>
+</html>

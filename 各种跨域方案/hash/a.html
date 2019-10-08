@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<h1>a页面</h1>
+
+	<ul>
+		<li>a和b是同域的：http://localhost:3000</li>
+		<li>c是独立的：http://localhost:4000</li>
+		<li>a获取c的数据</li>
+	</ul>
+	<pre>
+		a给c传一个hash值 c收到hash值后  c把hash值传递给b b将结果放到a的hash中
+	</pre>
+
+	<iframe src="http://localhost:4000/hash/c.html#a->b" id="frame"></iframe>
+
+	<script type="text/javascript">
+		window.onhashchange = function() {
+			console.log(location.hash)
+		}
+	</script>
+</body>
+</html>

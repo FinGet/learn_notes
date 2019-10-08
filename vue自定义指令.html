@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>测试自动义指令</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style>
+      .test,
+      .test1 {
+        border: 1px solid black;
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div v-move v-if="numberTestShow">Not:{{ numberTest }}</div>
+      <direct-test></direct-test>
+      <direct v-if="componentShow">
+        <div class="test" v-focus v-if="show">{{ num }}</div>
+      </direct>
+      <button @click="numberTestShow = !numberTestShow">不在组件内Toggle</button>
+      <button @click="numberTest++">不在组件内的更新</button>
+      <br />
+      <button @click="num++">更新</button>
+      <button @click="show = !show">Toggle</button>
+      <button @click="componentShow = !componentShow">子组件Toggle</button>
+    </div>
+    <script>
+      Vue.directive("focus", {
+        inserted: function(el) {
+          console.log("focus指令 insert", el.innerText);
+          el.focus();
+        },
+        bind: function(el) {
+          console.log("focus指令 bind", el.innerText);
+        },
+        update: function(el) {
+          console.log("focus指令 update", el.innerText);
+        },
+        componentUpdated: function(el) {
+          console.log("focus指令 componentUpdated", el.innerText);
+        },
+        unbind: function(el) {
+          console.log("focus指令 unbind", el.innerText);
+        }
+      });
+      Vue.directive("move", {
+        inserted: function(el) {
+          console.log("move指令 insert", el.innerText);
+          el.focus();
+        },
+        bind: function(el) {
+          console.log("move指令 bind", el.innerText);
+        },
+        update: function(el) {
+          console.log("move指令 update", el.innerText);
+        },
+        componentUpdated: function(el) {
+          console.log("move指令 componentUpdated", el.innerText);
+        },
+        unbind: function(el) {
+          console.log("move指令 unbind", el.innerText);
+        }
+      });
+      Vue.component("direct", {
+        template: `
+          <div><slot></slot></div>
+        `,
+        beforeCreate() {
+          console.log("子组件 beforeCreate");
+        },
+        created() {
+          console.log("子组件 created");
+        },
+        beforeMount: function() {
+          console.log("子组件 beforeMount");
+        },
+        mounted() {
+          console.log("子组件 mounted");
+        },
+        beforeUpdate() {
+          console.log("子组件 beforeUpdate");
+        },
+        updated() {
+          console.log("子组件 updated");
+        },
+        beforeDestroy() {
+          console.log("子组件 beforeDestroy");
+        },
+        destroyed() {
+          console.log("子组件 destroped");
+        }
+      });
+      Vue.component("direct-test", {
+        template: `
+          <div><slot></slot></div>
+        `,
+        beforeCreate() {
+          console.log("测试子组件 beforeCreate");
+        },
+        created() {
+          console.log("测试子组件 created");
+        },
+        beforeMount: function() {
+          console.log("测试子组件 beforeMount");
+        },
+        mounted() {
+          console.log("测试子组件 mounted");
+        },
+        beforeUpdate() {
+          console.log("测试子组件 beforeUpdate");
+        },
+        updated() {
+          console.log("测试子组件 updated");
+        },
+        beforeDestroy() {
+          console.log("测试子组件 beforeDestroy");
+        },
+        destroyed() {
+          console.log("测试子组件 destroped");
+        }
+      });
+      var vm = new Vue({
+        el: "#app",
+        data: {
+          num: 100,
+          numberTest: 100,
+          numberTestShow: true,
+          show: true,
+          componentShow: true
+        },
+        beforeCreate() {
+          console.log("根组件 beforeCreate");
+        },
+        created() {
+          console.log("根组件 created");
+        },
+        beforeMount: function() {
+          console.log("根组件 beforeMount");
+        },
+        mounted() {
+          console.log("根组件 mounted");
+        },
+        beforeUpdate() {
+          console.log("根组件 beforeUpdate");
+        },
+        updated() {
+          console.log("根组件 updated");
+        },
+        beforeDestroy() {
+          console.log("根组件 beforeDestroy");
+        },
+        destroyed() {
+          console.log("根组件 destroped");
+        }
+      });
+    </script>
+  </body>
+</html>

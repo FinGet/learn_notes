@@ -1,0 +1,22 @@
+<script>
+	let obj = {0:1,1:2,2:3};
+
+	// [].push.call(obj,4);
+	
+	Object.defineProperty(obj,'length',{
+		value: 3,
+		enumerable: false
+	})
+	for(let key in obj) {
+		console.log(key);
+	}
+	console.log(obj);
+
+	for(var i = 0; i< 3; i++) {
+		setTimeout(function() {
+			console.log(i)
+		},0)
+		console.log(i)
+	}
+
+</script>

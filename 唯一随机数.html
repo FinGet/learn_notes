@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		let arr = []
+		function getRandom() {
+			var ran = Math.floor((Math.random()*30))
+			var res = ran<=1?ran+=2:ran==30?ran-=1:ran
+			if (arr.indexOf(res)>-1) {
+				window.requestAnimationFrame(getRandom);
+			} else {
+				arr.push(res)
+				console.log(res,arr.sort((a,b) => a-b))
+			}
+			if (arr.length<29){
+				window.requestAnimationFrame(getRandom);
+			}
+		}
+		window.requestAnimationFrame(getRandom)
+	</script>
+</body>
+</html>

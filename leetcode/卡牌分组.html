@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    var hasGroupsSizeX = function(deck) {
+
+        let len = deck.sort().length - 1
+        if (len == 0) {
+            return false
+        }
+        let kip = 2
+
+        function cutArray(array, subLength) {
+            if (kip > array.length) {
+                return false
+            }
+            let index = 0;
+            let newArr = [];
+            while (index < array.length) {
+                newArr.push(array.slice(index, index += subLength));
+            }
+            for (let i = 0; i < newArr.length; i++) {
+                if (newArr[i].length != subLength) {
+                    return false
+                }
+                if(array.length%subLength!=0) {
+	                kip += 1
+	                return cutArray(deck, kip)
+	            }
+                let len = Array.from(new Set(newArr[i])).length
+                if (len > 1) {
+                    kip += 1
+                    return cutArray(deck, kip)
+                }
+            }
+            return true
+        }
+        return cutArray(deck, kip)
+    };
+
+    console.log(hasGroupsSizeX([0,0,0,1,1,1,2,2,2]))
+
+
+    let arr = [0,0,0,1,1,1,1,2,2,2]
+    let map = {}
+    for (let v of arr) {
+        console.log(~~map[v])
+        map[v] = ~~map[v] + 1
+    }
+    </script>
+</body>
+
+</html>

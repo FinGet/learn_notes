@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    let getSearch = function(url) { 
+    	let matched = /^(?:https?:\/\/[^?]*\?)(.*)/gi.exec(url) 
+    	return matched ? matched[1] : '' 
+    } 
+    	// 递归函数，循环匹配search 
+    let searchFn = function (search, query) { 
+    	if (search) { 
+    		let matched = /(\w+)=(\w*)/g.exec(search) 
+    		if (matched) { 
+    			query[matched[1]] = decodeURIComponent(matched[2]) 
+    			searchFn(search.slice(matched.index + matched[0].length), query) 
+    		} 
+    	} 
+    } 
+    let parseUrl = function (url) { 
+    	let query = {} 
+    	searchFn(getSearch(url), query) 
+    	return query 
+    } 
+    let url = 'http://localhost:3009/h5/test?recordID=161851&order=2'
+    console.log(parseUrl(url)) // => { recordID: '161851', order: '2' }
+    </script>
+    <script>
+        let arr = []
+        let key = 'arr'
+        function test(key) {
+            [key].push(1)
+        }
+        test(key)
+        console.log(arr)
+    </script>
+</body>
+
+</html>

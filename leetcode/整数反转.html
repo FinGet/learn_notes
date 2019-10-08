@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    var reverse = function(x) {
+        let arr = (x + '').split('').reverse()
+        let len = arr.length
+        let min = -(2**31)
+        let max = (2**31) - 1
+        if (arr[len - 1] == '-') {
+            arr.pop()
+            if (arr[0] == 0) {   
+                arr.shift()
+                arr.unshift('-')
+                let res = Number(arr.join(''))
+                return res>=min&&res<=max?res:0
+            } else {
+                arr.unshift('-')
+                let res = Number(arr.join(''))
+                return res>=min&&res<=max?res:0
+            }
+
+        } else if (arr[0] == '0' && arr[len - 1] != '-') {
+            arr.shift()
+            let res = Number(arr.join(''))
+            return res>min&&res<max?res:0
+        } else {
+            return Number(arr.join(''))>min&&Number(arr.join(''))<max?Number(arr.join('')):0
+        }
+    };
+    console.log(reverse(1534236469))
+    </script>
+</body>
+
+</html>

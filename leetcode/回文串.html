@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		/**
+		 * @param {string} s
+		 * @return {boolean}
+		 */
+		var isPalindrome = function(s) {
+		    let arr = s.replace(/[^A-Za-z0-9]+/ig,'').toLocaleLowerCase().split('')
+		    if (arr.length == 0){
+		        return true
+		    }
+		    let j = arr.length - 1
+		    for(let i = 0;i<=j;i++) {
+		        if (arr[i]!=arr[j]) {
+		            return false
+		        }
+		        j -- 
+		    }
+		    return true
+		};
+		console.log(isPalindrome('A man, a plan, a canal: Panama'))
+	</script>
+</body>
+</html>

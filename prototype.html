@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		
+		// 构造函数
+		function Person(name) {
+			this.name = name
+		}
+		// Person.prototype  --- 原型 (自带的，当定义了构造函数，它就孕育而生了)
+		// Person.prototype = {} --- 原型对象 是祖先
+		Person.prototype.name = 'xiaoming';
+		var person = new Person()
+		var person1 = new Person('张三')
+		console.log(person.name); // xiaoming (它自己没有，就会到原型(祖先)上去找)
+		console.log(person1.name); // 张三 (它自己有，就会取自身的)
+		
+
+		/*
+		// constructor
+		function Person() {
+			
+		}
+		var person = new Person()
+		console.log(person.constructor) // function Person() {}
+		*/
+		function Person() {
+			
+		}
+		function Car() {
+
+		}
+		Person.prototype.constructor = Car;
+		var person = new Person()
+		console.log(person.constructor) // function Car() {}
+
+	</script>
+</body>
+</html>

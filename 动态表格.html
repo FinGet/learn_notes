@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <table border="1">
+      <thead>
+        <tr>
+          <th colspan="2">工程项目配套类别</th>
+          <th>是否正常使用</th>
+          <th>情况说明</th>
+          <th>客户应付</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="(item, index) in table" :key="index">
+          <template v-if="item.children">
+            <tr v-for="(tr, tindex) in item.children" :key="tindex">
+              <td :rowspan="item.children.length" v-if="tindex==0">{{item.type}}</td>
+              <td>{{tr.type}}</td>
+              <td>
+                <el-radio-group v-model="value">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="2">否</el-radio>
+                  <el-radio :label="3">没有涉及</el-radio>
+                </el-radio-group>
+              </td>
+              <td>
+                <el-input placeholder="请输入内容"></el-input>
+              </td>
+              <td>
+                <el-input placeholder="请输入内容"></el-input>
+              </td>
+              <td>
+                不可操作
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <td>{{item.type}}</td>
+              <td>
+                <el-radio-group v-model="value">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="2">否</el-radio>
+                  <el-radio :label="3">没有涉及</el-radio>
+                </el-radio-group>
+              </td>
+              <td>
+                <el-input placeholder="请输入内容"></el-input>
+              </td>
+              <td>
+                <el-input placeholder="请输入内容"></el-input>
+              </td>
+              <td>
+                不可操作
+              </td>
+            </tr>
+          </template>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <script>
+  new Vue({
+    el: '#app',
+    data: {
+      table: [{
+          type: '土建类',
+          children: [{
+              type: '门',
+              status: 0
+            },
+            {
+              type: '锁',
+              status: 0
+            },
+            {
+              type: '墙面',
+              status: 0
+            },
+            {
+              type: '隔断',
+              status: 0
+            },
+            {
+              type: '吊顶',
+              status: 0
+            },
+            {
+              type: '灯具',
+              status: 0
+            }
+          ]
+        },
+        {
+          type: '土建类',
+          children: [{
+              type: '门',
+              status: 0
+            },
+            {
+              type: '锁',
+              status: 0
+            },
+            {
+              type: '墙面',
+              status: 0
+            },
+            {
+              type: '隔断',
+              status: 0
+            },
+            {
+              type: '吊顶',
+              status: 0
+            },
+            {
+              type: '灯具',
+              status: 0
+            }
+          ]
+        }
+      ]
+    }
+  })
+  </script>
+</body>
+
+</html>

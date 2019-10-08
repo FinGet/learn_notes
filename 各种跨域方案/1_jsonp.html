@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <!-- href src天生可跨域 -->
+  <input type="text" id="input">
+  <ul id="ul"></ul>
+  <script type="text/javascript">
+  let input = document.getElementById('input')
+  input.addEventListener('input', (e) => {
+    // console.log(e.target.value)
+    let val = e.target.value;
+    jsonp({ url: 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su', wd: val, cb: 'callback' })
+  })
+
+  function jsonp(options) {
+    let url = options.url,
+      wd = options.wd,
+      cb = options.cb;
+
+    let _url = `${url}?wd=${wd}&cb=${cb}`;
+
+    let oScript = document.createElement('script');
+    let oBody = document.getElementsByTagName('body')[0];
+    oScript.setAttribute('src', _url)
+    oBody.append(oScript);
+  }
+
+  function callback(data) {
+    let oUl = document.getElementById('ul')
+    console.log(data)
+    let res = data.s;
+    if (res.length > 0) {
+    	while (oUl.hasChildNodes()) {
+        oUl.removeChild(oUl.firstChild);
+      }
+      for (let i = 0; i < res.length; i++) {
+        let elem_li = document.createElement('li'); // 生成一个 li元素
+        elem_li.innerHTML = res[i];
+        oUl.append(elem_li);
+      }
+    }
+  }
+  </script>
+  
+  <script type="text/javascript">
+    // 服务端代码
+    let express = require('express');
+    let app = express();
+
+    app.get('/say', function(req, res) {
+      let {wd, cb} = req.query;
+      console.log(wd)
+      // xxxxxxx
+      res.end(`${cb}('xxxxx')`)
+    })
+
+  </script>
+
+
+</body>
+
+</html>

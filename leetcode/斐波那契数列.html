@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		// 1 1 2 3 5 8 13 21 34 ...
+		
+		function fib(n) {
+			var a = 1,b = 1;
+			let arr = [];
+			while(a <= n) {
+				arr.push(a);
+				[a,b] = [b,a+b];
+			}
+			return arr;
+		}
+		console.log(fib(12))
+	</script>
+</body>
+</html>

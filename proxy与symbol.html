@@ -29,7 +29,7 @@
     // proxy 实现私有属性
     // Reflect.ownKeys 会返回对象的所有键名，包括常规键名和 Symbol 键名。
     const hide = (target, prefix = '_') => new Proxy(target, {
-        has: (obj, prop) => (!prop.startsWith(prefix) && prop in obj),
+        has: (obj, prop) => (!prop.startsWith(prefix) && prop in obj), // 隐藏 私有属性 in操作就拿不到这个属性
         ownKeys: (obj) => Reflect.ownKeys(obj).filter(prop => (typeof prop !== "string" || !prop.startsWith(prefix))),
         get: (obj, prop, rec) => (prop in rec) ? obj[prop] : undefined
     })

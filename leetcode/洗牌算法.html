@@ -14,12 +14,14 @@
         let m = this.length,
             i;
         while (m) {
-            i = (Math.random() * m--) >>> 0;
+            i = (Math.random() * m--) >>> 0; // 变成一个非负整数
             [this[m], this[i]] = [this[i], this[m]] // 解构
         }
         return this;
     }
     console.log(arr.shuffle())
+    // 
+    // 该操作符会将第一个操作数向右移动指定的位数。向右被移出的位被丢弃，左侧用0填充。因为符号位变成了 0，所以结果总是非负的。（译注：即便右移 0 个比特，结果也是非负的。）
     </script>
 </body>
 

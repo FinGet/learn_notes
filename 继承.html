@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script type="text/javascript">
+  	'use strict';
+  //父类型
+  function Person(name, age) {
+    this.name = name,
+      this.age = age,
+      this.play = [1, 2, 3]
+    this.setName = function() {}
+  }
+  Person.prototype.setAge = function() {}
+  //子类型
+  let Student = function(price) {
+    this.price = price
+    this.setScore = function() {}
+  }
+  Student.prototype = new Person() // 子类型的原型为父类型的一个实例对象 要写在student 后面
+  var s1 = new Student(15000)
+  var s2 = new Student(14000)
+  console.log(s1, s2)
+  </script>
+</body>
+
+</html>

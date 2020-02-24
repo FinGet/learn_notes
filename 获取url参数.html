@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		let url = "?real_id=&name=123"
+
+		function getUrlQuery(url) {
+			url = url.substring(1);
+			console.log(url)
+			let obj = {};
+			let reg = /([^?&=]+)=([^?&=]*)/g
+			// 非?&=的一个或多个字符 = 非?&=的0个或多个字符
+			console.log(url.match(reg))
+			url.replace(reg, (rs, $1, $2) => {
+				console.log(rs, $1, $2)
+		    const name = decodeURIComponent($1)
+		    let val = decodeURIComponent($2)
+		    val = String(val)
+		    obj[name] = val
+		    return rs
+		  })
+		  console.log(obj)
+		}
+		getUrlQuery(url)
+	</script>
+</body>
+</html>

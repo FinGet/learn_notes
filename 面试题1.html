@@ -39,6 +39,31 @@
 		console.log('e')
 	})
 	console.log('f')
+
+
+	class Animal {
+		constructor(name){
+			this.props = {name};
+		}
+		fly() {
+			function canFly() {
+				console.log(this); // this -> undefined es6的class 默认是use stict
+				return this.props.name === 'bird'
+			}
+			if(canFly()){
+				console.log('fly')
+			} else {
+				throw Error('i am not bird')
+			}
+		}
+	}
+
+	let bird = new Animal('bird')
+	try{
+		bird.fly();
+	}catch(e) {
+		console.log(e.message)
+	}
 </script>
 </body>
 </html>

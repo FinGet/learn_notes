@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <!-- <script type="text/javascript">
+  const FLOWER = '✿';
+  const arr = '0123✿✿✿4✿✿56✿✿✿'.split('');
+  let i = 0; // 二叉树节点字符数组遍历索引
+  let l = 0; // 树的深度索引
+  let printArr = []; // 二维数组，缓存每层的节点字符数据
+  // 节点
+  function Node() {
+    this.data = FLOWER;
+    this.leftChild = null;
+    this.rightChild = null;
+  }
+  // 生成二叉树
+  // @params {Node} node 节点
+  // @params {number} layer 当前树层度
+  // @params {Node} parent 父节点
+  function createBiTree(node, layer, parent) {
+    if (!printArr[layer]) {
+      printArr[layer] = [];
+    }
+    if (arr[i] === FLOWER) {
+      printArr[layer].push(`${node.data}(${parent ? parent.data : 'null'})`);
+      return;
+    } else {
+      node.data = arr[i];
+      printArr[layer].push(`${node.data}(${parent ? parent.data : 'null'})`);
+      node.leftChild = new Node();
+      i++;
+      createBiTree(node.leftChild, ++layer, node);
+      node.rightChild = new Node();
+      i++;
+      createBiTree(node.rightChild, layer, node);
+    }
+  }
+  var bt = new Node();
+  createBiTree(bt, l);
+
+  // console.log(bt);
+  console.log(printArr);
+  console.log(printArr.toString());
+  </script> -->
+
+	<script type="text/javascript">
+		var toString = function (node) {
+		  if (node == null) return '';
+		  return node.data+'('+toString(node.left)+','+toString(node.right)+')';
+		}
+
+		let nodeTree = {
+			data: "A",
+			left: {
+				data: "B",
+				left: {
+					data: "C",
+					left: null,
+					right: null
+				},
+				right: null
+			},
+			right: {
+				data: "E",
+				left: null,
+				right: null
+			}
+		}
+
+		console.log(toString(nodeTree))
+
+		let str = 'A(B(C(,),),E(,))'
+		class Node {
+		  constructor(data, left, right) {
+		    this.data = data;
+		    this.left = left;
+		    this.right = right;
+		  }
+		}
+
+		/**
+		 * @param {string} str
+		 * @return {Node}
+		 */
+		var result = function (str) {
+
+		  // TODO: Code Here
+
+		};
+		console.log(str.split(''))
+
+	</script>
+
+
+</body>
+
+</html>

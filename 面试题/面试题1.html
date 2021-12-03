@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+</head>
+<body>
+<div id="container">
+  <div id="header">Header Section</div>
+  <div id="page"></div>
+  <div id="footer">Footer Section</div>
+</div>
+<script>
+	// window.onload = function() {
+	// 	let screen_h = document.documentElement.clientHeight || document.body.clientHeight;
+	// 	let content_h = document.documentElement.scrollHeight || document.body.scrollHeight;
+	// 	if(content_h<screen_h)
+	// 		document.getElementsByTagName('footer').style.position = 'fixed'
+	// 		document.getElementsByTagName('footer').style.bottom = '0px'
+	// }
+
+	// let arr = [1,1,3,4,3,5,6,8,6,5,8]
+	// function get() {
+	// 	let num = 0;
+	// 	arr.forEach(item => {
+	// 		num = num^item
+	// 	})
+	// 	console.log(num)
+	// }
+	// get()
+	console.log('a')
+	setTimeout(() => {
+		console.log('b')
+	},0)
+	console.log('c')
+	Promise.resolve().then(()=>{
+		console.log('d')
+	}).then(()=> {
+		console.log('e')
+	})
+	console.log('f')
+
+
+	class Animal {
+		constructor(name){
+			this.props = {name};
+		}
+		fly() {
+			function canFly() {
+				console.log(this); // this -> undefined es6的class 默认是use stict
+				return this.props.name === 'bird'
+			}
+			if(canFly()){
+				console.log('fly')
+			} else {
+				throw Error('i am not bird')
+			}
+		}
+	}
+
+	let bird = new Animal('bird')
+	try{
+		bird.fly();
+	}catch(e) {
+		console.log(e.message)
+	}
+</script>
+</body>
+</html>

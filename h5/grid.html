@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Grid 布局</title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			width:60%;
+			margin: 0 auto;
+			display: grid;
+		  grid-template-columns: repeat(auto-fill, 50px);
+		  grid-row-gap: 5px;
+		  grid-column-gap: 5px;
+		}
+		.tag{
+			padding:5px;
+			color: #fff;
+			display: inline-block;
+			border-radius: 3px;
+			background: #51b999;
+		}
+		.my-table{
+			width: 80%;
+			margin: 0 auto;
+			display: grid;
+		  grid-template-columns: repeat(auto-fill, 50%);
+		}
+		.my-tr{
+			display: flex;
+			height: 50px;
+			width: 50%;
+		}
+		.my-tr .my-td:first-child{
+			width: 30%;
+			border: 1px solid #333;
+			background: #f1f1f1;
+		}
+		.my-tr .my-td:last-child{
+			width: 70%;
+			border: 1px solid #333;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="tag">广州</div>
+		<div class="tag">成都</div>
+		<div class="tag">深圳</div>
+		<div class="tag">北京</div>
+		<div class="tag">上海</div>
+		<div class="tag">成都</div>
+		<div class="tag">拉萨</div>
+		<div class="tag">绵阳</div>
+		<div class="tag">西宁</div>
+		<div class="tag">青海</div>
+		<div class="tag">杭州</div>
+		<div class="tag">南京</div>
+		<div class="tag">合肥</div>
+		<div class="tag">六安</div>
+		<div class="tag">西安</div>
+		<div class="tag">西昌</div>
+		<div class="tag">雅安</div>
+		<div class="tag">玉树</div>
+		<div class="tag">沈阳</div>
+		<div class="tag">青岛</div>
+	</div>
+
+	<div class="my-table">
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div><div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div><div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+		<div class="my-tr">
+			<div class="my-td"></div>
+			<div class="my-td"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var obj = {
+			a: 10,
+			fnc: fn
+		}
+		function fn() {
+			this.a = 20;
+			console.log(this.a)
+		}
+		obj.fnc()
+	</script>
+</body>
+</html>

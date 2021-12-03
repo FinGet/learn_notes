@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<form  method="get" accept-charset="utf-8" id="form">
+		<input type="text" name="" value="" required placeholder="">
+		<input type="password" name="" value="" pattern="\d+" required placeholder="">
+		<button type="submit" onclick="submit">提交</button>
+	</form>
+	<script type="text/javascript">
+		function submit(){
+			let form = document.getElementById('form')
+			form.checkValidate()
+		}
+	</script>
+</body>
+</html>

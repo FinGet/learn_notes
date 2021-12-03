@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		Array.prototype.mymap = function(fn) {
+			let newArr = []
+			this.forEach((item, index) => {
+				newArr.push(fn(item,index))
+			})
+			return newArr;
+		}
+		let arr = [1,2,3,4]
+		console.log(arr.mymap(item => item+1))
+	</script>
+</body>
+</html>

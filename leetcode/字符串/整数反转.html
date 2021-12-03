@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    var reverse = function(x) {
+        let arr = (x + '').split('').reverse()
+        let len = arr.length
+        let min = -(2**31)
+        let max = (2**31) - 1
+        if (arr[len - 1] == '-') {
+            arr.pop()
+            if (arr[0] == 0) {   
+                arr.shift()
+                arr.unshift('-')
+                let res = Number(arr.join(''))
+                return res>=min&&res<=max?res:0
+            } else {
+                arr.unshift('-')
+                let res = Number(arr.join(''))
+                return res>=min&&res<=max?res:0
+            }
+
+        } else if (arr[0] == '0' && arr[len - 1] != '-') {
+            arr.shift()
+            let res = Number(arr.join(''))
+            return res>min&&res<max?res:0
+        } else {
+            return Number(arr.join(''))>min&&Number(arr.join(''))<max?Number(arr.join('')):0
+        }
+    };
+    console.log(reverse(1534236469))
+
+    const reverse1 = (x) => {
+      // 非空判断
+      if (typeof x !== 'number') {
+        return;
+      }
+      // 极值
+      const MAX = 2147483647;
+      const MIN = -2147483648;
+
+      // 识别数字剩余部分并翻转
+      const rest =
+        x > 0
+          ? String(x)
+            .split('')
+            .reverse()
+            .join('')
+          : String(x)
+            .slice(1)
+            .split('')
+            .reverse()
+            .join('');
+
+      // 转换为正常值，区分正负数
+      const result = x > 0 ? parseInt(rest, 10) : 0 - parseInt(rest, 10);
+
+      // 边界情况
+      if (result >= MIN && result <= MAX) {
+        return result;
+      }
+      return 0;
+    };
+    </script>
+</body>
+
+</html>

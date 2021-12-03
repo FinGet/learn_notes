@@ -1,0 +1,33 @@
+<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.18.1/locale/ar.js"></script>
+<script type="text/javascript">
+// 周几转换成中文 虽然没有用到😁
+const weekList = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+var listOfDatesOfTheMonth = []
+
+// 计算日历所需要展示的天数
+const generatedDate = (val) => {
+  // 获取是几月
+  const month = moment(val || new Date()).format('YYYY-MM')
+  // 获取当月第一天是周几
+  const whichDay = moment(month).startOf('month').weekday()
+  // 计算开始开始日期 7 减去当月第一天是周几（获取到的周几是 0123456， 其中0代表周日）
+  const startDate = moment(moment(month).subtract(7 - whichDay, 'days')).format('YYYY-MM-DD')
+
+  // 整理数据
+  // [...Array(42).keys()] 这个是生成了长度42的数组，为什么是42呢？ 因为有的月份是28 或者30 31， 35 会导致某些月份展示不全。
+  listOfDatesOfTheMonth = [...Array(42).keys()].reduce((acc, val) => {
+    // 获取展示的日期
+    const date = moment(startDate).add(val + 1, 'days').format('YYYY-MM-DD')
+    console.log(date)
+    // 分割日期 用于获取是 几号 如 123456
+    const dateList = date.split('-')
+    // 获取周几
+    const week = moment(date).weekday()
+
+    // 将需要的数据 放进数组
+    acc.push({ index: val + 1, date: date, day: dateList[dateList.length - 1], week: weekList[week] })
+    // 返回数组 为啥要返回 可以去mdn 看下reduce
+    return acc
+  }, [])
+}
+</script>

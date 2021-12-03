@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<div id="btn">
+		点一下
+	</div>
+	<script type="text/javascript">
+		var 厉害 = 1
+
+		"厉".codePointAt().toString(16) // 转16进制
+
+		console.log("厉".codePointAt().toString(16))
+		console.log("害".codePointAt().toString(16))
+		console.log(\u5389\u5bb3)
+		btn.addEventListener('click', () => {
+			for(let i = 0; i<4;i++) {
+				var a = document.createElement('a');
+	      a.setAttribute('href', 'https://www.baidu.com');
+	      a.setAttribute('target', '_blank');
+	      a.setAttribute('id', i+'a');
+	      // 防止反复添加
+	      if(!document.getElementById(i+'a')) {         
+	        document.body.appendChild(a);
+	      }
+	      a.click();
+			}
+		})
+	</script>
+</body>
+</html>

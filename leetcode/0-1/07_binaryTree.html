@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<pre>
+		先序遍历 (根左右)
+			1. 访问根节点
+			2. 对根节点的左子树进行先序遍历
+			3. 对根节点的右子树进行先序遍历
+
+	  中序遍历 (左根右)
+	  	1. 对根节点的左子树进行中序遍历
+	  	2. 访问根节点
+	  	3. 对根节点的右子树进行中序遍历
+
+	  后序遍历 (左右根)
+	  	1. 对根节点的左子树进行后序遍历
+	  	3. 对根节点的右子树进行后序遍历
+	  	4. 访问根节点
+	</pre>
+	<script type="text/javascript">
+		const tree = {
+			val: 1, 
+			left: {
+				val: 2,
+				left: {
+					val: 4
+				},
+				right: {
+					val: 5
+				}
+			},
+			right: {
+				val: 3,
+					left: {
+					val: 6
+				},
+				right: {
+					val: 7
+				}
+			}
+		}
+
+		// 先序遍历
+		function preOrder (root) {
+			if(!root) return
+			console.log(root.val);
+			preOrder(root.left);
+			preOrder(root.right)
+		}
+		console.log('先序遍历')
+		preOrder(tree);
+
+		// 中序遍历
+		function inOrder(root) {
+			if(!root) return
+			inOrder(root.left);
+			console.log(root.val);
+			inOrder(root.right);
+		}
+		console.log('中序遍历')
+
+		inOrder(tree);
+
+		// 后序遍历
+		function postOrder(root) {
+			if(!root) return;
+			postOrder(root.left);
+			postOrder(root.right);
+			console.log(root.val);
+		}
+		console.log('后序遍历')
+
+		postOrder(tree);
+	</script>
+</body>
+</html>

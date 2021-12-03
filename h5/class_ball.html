@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<style type="text/css" media="screen">
+		canvas {
+			box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.5);
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script>
+		// extends、static、super
+		const canvas = document.getElementById('canvas');
+		const ctx = canvas.getContext('2d');
+
+		const w = canvas.width = 600;
+		const h = canvas.height = 600;
+
+		class Ball {
+			constructor(x, y, r) {
+				this.x = x;
+				this.y = y;
+				this.r = r;
+				this.color = `rgb(${~~Ball.rpFn([55, 255])}, ${~~Ball.rpFn([55, 255])}, ${~~Ball.rpFn([55, 255])})`;
+
+				return this;
+			}
+
+			render(ctx) {
+				ctx.save();
+				ctx.translate(this.x, this.y);
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(0, 0, this.r, 0, 2*Math.PI);
+				ctx.fill();
+				ctx.restore();
+				return this;
+			}
+
+			// 指定静态方法
+			static rpFn(arr) {
+				let max = Math.max(...arr),
+						min = Math.min(...arr);
+
+				return Math.random() * (max - min) + min
+			}
+		}
+
+		// const ball = new Ball(100, 100, 30).render(ctx);
+		
+		class SuperBall extends Ball {
+			constructor(x, y, r) {
+				// 调用父类的构造函数
+				super(x, y, r); // Ball.call(this, x, y, r) 在没调用super之前，子类是没有自己this的
+				this.vy = SuperBall.rpFn([2,4]);
+				this.g = SuperBall.rpFn([0.2,0.4]);
+				this.a = 0;
+				return this;
+			}
+
+			move(ctx) {
+				this.y += this.vy;
+				this.vy += this.g;
+
+				let current = this.vy * -0.75;
+
+				if(this.y + this.r >= ctx.canvas.height){
+					this.y = ctx.canvas.height - this.r;
+					if(Math.abs(current - this.a) < 0.01) return false;
+					this.a = this.vy *= -0.75;
+				}
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				super.render(ctx); // this.render(ctx) 调用父类的render()方法，并且会自动绑定子类的this
+
+				return true;
+			}
+		}
+
+		// const ball = new SuperBall(100, 100, 30).move(ctx);
+		let ball, timer;
+		canvas.onclick = function(e) {
+			let x = e.offsetX, y = e.offsetY;
+
+			let r = ~~Ball.rpFn([25, 55]);
+			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+			ball = new SuperBall(x, y, r).render(ctx);
+
+			ballMove()
+		}
+		function ballMove() {
+			timer = window.requestAnimationFrame(ballMove);
+			if(!ball.move(ctx)) {
+				window.cancelAnimationFrame(timer);
+			}
+		}
+	</script>
+</body>
+</html>

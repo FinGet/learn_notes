@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+  // var repeatedSubstringPattern = function(s) {
+  //     let first = s.charAt(0)
+  //     for (let i = 1; i < s.length; i++) {
+  //         if (s.charAt(i) === first && s.length % i === 0 && s.slice(0, i).repeat(s.length / i) === s) return true
+  //     }
+  //     return false
+  // };
+
+  var repeatedSubstringPattern = function(s) {
+    let reg = /^(\w+)\1+$/
+    return reg.test(s)
+  }
+  console.log(repeatedSubstringPattern('ababacbabababababababab'))
+  </script>
+</body>
+
+</html>

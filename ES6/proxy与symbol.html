@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Proxy</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <script>
+    let obj = {
+        x: 10,
+        y: 20
+    }
+    let pro = new Proxy(obj, {
+        get: function(target, key, rec) {
+            console.log(target, key, rec)
+            return target[key];
+        },
+        set: function(target, key, val, rec) {
+          console.log('set new val')
+          target[key] = val;
+        }
+    })
+    console.log(pro)
+
+    // proxy 实现私有属性
+    // Reflect.ownKeys 会返回对象的所有键名，包括常规键名和 Symbol 键名。
+    const hide = (target, prefix = '_') => new Proxy(target, {
+        has: (obj, prop) => (!prop.startsWith(prefix) && prop in obj), // 隐藏 私有属性 in操作就拿不到这个属性
+        ownKeys: (obj) => Reflect.ownKeys(obj).filter(prop => (typeof prop !== "string" || !prop.startsWith(prefix))),
+        get: (obj, prop, rec) => (prop in rec) ? obj[prop] : undefined
+    })
+    let person = {
+    	name: 'finget',
+    	age: 24,
+    	sex: 1,
+    	_height: 178
+    }
+    let pro_person = hide(person);
+    console.log(pro_person.name, pro_person._height);
+    console.log('_height' in pro_person);
+
+    // symbol实现私有属性
+    let name = Symbol('name');
+   	
+   	let symObj = {
+   		[name]: 'FinGet',
+   		age: 24,
+   		getName() {
+   			return this[name]
+   		}
+   	}
+   	console.log(symObj.getName());
+   	for (let key in symObj) {
+   		console.log(key);
+   	}
+   	console.log(Reflect.ownKeys(symObj));
+   	// 获取对象的symbol属性
+   	console.log(Object.getOwnPropertySymbols(symObj));
+    </script>
+</body>
+
+</html>

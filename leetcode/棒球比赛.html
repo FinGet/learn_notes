@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		let arr = ["5","2","C","D","+"];
+		var calPoints = function(ops) {
+    	let _arr = []
+    	ops.forEach((item,index) => {
+    		let p1 = _arr[_arr.length-1] || 0,p2 = _arr[_arr.length-2] || 0;
+
+    		switch (item) {
+    			case 'C':
+	    			_arr.pop();
+	    			break;
+	    		case '+':
+	    			_arr.push(p1+p2);
+	    			break;
+	    		case 'D': 
+	    			_arr.push(p1*2);
+	    			break;
+	    		default: 
+	    			_arr.push(Number(item))
+    		}
+    		// if(typeof Number(item) === 'number' && !isNaN(Number(item))) {
+    		// 	_arr.push(Number(item))
+    		// } else if (item === '+') {
+    		// 	_arr.push(p1+p2)
+    		// } else if(item === 'C') {
+    		// 	_arr.pop()
+    		// } else if (item === 'D') {
+    		// 	_arr.push(p1*2)
+    		// }
+    	})
+    	console.log(_arr)
+    	return _arr.reduce((x,y) => x + y)
+		};
+		console.log(calPoints(arr))
+	</script>
+</body>
+</html>

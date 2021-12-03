@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<pre>
+		输入: 5
+		输出:
+		[
+		     [1],
+		    [1,1],
+		   [1,2,1],
+		  [1,3,3,1],
+		 [1,4,6,4,1]
+		]
+	</pre>
+	<script type="text/javascript">
+		function generate(nums) {
+			let result = [];
+			for(let i = 0; i < nums; i ++) {
+				let arr = new Array(i+1).fill(1);
+				let prev = result[i-1];
+				for(let j = 1; j < i; j ++) { // 为什么小于i,其实是 j < arr.length - 1 => i + 1 - 1
+					arr[j] = prev[j] + prev[j - 1];
+				}
+				result.push(arr);
+			}
+			return result;
+		}
+		console.log(generate(5))
+	</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<script type="text/javascript">
+  Function.prototype.bind = function(oThis) {
+    if (typeof this !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    }
+
+    var aArgs = Array.prototype.slice.call(arguments, 1), // 剩余参数，需要传递的
+      fToBind = this, // 要绑定的this
+      fNOP = function() {},
+      fBound = function() {
+        // this instanceof fBound === true时,说明返回的fBound被当做new的构造函数调用
+        return fToBind.apply(this instanceof fBound ?
+          this :
+          oThis,
+          // 获取调用时(fBound)的传参.bind 返回的函数入参往往是这么传递的
+          aArgs.concat(Array.prototype.slice.call(arguments)));
+      };
+
+    // 维护原型关系
+    if (this.prototype) {
+      // Function.prototype doesn't have a prototype property
+      fNOP.prototype = this.prototype;
+    }
+    // 下行的代码使fBound.prototype是fNOP的实例,因此
+    // 返回的fBound若作为new的构造函数,new生成的新对象作为this传入fBound,新对象的__proto__就是fNOP的实例
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+</script>
+<script type="text/javascript">
+/*
+    var bindFoo = bar.myBind(foo, '章三'); // 绑定时传参
+    bindFoo('写代码'); // 调用时传参
+    
+    1. 保存this返回一个函数
+    2. 可以传入参数
+    3. 一个绑定函数也能使用new 操作符创建对象：这种行为就像把原函数当成构造器。
+       提供的this值被忽略，同时调用时的参数被提供给模拟函数
+
+
+
+  */
+function bar(name, hobby) {
+  this.age = 24;
+  console.log(name);
+  console.log(hobby);
+}
+var foo = {
+  value: 1
+}
+Function.prototype.myBind = function(context) {
+  let self = this;
+
+  // 获取绑定时传入的参数
+  let args = [].slice.call(arguments, 1); // 参数复用
+
+  return function() {
+    // 获取调用时传入的参数
+    let bindArgs = [].slice.call(arguments);
+    // 最后将参数合并传入执行
+    self.apply(context, args.concat(bindArgs))
+  }
+}
+var bindFoo = bar.myBind(foo, '哈哈');
+bindFoo('xuex'); // name -> '哈哈'
+bindFoo("参数复用") // name -> '哈哈'
+
+
+Function.prototype.myBind2 = function(context) {
+  let self = this;
+
+  // 获取绑定时传入的参数
+  let args = [].slice.call(arguments, 1); // 参数复用
+
+  return function F() { // 这个函数可以作为构造函数
+    // 获取调用时传入的参数
+    let bindArgs = [].slice.call(arguments);
+    if (this instanceof F) {
+      return new self(...args.concat(bindArgs))
+    }
+    // return self.apply()
+    // 最后将参数合并传入执行
+    return self.apply(context, args.concat(bindArgs))
+  }
+}
+var bindFoo1 = bar.myBind2(foo, '哈哈');
+
+var bindfoo1 = new bindFoo1('学习'); // this -> bar
+console.log('age:' + bindfoo1.age);
+</script>
+<script type="text/javascript">
+  Function.prototype.bind2 = function(context) {
+
+    if (typeof this !== "function") {
+      throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+
+    var self = this;
+    // 获取绑定时传入的参数
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    // 定义一个中间函数
+    var fNOP = function() {};
+
+    var fBound = function() {
+      // 获取调用时传入的参数
+      var bindArgs = Array.prototype.slice.call(arguments);
+      // 如果是通过new函数生成调用，就指向该实例，否则指向context
+      return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
+    }
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+    return fBound;
+  }
+</script>
+<script type="text/javascript">
+
+
+  Function.prototype.__mybind = function(context, ...args) {
+    if (typeof this !== "function") {
+      throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+
+    var self = this;
+
+    var fbound = function (...args1) {
+        console.log(self, this)
+        self.apply(this instanceof self ? this : context, [...args,...args1]);
+    }
+
+    fbound.prototype = Object.create(this.prototype);
+
+    return fbound;
+  }
+
+  let obj = {
+    name: 'hahhaha'
+  }
+  function printName(age) {
+    this.age = age;
+    console.log(this.name,this.age)
+  }
+  let fn = printName.__mybind(obj)
+  fn()
+  let fn2 = new fn()
+  console.log(fn2)
+</script>

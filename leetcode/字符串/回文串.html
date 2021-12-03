@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    问题解释
+    <p>这个 function 接收一个字符串参数，返回 Boolean</p>
+    <p>回文字符串意思就是正着读和反着读都一样的字符串</p>
+    <p>比如接收的是 “eye”，那么输出就是 true，如果接受的是 “nope”，那么输出就是 false</p>
+    <p>需要注意的是，在这道题目中，需要忽略空格和特殊符号的影响，只考虑数字和字母部分</p>
+  </div>
+  <script>
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  var isPalindrome = function(s) {
+    let arr = s.replace(/[^A-Za-z0-9]+/ig, '').toLocaleLowerCase().split('')
+    if (arr.length == 0) {
+      return true
+    }
+    // // 双指针 从头和尾开始
+    // let j = arr.length - 1
+    // for(let i = 0;i<=j;i++) {
+    //    if (arr[i]!=arr[j]) {
+    //      return false
+    //    }
+    //    j -- 
+    // }
+    // return true
+    // 将新字符串转换为数组,利用数组的方法获得反转的字符串
+    const newArr = arr.reverse().join('');
+    // 将2个字符进行比较得出结果
+    return arr === newArr;
+  };
+
+  const isAnagram = (s, t) => {
+    const sArr = s.split('');
+    const tArr = t.split('');
+    const sortFn = (a, b) => {
+      return a.charCodeAt() - b.charCodeAt();
+    };
+    sArr.sort(sortFn);
+    tArr.sort(sortFn);
+    return sArr.join('') === tArr.join('');
+  };
+
+  const isAnagram1 = (s, t) => {
+    if (s.length !== t.length) {
+      return false;
+    }
+    const hash = {};
+    for (const k of s) {
+      hash[k] = hash[k] || 0;
+      hash[k] += 1;
+    }
+    for (const k of t) {
+      if (!hash[k]) {
+        return false;
+      }
+      hash[k] -= 1;
+    }
+    return true;
+  };
+
+  console.log(isPalindrome('A man, a plan, a canal: Panama'))
+
+
+  // 最长回文子串
+  const longestPalindrome = function(s) {
+    const dp = [];
+    for (let i = 0; i < s.length; i += 1) {
+      dp[i] = [];
+    }
+    let max = -1;
+    let str = '';
+    for (let l = 0; l < s.length; l += 1) {
+      // l为所遍历的子串长度 - 1，即左下标到右下标的长度
+      for (let i = 0; i + l < s.length; i += 1) {
+        const j = i + l;
+        // i为子串开始的左下标，j为子串开始的右下标
+        if (l === 0) {
+          // 当子串长度为1时，必定是回文子串
+          dp[i][j] = true;
+        } else if (l <= 2) {
+          // 长度为2或3时，首尾字符相同则是回文子串
+          if (s[i] === s[j]) {
+            dp[i][j] = true;
+          } else {
+            dp[i][j] = false;
+          }
+        } else {
+          // 长度大于3时，若首尾字符相同且去掉首尾之后的子串仍为回文，则为回文子串
+          if ((s[i] === s[j]) && dp[i + 1][j - 1]) {
+            dp[i][j] = true;
+          } else {
+            dp[i][j] = false;
+          }
+        }
+        console.log(dp)
+        if (dp[i][j] && l > max) {
+          max = l;
+          str = s.substring(i, j + 1);
+        }
+      }
+    }
+    return str;
+  };
+  console.log(longestPalindrome('babad'))
+
+  var longestPalindrome1 = function(s) {
+    if (s.length == 1) {
+      // 长度1，返回本身
+      return s;
+    }
+
+    // 创建二阶数组存储从j到i是否是回文数组，0为不回文，1为回文
+    let arr = [];
+    for (let i = 0; i < s.length; i++) {
+      arr[i] = [];
+    };
+
+    // 存储最长回文子串的起始位置
+    let begin = 0;
+    // 存储最长子串的长度
+    let max = 0;
+
+    for (let i = 0; i < s.length; i++) {
+      let j = 0;
+      while (j <= i) {
+        // 如果 i-j <= 1 时，说明i位置和j位置要么是重合的，要么是相邻的，即为最后一次查找
+        // 否则继续查询[j + 1]到[i - 1]是否为回文
+        if (s[j] == s[i] && (i - j <= 1 || arr[j + 1][i - 1])) {
+          // 如果符合上述条件，说明j到i是回文
+          console.log(j, i, s[j], s[i])
+          arr[j][i] = 1
+          console.log(arr)
+          if (i - j + 1 > max) {
+            // 如果当前子串大于存储的子串长度，则替换之
+            begin = j;
+            // 注意+1，比如从3到5的长度为3 = 5 - 3 + 1
+            max = i - j + 1;
+          }
+        }
+        j++;
+      }
+    }
+    return s.substr(begin, max);
+  };
+  console.log(longestPalindrome1('cbbd'))
+  </script>
+</body>
+
+</html>

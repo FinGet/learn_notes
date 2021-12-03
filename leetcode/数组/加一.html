@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+  /**
+   * @param {number[]} digits
+   * @return {number[]}
+   */
+  var plusOne = function(digits) {
+    let res = []
+
+    function fnc(arr) {
+      let len = arr.length - 1
+      if (arr[len] + 1 == 10) {
+        if (len == 0) {
+          return [1, 0, ...res]
+        }
+        res.unshift(0)
+        arr.pop()
+        return fnc(arr)
+      } else {
+        digits[len] += 1
+        return [...arr, ...res]
+      }
+    }
+    return fnc(digits)
+  };
+  console.log(plusOne([9, 9]))
+  
+  //先把个位的数加一，如果没有进位就直接推出循环。
+//如果进位了，再把十位的数加一，个位数设置为0，如此循环，，直到判断没有再进位就退出循环返回结果。
+//
+//这个题 有个点容易想多了， +1 => 最大的也只能进1位 9+1 => 1
+// 让 数组 最后一位 + 1
+// 如果 === 10, 那么就进 1位
+// 这就意味着，数组的 倒数第二位也可以加一
+// 依次类推...
+// 我们不需要记录这个是否在什么时候加1
+// 最后如果 第一位 +1 都还 = 10； 例如： 99 + 1
+// 那么我们就在 最前面 加个 1，
+// 中间位置的+1 不记录，不管，因为它不可能出现 +2 的情况
+//
+  var plusOne1 = function(digits) {
+    for (let i = digits.length - 1; i >= 0; i--) {
+      digits[i]++;
+      digits[i] = digits[i] % 10; // 9 + 1 = 10  ---> 0 判断有没有进位
+      if (digits[i] !== 0) {
+        return digits; // 最后没有进位直接返回
+      }
+    }
+    digits.splice(0, 0, 1);
+    return digits;
+  };
+  </script>
+</body>
+
+</html>

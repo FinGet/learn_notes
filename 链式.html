@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		function Handle (name) {
+			this.name = name
+			this.init(this.name)
+			return this
+		}
+		Handle.prototype.init = function () {
+			console.log(`hello ${this.name}`)
+			return this
+		}
+		Handle.prototype.eat = function () {
+			console.log('eat food')
+			return this
+		}
+		Handle.prototype.sleep = function (n) {
+			console.log('sleep')
+			var start = new Date().getTime();
+      while (true) {
+      	if (new Date().getTime() - start > n){
+      		return this;
+      	}
+      }
+			
+		}
+		Handle.prototype.run = function () {
+			console.log('him run')
+			return this
+		}
+
+		let handleFnc = function (name) {
+			return new Handle(name)
+		}
+		 
+
+		// handleFnc('FinGet').eat().sleep().run()
+		// var a =10;
+		// {
+		// 	a = 20;
+		// 	function a() {}
+		// 	console.log(a)
+		// 	a = 30;
+		// 	console.log(a)
+		// }
+		// console.log(a)
+		var fun = function(arr) {
+			let i;
+		  for(i = 0; i< arr.length;i++) {
+		    setTimeout(function() {
+		      console.log(i);
+		    },0)
+		  }
+		  console.log(arr[i])
+		}
+		fun([1,2,3,4])
+	</script>
+</body>
+</html>

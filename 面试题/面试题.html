@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+  #passage {
+    color: yellow;
+  }
+
+  .outside span {
+    color: green;
+    display: block;
+  }
+
+  [data-color="red"] {
+    color: red;
+  }
+
+  span {
+    display: inline;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top,
+  .bottom {
+    height: 300px;
+  }
+
+  .top {
+    border: 1px solid red;
+  }
+
+  .bottom {
+    display: flex;
+    border: 1px solid green;
+  }
+
+  .left,
+  .right {
+    flex: 1;
+    height: 100%;
+  }
+
+  .left {
+    border-right: 1px solid blue;
+  }
+  .test {
+    display: block;
+    position: relative;
+    width: 16px;
+    height: 16px;
+  }
+  .test::before {
+    display: block;
+    content: '1';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+</head>
+
+<body>
+  <!-- <div class="outside">
+        <span id="passage" style="color:blue;" data-color="red">example</span>
+    </div> -->
+  <div class="main">
+    <div class="top">
+      <h1>class="top"</h1>
+    </div>
+    <div class="bottom">
+      <div class="left">
+        <h1>class="left"</h1>
+      </div>
+      <div class="right">
+        <h1>class="right"</h1>
+      </div>
+    </div>
+  </div>
+  <i class="test"></i>
+  <script>
+  // var num = 10;
+  // var obj = {
+  //    num: 8,
+  //    inner: {
+  //        num: 6,
+  //        print: function () {
+  //            console.log('num:'+ num + ',this.num:' + this.num)
+  //        }
+  //    }
+  // }
+  // num = 888;
+  // obj.inner.print()
+  // var fn = obj.inner.print
+  // fn()
+  // (obj.inner.print)()
+  // (obj.inner.print = obj.inner.print)()
+
+  // var fun = function(arr) {
+  //     for (var i = 0; i < arr.length; i++) {
+  //         setTimeout(function() {
+  //             console.log(i);
+  //         }, 0)
+  //     }
+
+  //     new Promise(function(resolve) {
+  //       console.log('promise1')
+
+  //       resolve();
+
+  //     }).then(function() {
+
+  //       console.log('promise2')
+  // })
+  //     console.log(arr[i])
+  // }
+  // fun([1, 2, 3, 4])
+
+  // function person(name) {
+  //    if(name) {
+  //        this.name = name;
+  //    }
+  //    console.log(this.name);
+  // }
+  // person.prototype.name = 'Tom';
+  // var human = {
+  //    person: person,
+  //    name: 'Cat'
+  // }
+  // person();
+  // new person('Jack');
+  // new person();
+  // new person('Rose');
+  // human.person();
+  // person.call(window)
+
+  // var a = window.a = 'finget.github.io'
+  // function hello(){
+  //    console.log(a);
+  //    let a = 'hello';
+  //    console.log(a);
+  //    console.log(b);
+  //    let b = 'finget';
+  // }
+  // hello();
+  </script>
+  <!-- <script>
+        let arr = [1,2,3,4,5,6,7]
+
+        arr.forEach(item => {
+            // if (item > 3) {
+            //  break;
+            // }
+            console.log(item)
+        })
+    </script>
+    <script>
+        Function.prototype.mybind(that) {
+            let _this = this
+            let slice = Array.protype.slice
+            let arg = slice(arguments,[1])
+            let fnc = function() {}
+            let bound = return function() {
+                return _this.apply(this instanceof fnc?this : that,arg.contact(arguments))
+            }
+            fnc.prototype = _this.prototype
+            bound.prototype = new fnc()
+            return bound
+        }
+    </script> -->
+  <script>
+  // var Person = function(){}
+  // Person.prototype.name='zhangsan';
+  // Person.prototype = {name: 'lisi'};
+  // var person = new Person();
+  // console.log(person.name); // 'lisi'
+  var Person = function() {}
+  Person.prototype.name = 'zhangsan';
+  var person = new Person();
+  Person.prototype = { name: 'lisi' };
+  console.log(person.name); // 'zhangsan'
+
+  function changeObjProperty(o) {
+    o.siteUrl = "http://www.baidu.com"
+    o = {}
+    o.siteUrl = "http://www.google.com"
+  }
+  let webSite = {};
+  changeObjProperty(webSite);
+  console.log(webSite.siteUrl);
+  </script>
+  <!-- <script type="text/javascript">
+        var arr = [1,2,3,4,5];
+        var obj = {
+            arr: ['a','b','c'],
+            fun: function () {
+                for(var i = 0; i< this.arr.length; i++) {
+                    setTimeout(function () { 
+                        console.log('arr'+i+':');
+                        console.log(this.arr[i]);
+                        console.log('--------');
+                    },0)
+                    console.log(i)
+                }
+            }
+        }
+        obj.fun()
+    </script> -->
+  <script>
+  function f1() {
+    var n = 0;
+    nAdd = function() {
+      n += 1
+    }
+
+    function f2() {
+      console.log(this, n)
+    }
+    return f2
+  }
+  var result = f1()
+  result();
+  nAdd();
+  result();
+  for (let i = 0; i <= 5; i++) {
+    (function(j) {
+      setTimeout(function() {
+        console.log(j);
+      }, 1000)
+    })(i)
+  }
+
+  for (var i = 0; i < 5; i++) {
+    setTimeout(function() {
+    console.log(i);
+    }, 1000);}
+
+
+    let res = []
+    arr.forEach(item => {
+      let p1 = Object.assign({}, item);
+      delte p1.twolist;
+      res.push(p1)
+      item.twolist.forEach(item1 => {
+        let p2 = Object.assign({}, item1);
+        delte p1.threelist;
+        res.push(p2)
+        item1.threelist.forEach(item2 => {
+          res.push(item2)
+        })
+      })
+    })
+
+
+  </script>
+  <script type="text/javascript">
+    function Foo() {
+      getName = function() {console.log(1)}; // 没有定义，所以来自全局的getName
+      return this;
+    }
+    Foo.getName = function() {console.log(2)};
+    Foo.prototype.getName = function() {console.log(3)};
+    var getName = function() {console.log(4)};
+    function getName() {console.log(5)};
+
+    Foo.getName(); // 2
+    getName(); // 4 变量的声明被提到当前作用域的最顶端，其次是函数的声明，代码继续执行，function getName()就被覆盖了
+    Foo().getName(); // 1 (window.Foo().getName() => window.getName()) ;Foo() => this => window
+    getName(); // 1 全局的getName 被上一次执行(Foo().getName();)覆盖了
+    new Foo.getName(); // 2 点(.)运算符的优先级比new高，=> new (Foo.getName)();
+    new Foo().getName(); // 3 圆括号()的优先级最高，=> (new Foo()).getName()
+    new new Foo().getName(); // 3 => new ((new Foo()).getName)();
+  </script>
+</body>
+
+</html>

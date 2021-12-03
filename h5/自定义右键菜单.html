@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<ul id="myMenu" style="position: absolute;visibility: hidden;background-color: silver">
+	  <li>111</li>
+	  <li>222</li>
+	  <li>333</li>
+	</ul>
+<script>
+  var menu = document.getElementById('myMenu')
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault()
+    menu.style.left = event.clientX + 'px'
+    menu.style.top = event.clientY + 'px'
+    menu.style.visibility = 'visible'
+  }, false)
+  document.addEventListener('click', (event) => {
+    menu.style.visibility = 'hidden'
+  }, false)
+</script>
+</body>
+</html>

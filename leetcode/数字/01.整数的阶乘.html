@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<h1>计算一个整数的阶乘 (Factorialize a Number)</h1>
+
+	<p>问题解释</p>
+	<p>
+		这个 function 接收一个整数为参数，返回阶乘的计算结果
+		比如接收的是 4，那么就返回 24
+	</p>
+	<script type="text/javascript">
+		// 解法一
+		// 很简单，一个循环，把每一步的数乘起来就可以
+		// 需要注意的是，0 的阶乘与 1 的阶乘均为 1
+		
+		function factorialize(num) {
+			let result = 1;
+			while(num>1) {
+				result *= num;
+				num --;
+			}
+			return result
+		}
+
+		// 解法二
+		// 如果要使用 reduce，首先要根据传入的 num 创建一个数组。范围是 1 至 num
+		
+		function factorialize1(num) {
+			return Array.from(Array(num).keys()).map(e => e+1).reduce((prev, next) => {
+				return prev * next
+			})
+		}
+
+		// 解法三
+		function factorialize2(num) {
+			if(num === 0) {
+				return 1
+			}
+			return num * factorialize2(num-1);
+		}
+
+		console.log(factorialize2(5))
+	</script>
+</body>
+</html>

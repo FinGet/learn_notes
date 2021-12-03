@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>office</title>
+</head>
+<body>
+	<a href="c://Users/Administrator/Desktop/1.doc">word文档</a>
+	<button onclick="openOffic('word')">word</button>
+	<button onclick="openOffic('ppt')">ppt</button>
+	<button onclick="openOffic('excel')">excel</button>
+
+	<embed src="c://Users/Administrator/Desktop/1.ppt" type="application/pdf" width="100%" height="100%">
+
+	<!-- <iframe src="c://Users/Administrator/Desktop/1.doc" width="100%" height="100%">
+This browser does not support PDFs. Please download the PDF to view it: <a :href="previewUrl">Download PDF</a>
+ 
+</iframe> -->
+
+<iframe src='https://view.officeapps.live.com/op/view.aspx?src=http://storage.xuetangx.com/public_assets/xuetangx/PDF/1.xls' width='100%' height='100%' frameborder='1'>
+</iframe>
+</body>
+<script>
+	function openOffic(type) {
+		if (type == 'word') {
+			let cmd = new ActiveXObject('WScript.Shell');
+			cmd.Run('winword c://Users/Administrator/Desktop/1.doc');
+		} else if (type == 'ppt') {
+			let cmd = new ActiveXObject('WScript.Shell');
+			cmd.Run('PowerPnt.exe c://Users/Administrator/Desktop/1.ppt');
+		} else if (type == 'excel') {
+			let cmd = new ActiveXObject('WScript.Shell');
+			cmd.Run('excel.exe   c://Users/Administrator/Desktop/1.xls');
+		}
+	}
+</script>
+</html>

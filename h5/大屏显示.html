@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		.container{
+			width: 2.60rem;
+			height: 1.56rem;
+			border: 1px solid;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		
+	</div>
+	<script type="text/javascript">
+		function init(screenRatioByDesign = 16 / 9) {
+		  let docEle = document.documentElement
+
+		  function setHtmlFontSize() {
+		    var screenRatio = docEle.clientWidth / docEle.clientHeight;
+		    var fontSize = (
+		      screenRatio > screenRatioByDesign
+		        ? (screenRatioByDesign / screenRatio)
+		        : 1
+		    ) * docEle.clientWidth / 10;
+
+		    docEle.style.fontSize = fontSize.toFixed(3) + "px";
+		  }
+
+		  setHtmlFontSize()
+
+		  window.addEventListener('resize', setHtmlFontSize)
+		}
+		init();
+	</script>
+</body>
+</html>

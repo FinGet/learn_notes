@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0
+        }
+        
+        .float {
+            float: left;
+        }
+        
+        #canvas {}
+        
+        #canvasBox {
+            position: absolute;
+            width: 100%;
+            background: #999;
+        }
+        
+        #save {
+            background: green
+        }
+        
+        #save:hover {
+            background: aqua
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvasBox" style="opacity: 0;z-index:-999;height:100%;overflow: auto;;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="float" style="width:300px;height:90%;border-right:1px solid #aaa">
+        <div style="cursor: pointer;width:200px;height:50px;background:#eee;position: relative;text-align: center;line-height: 50px">
+            上传图片
+            <input style="width:100%;height:100%;position:absolute;left: 0;opacity: 0;" id="upload" type="file" accept="image/*">
+        </div>
+        设置裁剪图片的
+        <br /> 设置宽
+        <input type="text" type="number" id="setWidth" disabled>
+        <br /> 设置高
+        <input type="text" type="number" id="setHeight" disabled>
+        <br /> 压缩率
+        <input type="text" type="number" id="setLv" disabled>
+        <br />
+
+
+        <button id="save" style="width: 200px;line-height:50px;;margin-top:5px;text-align:center;border:0">保存</button>
+    </div>
+    <div class="float" style=";height:90%">
+        <img style="max-width: 1299px;max-height: 900px" id="img" src="" alt="">
+    </div>
+    <span id="show" style="position: fixed;right:0;z-index:1000">查看效果</span>
+    <script>
+        var upload = document.getElementById('upload');
+        var images = document.getElementById('img');
+        var setWidth = document.getElementById('setWidth');
+        var setHeight = document.getElementById('setHeight');
+        var setLv = document.getElementById('setLv');
+        var canvas = document.getElementById('canvas');
+        var canvasBox = document.getElementById('canvasBox');
+        var show = document.getElementById('show')
+        var save = document.getElementById('save')
+        var ctx = canvas.getContext('2d');
+        var Img;
+        var ImgWidth = 0;;
+        var ImgHeight = 0;
+        var newCanvas;
+        setWidth.addEventListener('input', function(e) {
+            cutImg()
+            setLv.value = ''
+        })
+        setHeight.addEventListener('input', function() {
+            cutImg()
+            setLv.value = ''
+        })
+        setLv.addEventListener('input', function() {
+            if (!Img) {
+                return;
+            }
+            var lv = setLv.value;
+            if (lv < 0 || lv > 1) {
+                return;
+            }
+            var ncvs = document.createElement("canvas");
+            ncvs.width = ImgWidth * lv;
+            ncvs.height = ImgHeight * lv;
+            ncvs.getContext('2d').drawImage(Img, 0, 0, ImgWidth * lv, ImgHeight * lv);
+            onload_canvas(false, false, ncvs);
+        })
+
+        function cutImg() {
+            var cutw = setWidth.value;
+            var cuth = setHeight.value;
+            onload_canvas(cutw, cuth);
+        }
+        upload.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            var readerFile = new FileReader();
+            Img = new Image();
+            readerFile.onload = function(ev) {
+                var data = ev.target.result;
+                images.src = data;
+                setLv.removeAttribute('disabled')
+                setWidth.removeAttribute('disabled')
+                setHeight.removeAttribute('disabled')
+                Img.src = data;
+                Img.onload = function() {
+                    ImgWidth = this.width;
+                    ImgHeight = this.height;
+                    onload_canvas(ImgWidth, ImgHeight)
+                }
+            }
+            readerFile.readAsDataURL(file);
+        })
+        show.addEventListener('mouseover', function() {
+            canvasBox.style = "opacity: 1;z-index:999;height:100%";
+        })
+        show.addEventListener('mouseout', function() {
+            canvasBox.style = "opacity: 0;z-index:-999;height:100%;overflow:auto"
+        })
+
+        function onload_canvas(w, h, cvs) {
+            var ww = w || ImgWidth;
+            var hh = h || ImgHeight;
+            canvas.width = ww;
+            canvas.height = hh;
+            if (ww < document.body.clientWidth && hh < document.body.clientHeight) {
+                canvas.style = "margin-top:" + (document.body.clientHeight - hh) / 2 + 'px;margin-left:' + (document.body.clientWidth - ww) / 2 + 'px'
+            } else {
+                canvas.style = "margin-top:" + 0 + 'px;margin-left' + 0 + 'px'
+            }
+            ctx.clearRect(0, 0, ww, hh);
+            ctx.drawImage(cvs ? cvs : Img, 0, 0, ww, hh);
+        }
+
+        save.addEventListener('click', function() {
+            Img && downLoad(saveAsJPG(canvas))
+        })
+
+        function saveAsPNG(canvas) {
+            return canvas.toDataURL("image/png");
+        }
+
+        function saveAsJPG(canvas) {
+            l = setLv.value || 1;
+            return canvas.toDataURL("image/jpeg", l);
+        }
+
+        function downLoad(url) {
+            console.log(url)
+            var oA = document.createElement("a");
+            oA.download = '';
+            oA.href = url;
+            document.body.appendChild(oA);
+            oA.click();
+            oA.remove();
+        }
+    </script>
+</body>
+
+</html>

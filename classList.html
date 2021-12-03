@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>classList</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <div id="myDiv" class="classA classB classC"></div>
+  <script>
+  // 《javascript权威指南》上给出了代码用来判断一个对象是否属于“类数组”。如下：
+  // Determine if o is an array-like object.
+  // Strings and functions have numeric length properties, but are 
+  // excluded by the typeof test. In client-side JavaScript, DOM text
+  // nodes have a numeric length property, and may need to be excluded 
+  // with an additional o.nodeType != 3 test.
+  function isArrayLike(o) {
+    if (o && // o is not null, undefined, etc.
+      typeof o === 'object' && // o is an object
+      isFinite(o.length) && // o.length is a finite number
+      o.length >= 0 && // o.length is non-negative
+      o.length === Math.floor(o.length) && // o.length is an integer
+      o.length < 4294967296) // o.length < 2^32
+      return true; // Then o is array-like
+    else
+      return false; // Otherwise it is not
+  }
+
+
+
+  window.onload = function() {
+    // console.log(myDiv);
+    // console.log(myDiv.className);
+    // console.log(myDiv.constructor);
+    // console.log(myDiv.classList);
+    // console.log(HTMLElement);
+
+    // myDiv.classList.add('classD');
+    // console.log(myDiv.classList);
+
+    function MyDomTokenList(classes, dom) {
+      // 变成类数组 MyDomTokenList {0: "classA", 1: "classB", 2: "classC", length: 3}
+      [].push.apply(this, classes);
+      // this.value = [].join.call(this, ' ');
+      Object.defineProperty(this, 'value', {
+        set(nv) {
+          // 改变dom 上的class
+          dom.className = nv;
+        },
+        get() {
+          return [].join.call(this, ' ');
+        }
+      })
+
+    }
+    MyDomTokenList.prototype = Object.create(Array.prototype, {
+      constructor: {
+        value: MyDomTokenList
+      },
+      add: {
+        value: function(clazz) {
+          if (this.contains(clazz)) return;
+          [].push.call(this, clazz);
+          this.value = [].join.call(this, ' ');
+        }
+      },
+      remove: {
+        value: function(clazz) {
+          for (let i = 0; i < this.length; i++) {
+            if (clazz === this[i]) {
+              [].splice.call(this, i, 1);
+              return clazz;
+            }
+          }
+          this.value = [].join.call(this, ' ');
+        }
+      },
+      contains: {
+        value: function(clazz) {
+          return [].includes.call(this, clazz);
+        }
+      },
+      toogle: {
+        value: function(clazz) {
+          if (this.contains(lazz)) {
+            this.remove(clazz);
+          } else {
+            this.add(clazz);
+          }
+          this.value = [].join.call(this, ' ');
+        }
+      }
+    })
+
+    // MyDomTokenList.prototype = {
+    // 	add: function(clazz) {
+    // 		if(this.contains(clazz)) return;
+    // 		[].push.call(this, clazz);
+    // 		this.value = [].join.call(this, ' ');
+    // 	},
+    // 	remove: function (clazz) {
+    // 		for(let i = 0;i<this.length;i++) {
+    // 			if(clazz === this[i]) {
+    // 				[].splice.call(this,i,1);
+    // 				return clazz;
+    // 			}
+    // 		}
+    // 		this.value = [].join.call(this, ' ');
+    // 	},
+    // 	contains: function(clazz) {
+    // 		return [].includes.call(this, clazz);
+    // 	},
+    // 	toogle: function(clazz) {
+    // 		if(this.contains(lazz)) {
+    // 			this.remove(clazz);
+    // 		} else {
+    // 			this.add(clazz);
+    // 		}
+    // 		this.value = [].join.call(this, ' ');
+    // 	}
+    // }
+
+    Object.defineProperty(HTMLElement.prototype, 'myClassList', {
+      get() {
+        // 拿到dom的className
+        let classes = this.className.split(' ');
+        this.value = classes;
+        if (!this.__list__) {
+          this.__list__ = new MyDomTokenList(classes, this)
+        }
+        return this.__list__;
+      }
+    })
+    myDiv.myClassList.add('classD')
+    console.log(myDiv.myClassList);
+
+  }
+  </script>
+</body>
+
+</html>

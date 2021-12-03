@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		// 按 10 进制 转 二进制的方式 来 获取反转的 二进制
+		function reverseBits(n) {
+			let res = ''
+			while(res.length < 32) {
+				if(n % 2 === 0) {
+					res += '0';
+					n = n / 2;
+				} else {
+					res += '1'
+					n = Math.floor(n / 2)
+				}
+			}
+			return parseInt(res, 2)
+		}
+		console.log(reverseBits(00000010100101000001111010011100))
+	</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		var twoSum = function(nums, target) {
+		  for (let i = 0; i<nums.length;i++)  {
+	      let n = target - nums[i]
+	      let index = nums.indexOf(n)
+	      if (index>-1&&index!==i) {
+	          return [i,index]
+	      }
+		  } 
+		};
+		console.log(twoSum([3,2,4],6))
+	</script>
+</body>
+</html>

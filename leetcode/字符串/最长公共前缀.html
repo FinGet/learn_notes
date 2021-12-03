@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <pre>
+		编写一个函数来查找字符串数组中的最长公共前缀。
+
+		如果不存在公共前缀，返回空字符串 ""。
+
+		 
+
+		示例 1：
+
+		输入：strs = ["flower","flow","flight"]
+		输出："fl"
+
+	</pre>
+  <script type="text/javascript">
+  function longestCommonPrefix(strs) {
+    if (!strs.length) {
+      return ''
+    }
+    //横向扫描：前两个字符串找公共子串，将其结果和第三个字符串找公共子串……直到最后一个串。时间性能为O(n*m)。
+    const findComPre = function(s, t) {
+      let i = 0;
+      while (s && t && i < s.length && i < t.length && s[i] === t[i]) {
+        i++
+      }
+      return i > 0 ? s.slice(0, i) : ''
+    }
+    let result = strs[0]
+    for (let i = 1; i < strs.length; i++) {
+      result = findComPre(result, strs[i])
+    }
+    return result;
+  }
+  console.log(longestCommonPrefix(["flower", "flow", "flight"]))
+  </script>
+</body>
+
+</html>

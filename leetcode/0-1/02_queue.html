@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>队列</title>
+</head>
+<body>
+  <pre>
+		写一个 RecentCounter 类来计算特定时间范围内最近的请求。
+
+			请你实现 RecentCounter 类：
+
+			RecentCounter() 初始化计数器，请求数为 0 。
+			int ping(int t) 在时间 t 添加一个新请求，其中 t 表示以毫秒为单位的某个时间，并返回过去 3000 毫秒内发生的所有请求数（包括新请求）。确切地说，返回在 [t-3000, t] 内发生的请求数。
+			保证 每次对 ping 的调用都使用比之前更大的 t 值。
+			
+			这个输入是程序调用方法的顺序:
+				inputs = ["RecentCounter","ping","ping","ping","ping"]
+				这个输入是调用方法传入的值:
+				inputs = [[],[1],[100],[3001],[3002]]
+				输出每次传入t值后被计算在[t - 3000, t]内的ping的数量：
+				outputs = [null,1,2,3,3]
+
+				假设第五次调用ping()并且传入的值为[3101]，那么我们就需要判断[3101]之前的"t值"是否在[3101 - 3000, 3101]这个范围内.
+				也就是3101 - 3000 = 101, 那么"t值"范围就为[101 - 3101], 开始进行逐个判断, [1]和[100]不在所以需要删除。
+				最后只留下[3001],[3002],[3101].
+
+				outputs = [null,1,2,3,3,3]
+
+
+  	入队：push 
+    出队：shift
+		队头：queue[0]
+  </pre>
+  <script type="text/javascript">
+  	var RecentCounter = function() {
+  		this.q = []
+		};
+
+		/** 
+		 * @param {number} t
+		 * @return {number}
+		 */
+		RecentCounter.prototype.ping = function(t) {
+			this.q.push(t)
+			while(this.q[0] < t - 3000) {
+				this.q.shift()
+			}
+			return this.q.length
+		};
+  </script>
+</body>
+</html>

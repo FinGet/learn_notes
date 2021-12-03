@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+    oBtn.onclick = function() {
+        //第一步    ‘打开浏览器’    创建ajax对象
+        /*
+         var xmlhttp;
+         第一种方式
+        if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+             //ie6下不存在XMLHttpRequest，所以不能用XMLHttpRequest作判断条件  应该判断window下有没有XMLHttpRequest属性，如果没有只会返回undefined，不会报错
+              xmlhttp=new XMLHttpRequest();
+          }
+        else{// code for IE6, IE5
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+          第二种方式
+          try{
+              xmlhttp=new XMLHttpRequest();
+          }catch(e){
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+
+         * */
+        var xhr = new XMLHttpRequest();
+
+        //第二步    ‘在地址栏输入地址’
+        /*
+         open()
+         参数
+             1.打开方式
+             2.地址
+             3.是否异步
+                   异步：非阻塞
+                   同步：阻塞
+         * */
+        xhr.open('get', '1.txt', true);
+
+        //第三步    ‘提交’    发送请求
+        xhr.send();
+
+        //第四步    ‘等待服务器返回结果’
+
+        /*
+         * 请求状态监控
+                on readystate change事件
+                readyState属性：请求状态
+                    0    （初始化）还没有调用open()方法
+                    1    （载入）已调用send()方法，正在发送请求
+                    2    （载入完成）send()方法完成，已收到全部响应内容
+                    3    （解析）正在解析响应内容
+                    4    （完成）响应内容解析完成，可以在客户端调用了
+
+                status属性：服务器(请求资源)的状态      http状态码
+                返回的内容
+                responseText：返回以文本形式存放的内容
+                responseXML：返回XML形式的内容
+         *
+         *
+         * readyState:ajax工作状态
+           responseText:ajax请求返回的内容就被存放到这个属性下面
+         * */
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+
+                //容错处理
+                if (xhr.status == 200) {
+                    alert(xhr.responseText);
+                } else {
+                    alert('出错了，Err:' + xhr.status);
+                }
+
+            }
+        }
+    }
+    </script>
+</body>
+
+</html>

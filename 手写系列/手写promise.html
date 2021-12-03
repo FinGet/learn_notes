@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>简单的Promise</title>
+</head>
+<body>
+	<script>
+		// https://github.com/xieranmaya/blog/issues/2
+		// 先设置三个状态，PENDING时才能修改value
+		const PENDING = 'pending'
+		const RESOLVED = 'resolved'
+		const REJECTED = 'rejected'
+		function MyPromise(fn) {
+			let that = this
+			that.state = PENDING
+			that.value = null
+			that.resolvedCallbacks = []
+			that.rejectedCallbacks = []
+
+			function resove(val) {
+				// 需要异步执行-promise规范
+				setTimeout(function() {
+					if (that.state == PENDING) {
+						that.value = val
+						that.state = RESOLVED
+						that.resolvedCallbacks.map(cb => cb(val))
+					}
+				},0)
+				
+			}
+
+			function reject(val) {
+				setTimeout(function() {
+					if(that.state == PENDING) {
+						that.value = val
+						that.state = REJECTED
+						that.rejectedCallbacks.map(cb => cb(val))
+					}
+				},0)
+			}
+
+			try {
+				fn(resove, reject)
+			} catch (e){
+				reject(e)
+			}
+		}
+		// 这里不完善 then应该是返回的一个promise对象
+		// MyPromise.prototype.then = function(onFulfilled, onRejected) {
+		// 	const that = this
+		// 	// onFulfilled,onRejected 都必须是函数 
+		//   onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
+		//   onRejected = typeof onRejected === 'function'? onRejected: r => {throw r}
+
+	 //    if (that.state === PENDING) {
+		//     that.resolvedCallbacks.push(onFulfilled)
+		//     that.rejectedCallbacks.push(onRejected)
+		//   }
+		//   if (that.state === RESOLVED) {
+		//     onFulfilled(that.value)
+		//   }
+		//   if (that.state === REJECTED) {
+		//     onRejected(that.value)
+		//   }
+		// }
+		
+		MyPromise.prototype.then = function(onFulfilled, onRejected) {
+			const that = this
+			var promise2
+			// onFulfilled,onRejected 都必须是函数 
+		  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
+		  onRejected = typeof onRejected === 'function'? onRejected: r => {throw r}
+
+	    if (that.state === PENDING) {
+		    that.resolvedCallbacks.push(function(value) {
+	        try {
+	          var x = onFulfilled(that.value)
+	          if (x instanceof Promise) {
+	            x.then(resolve, reject)
+	          }
+	        } catch (e) {
+	          reject(e)
+	        }
+      	})
+		    that.rejectedCallbacks.push(function(value) {
+	        try {
+	          var x = onRejected(that.value)
+	          if (x instanceof Promise) {
+	            x.then(resolve, reject)
+	          }
+	        } catch (e) {
+	          reject(e)
+	        }
+      	})
+		  }
+		  if (that.state === RESOLVED) {
+		  	// 如果promise1(此处即为this/self)的状态已经确定并且是resolved，我们调用onFulfilled
+    		// 因为考虑到有可能throw，所以我们将其包在try/catch块里
+    		return promise2 = new MyPromise(function(resove,reject){
+    			try {
+    				var x = onFulfilled(that.value)
+    				if(x instanceof MyPromise) { // 如果onResolved的返回值是一个Promise对象，直接取它的结果做为promise2的结果
+    					x.then(resolve, reject)
+    				}
+    			}catch (e) {
+    				reject(e)
+    			}
+    		})
+		  }
+		  if (that.state === REJECTED) {
+		  	return promise2 = new MyPromise(function(resove,reject){
+    			try {
+    				var x = onRejected(that.value)
+    				if(x instanceof MyPromise) { // 如果onResolved的返回值是一个Promise对象，直接取它的结果做为promise2的结果
+    					x.then(resolve, reject)
+    				}
+    			}catch (e) {
+    				reject(e)
+    			}
+    		}) 
+		  }
+		}
+
+		// 执行时 先走了then,将回调函数放到了resolvedCallbacks中，1秒后resolve(1),再执行了回调
+		new MyPromise((resolve, reject) => {
+			console.log('start')
+		  setTimeout(() => {
+		    resolve(1)
+		  }, 1000)
+		}).then(value => {
+		  console.log(value)
+		})
+	</script>
+</body>
+</html>

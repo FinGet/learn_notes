@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script type="text/javascript">
+  let request = window.indexedDB.open('test', 1);
+  let db;
+  request.onsuccess = function(event) {
+    db = request.result;
+    console.log('数据库打开成功')
+    request.onupgradeneeded = function(event) {
+      if (!db.objectStoreNames.contains('books')) {
+        var store = db.createObjectStore("books", {
+          keyPath: "isbn", //指定主键子段
+          autoIncrement: true // 指定是否使用自增主键
+        })
+      }
+    }
+    console.log(db)
+    // 新增数据
+    let tx = db.transaction("books", 'readwrite');
+    let store = tx.objectStore("books", {
+      autoIncrement: true
+    })
+    store.add({ title: 'Quarry Memories' })
+  }
+  request.onerror = function(event) {
+    console.log('数据库打开失败')
+  }
+
+  /**
+   * 数据库名称： 必填参数
+  	数据库版本： 可选参数
+  	这个接口第一个参数是数据库名称，第二个参数是数据库版本，如果传入的数据库版本比当前的数据库版本高，就会触发数据库版本升级事件。
+   */
+  </script>
+</body>
+
+</html>

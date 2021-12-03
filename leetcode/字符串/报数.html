@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<pre>
+		1.     1
+		2.     11
+		3.     21
+		4.     1211
+		5.     111221
+		1 被读作 "one 1" ("一个一") , 即 11。 11 被读作 "two 1s" ("两个一"）, 即 21。 21 被读作 "one 2", "one 1" （"一个二" , "一个一") , 即 1211。
+	</pre>
+	<script type="text/javascript">
+		// 想要获取第 n 项的结果，需要先获取到第 n-1 项的结果，然后报出第 n-1 项的结果做为第 n 项的结果。所以可以采用递归调用法。
+		const countAndSay = function (n) {
+		  if (n === 1) {
+		    return '1';
+		  }
+		  const preResult = countAndSay(n - 1); // 获取第 n-1 项的结果。
+		  /**
+		    * \d 匹配一个数字
+		    * \1 匹配前面第一个括号内匹配到的内容
+		    * (\d)\1* 匹配相邻数字相同的内容
+		    * 使用replace方法将匹配到的内容处理为长度 + 内容的第一个字符
+		    * 结果为所求报数
+		    **/
+		  return preResult.replace(/(\d)\1*/g, item => `${item.length}${item[0]}`);
+		};
+
+		// 循环法
+		const countAndSay1 = function (n) {
+		  let result = '1'; // 第一个数为'1'
+		  for (let i = 1; i < n; i++) { // 循环获取知道第 n 项。
+		    // 同方法一
+		    result = result.replace(/(\d)\1*/g, item => `${item.length}${item[0]}`);
+		  }
+		  return result;
+		};
+	</script>
+</body>
+</html>

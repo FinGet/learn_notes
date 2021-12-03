@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <header></header>
+  <div class="main"></div>
+  <footer></footer>
+  <script>
+  // let num = '1234567890.12'
+  // console.log(Number(num).toLocaleString())
+  // let reg = /(\d)(?=(\d{3})+\.)/g
+  // console.log(num.replace(reg,'$1,'))
+
+  /**
+   * 金额三位一划分
+   * @param  {[string/number]} money [金额]
+   * @param  {[string/number]} round [小数位]
+   * @param  {[any]}           flag  [是否四舍五入]
+   * @return {[type]}       [description]
+   */
+  function formatMoney(money, round = 2, flag) {
+    money = Number(money);
+    round = Number(round);
+    let isDecimal = money.toString().indexOf('.') >= 0;
+    let formatReg = /(\d)(?=(\d{3})+\.)/g;
+    let sliceReg = new RegExp(`([0-9]+.[0-9]{${round}})[0-9]*`);
+    let zero = '.00';
+    if (round > 2) {
+      for (let i = 2; i < round; i++) {
+        zero += '0';
+      }
+    }
+    if (!isNaN(money) && Object.prototype.toString.call(money).slice(8, -1) === 'Number') {
+      if (!isNaN(round) && flag) {
+        return String(money.toFixed(round)).replace(formatReg, '$1,');
+      } else if (!isNaN(round)) {
+        money = isDecimal ? String(money) : String(money) + zero;
+        return money.replace(sliceReg, '$1').replace(formatReg, '$1,');
+      } else if (round === 'undefined') {
+        money = isDecimal ? String(money) : String(money) + zero;
+        return String(money).replace(formatReg, '$1,');
+      } else {
+        throw new Error('请输入小数位!');
+      }
+    } else {
+      throw new Error('请输入数字!');
+    }
+  }
+
+  let res = formatMoney('1222202.00', 3, false)
+  console.log(res)
+
+  // 默认接受十位的,然后补全十三位
+  function dateFormat(timestamp) {
+    if (String(timestamp).length == 10) {
+      timestamp = timestamp * 1000;
+    }
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let time = date.getTime();
+    month = month >= 10 ? month : ('0' + month);
+    day = day >= 10 ? day : ('0' + day);
+    hours = hours >= 10 ? hours : ('0' + hours);
+    minutes = minutes >= 10 ? minutes : ('0' + minutes);
+    seconds = seconds >= 10 ? seconds : ('0' + seconds);
+    time = time >= 10 ? time : ('0' + time);
+    const obj = {
+      year: year,
+      month: month,
+      day: day,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      time: time,
+      ymd: year + '-' + month + '-' + day,
+      ymdhm: year + '-' + month + '-' + day + ' ' + hours + ':' + minutes,
+      ymdhms: year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds,
+      ms: minutes + ':' + seconds
+    };
+    return obj;
+  }
+  </script>
+  <!-- <script>
+        let txt = 'aaaa "dd" f g;fd分 1 "2dd" 113 512 q "w" er,-/ g'
+        txt.split(' ')
+        console.log(txt.split(' '))
+
+
+        
+    const formatDate = (date) => {
+            let minute = 1000 * 60;
+            let hour = minute * 60;
+            let day = hour * 24;
+            let month = day * 30;
+        let idata = Date.parse(date.replace(/-/gi,"/"));  
+        let now = new Date().getTime();
+        let diffValue = now - idata;
+        if (diffValue < 0) {
+            console.log('error')
+        }
+        let monthC = diffValue / month;
+        let weekC = diffValue / (7 * day);
+        let dayC = diffValue / day;
+        let hourC = diffValue / hour;
+        let minC = diffValue / minute;
+        if (monthC >= 1) {
+            result = `${parseInt(monthC)}个月前`;
+        }
+        else if (weekC >= 1) {
+            result = `${parseInt(weekC)}周前`;
+        }
+        else if (dayC >= 1) {
+            result = `${parseInt(dayC)}天前`;
+        }
+        else if (hourC >= 1) {
+            result = `${parseInt(hourC)}个小时前`;
+        }
+        else if (minC >= 1) {
+            result = `${parseInt(minC)}分钟前`;
+        } else
+            result = "刚刚";
+        return result;
+    }
+    </script> -->
+</body>
+
+</html>

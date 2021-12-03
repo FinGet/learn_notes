@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<iframe src="http://localhost:4000/3_postMessage2.html" onload="load()" id="frame"></iframe>
+	
+	<script type="text/javascript">
+		function load() {
+			let frame = document.getElementById('frame');
+
+			frame.contentWindow.postMessage('发给你消息！','http://localhost:4000/3_postMessage2.html')
+
+			window.onmessage = function(e) {
+				console.log(e.data)
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+</head>
+<body>
+	<!-- 边距重叠 -->
+	<section id="margin">
+		<style>
+			#margin{
+				/*background: green;*/
+				overflow: hidden;
+			}
+			#margin p{
+				background: red;
+				margin: 10px 0;
+			}
+		</style>
+		<p>1</p>
+		<!-- 在增加一个BFC父级就可以消除边距重叠 -->
+		<div style="overflow: hidden;">
+			<p>2</p>
+		</div>
+		<p>3</p>
+	</section>
+	
+	<br>
+
+	<!-- 左右布局 BFC的区域不会与浮动元素的box重叠-->
+	<section id="layout">
+		<style>
+			#layout .left{
+				float: left;
+				width: 200px;
+				height: 300px;
+				background: pink;
+			}
+			#layout .right{
+				height: 500px;
+				background: yellow;
+				overflow: hidden;
+			}
+		</style>
+		<div class="left"></div>
+		<div class="right"></div>
+	</section>
+
+	<br>
+	
+	<!-- 计算BFC高度时，浮动元素也会参与计算 清除浮动 -->
+	<section id="float">
+		<style>
+			#float{
+				background: red;
+				overflow: auto;
+			}
+			#float .float-left{
+				float: left;
+			}
+		</style>
+		<div class="float-left">我是浮动元素</div>
+	</section>
+
+<!-- 	<div>
+		&nbsp; &copy; &yuml;&divide;&oslash;&ouml;&not;&curren;&gt;&lt;
+	</div> -->
+</body>
+</html>

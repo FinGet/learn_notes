@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>字典</title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<pre>
+    给定两个数组，编写一个函数来计算它们的交集。
+
+      示例 1：
+
+      输入：nums1 = [1,2,2,1], nums2 = [2,2]
+      输出：[2]
+
+      var intersection = function(nums1, nums2) {
+		    let m = new Map();
+		    let res = []
+		    nums1.forEach(n => {
+	        m.set(n, true)
+		    })
+		    nums2.forEach(n => {
+	        if(m.has(n)) {
+	          res.push(n)
+	          m.delete(n)
+	        }
+		    })
+		    return res;
+			};
+	</pre>
+	<script type="text/javascript">
+		const m = new Map();
+
+		m.set('a', 123)
+		m.set('b', 345)
+		console.log(m);
+		m.delete('b')
+		let o = 'fff';
+		m.set(o, 'content')
+		m.get(o) // "content"
+
+		m.has(o) // true
+		m.delete(o) // true
+		m.has(o) // false
+		// 全部删除
+		m.clear()
+	</script>
+</body>
+</html>

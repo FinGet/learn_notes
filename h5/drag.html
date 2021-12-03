@@ -1,0 +1,124 @@
+<head>
+  <link href="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
+  <style>
+    #draggable {
+      width: 200px;
+      height: 20px;
+      text-align: center;
+      background: white;
+    }
+
+    .dropzone {
+      width: 200px;
+      height: 20px;
+      background: blueviolet;
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+     #sortable1 li, #sortable2 li, #sortable3 li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
+  </style>
+</head>
+
+<body>
+  <div class="dropzone">
+    <div id="draggable" draggable="true" ondragstart="event.dataTransfer.setData('text/plain',null)">
+      This div is draggable
+    </div>
+  </div>
+  <div class="dropzone"></div>
+  <div class="dropzone"></div>
+  <div class="dropzone"></div>
+
+
+  <div id="tabs">
+    <ul class="tab-list">
+        <li class="content-tab"><a href="#tabs-1">Nunc tincidunt</a></li>
+        <li class="content-tab"><a href="#tabs-2">Proin dolor</a></li>
+        <li class="content-tab"><a href="#tabs-3">3333333</a></li>
+    </ul>
+    <div id="tabs-1">
+        <ul id="sortable1" class="connectedSortable ui-helper-reset">
+            <li class="ui-state-default">Item 1</li>
+            <li class="ui-state-default">Item 2</li>
+            <li class="ui-state-default">Item 3</li>
+            <li class="ui-state-default">Item 4</li>
+            <li class="ui-state-default">Item 5</li>
+        </ul>
+    </div>
+    <div id="tabs-2">
+        <ul id="sortable2" class="connectedSortable ui-helper-reset">
+            <li class="ui-state-highlight">Item 1</li>
+            <li class="ui-state-highlight">Item 2</li>
+            <li class="ui-state-highlight">Item 3</li>
+            <li class="ui-state-highlight">Item 4</li>
+            <li class="ui-state-highlight">Item 5</li>
+        </ul>
+    </div>
+    <div id="tabs-3">
+        <ul id="sortable3" class="connectedSortable ui-helper-reset">
+            <li class="ui-state-error">1111 1</li>
+            <li class="ui-state-error">2222 2</li>
+            <li class="ui-state-error">3333 3</li>
+            <li class="ui-state-error">4444 4</li>
+            <li class="ui-state-error">5555 5</li>
+        </ul>
+    </div>
+</div>
+  <script>
+    window.onload = function () {
+      var dragged
+
+      document.addEventListener("dragstart", function (event) {
+        dragged = event.target
+      }, false)
+
+      document.addEventListener("dragover", function (event) {
+        // prevent default to allow drop
+        event.preventDefault()
+      }, false)
+
+      document.addEventListener("drop", function (event) {
+        // prevent default action (open as link for some elements)
+        event.preventDefault()
+        if (event.target.className == "dropzone") {
+          dragged.parentNode.removeChild(dragged)
+          event.target.appendChild(dragged)
+        }
+      }, false)
+    }
+  </script>
+  <script>
+    $(function() {
+        $( "#sortable1, #sortable2, #sortable3" ).sortable().disableSelection();
+        $( ".tab-list" ).sortable().disableSelection();
+
+        var $tabs = $( "#tabs" ).tabs();
+
+        var $tab_items = $( "ul:first li", $tabs ).droppable({
+            accept: ".connectedSortable li",
+            hoverClass: "ui-state-hover",
+            drop: function( event, ui ) {
+                var $item = $( this );
+                // $tabs.tabs( "option", "active", $tab_items.index( $item ) );
+                var $list = $( $item.find( "a" ).attr( "href" ) ).find( ".connectedSortable" );
+                ui.draggable.hide( "slow", function() {
+                    $tabs.tabs( "option", "active", $tab_items.index( $item ) );
+                    $( this ).appendTo( $list ).show( "slow" );
+                });
+            }
+        });
+
+        var $tab_items1 = $($tabs ).droppable({
+            accept: ".tab-list li",
+            hoverClass: "ui-state-hover",
+            drop: function( event, ui ) {
+                var $item = $( this );
+            }
+        });
+    });
+
+</script>
+</body>

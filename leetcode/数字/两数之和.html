@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		// 因此对于任意两个数，我们可以通过与运算后左移一位得到需要进位的结果，两数异或运算得到不需要进位的结果。循环操作，直到需要进位的为 0 ，那么得到的不需要进位的结果就是两数之和。
+		function sum(a, b) {
+			while(b !== 0) {
+				let carry =  (a & b) << 1 // << 的优先级 高于 &
+				a = a ^ b
+				b = carry
+			}
+			return a
+		}
+		console.log(sum(1, 3))
+	</script>
+</body>
+</html>

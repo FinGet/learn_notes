@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+  <style>
+  * {
+    margin: 0;
+    padding: 0
+  }
+
+  .box {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    border: 1px solid;
+  }
+  .box .tl,
+  .box .bl,
+  .box .br,
+  .box .tr {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #666;
+    z-index: 2;
+    cursor: nwse-resize
+  }
+
+  .box .tl,
+  .box .bl {
+    left: -5px;
+  }
+
+  .box .tr,
+  .box .br {
+    right: -5px;
+  }
+
+  .box .br,
+  .box .bl {
+    bottom: -5px;
+  }
+
+  .box .tl,
+  .box .tr {
+    top: -5px;
+  }
+
+  .box .tr,
+  .box .bl {
+    cursor: nesw-resize;
+  }
+  </style>
+</head>
+
+<body>
+  <!-- 将边线的缩放也加了 -->
+  <div class="box" id="box">
+    <span class="br"></span>
+    <span class="bl"></span>
+    <span class="tr"></span>
+    <span class="tl"></span>
+  </div>
+  <script>
+  window.onload = function() {
+    var oDiv = document.getElementById('box');
+    var aSpan = oDiv.getElementsByTagName('span');
+    for (var i = 0; i < aSpan.length; i++) {
+      dragFn(aSpan[i]);
+    }
+
+    function dragFn(obj) {
+      obj.onmousedown = function(ev) {
+        var ev = ev || event;
+        ev.stopPropagation();
+
+        // box 宽度
+        var oldWidth = oDiv.offsetWidth;
+        // box 高度
+        var oldHeight = oDiv.offsetHeight;
+        // 鼠标x位置
+        var oldX = ev.clientX;
+        // 鼠标y位置
+        var oldY = ev.clientY;
+        var oldLeft = oDiv.offsetLeft;
+        var oldTop = oDiv.offsetTop;
+
+        document.onmousemove = function(ev) {
+          var ev = ev || event;
+          let disY = (oldTop + (ev.clientY - oldY)),
+            disX = (oldLeft + (ev.clientX - oldLeft));
+
+          // 不让它翻转
+          if (disX > oldLeft + oldWidth) {
+            disX = oldLeft + oldWidth
+          }
+          if (disY > oldTop + oldHeight) {
+            disY = oldTop + oldHeight
+          }
+
+          if (obj.className == 'tl') {
+            oDiv.style.width = oldWidth - (ev.clientX - oldX) + 'px';
+            oDiv.style.height = oldHeight - (ev.clientY - oldY) + 'px';
+            oDiv.style.left = disX + 'px';
+            oDiv.style.top = disY + 'px';
+          } else if (obj.className == 'bl') {
+            oDiv.style.width = oldWidth - (ev.clientX - oldX) + 'px';
+            oDiv.style.height = oldHeight + (ev.clientY - oldY) + 'px';
+            oDiv.style.left = disX + 'px';
+            oDiv.style.bottom = oldTop + (ev.clientY + oldY) + 'px';
+          } else if (obj.className == 'tr') {
+            oDiv.style.width = oldWidth + (ev.clientX - oldX) + 'px';
+            oDiv.style.height = oldHeight - (ev.clientY - oldY) + 'px';
+            oDiv.style.right = oldLeft - (ev.clientX - oldX) + 'px';
+            oDiv.style.top = disY + 'px';
+          } else if (obj.className == 'br') {
+            oDiv.style.width = oldWidth + (ev.clientX - oldX) + 'px';
+            oDiv.style.height = oldHeight + (ev.clientY - oldY) + 'px';
+            oDiv.style.right = oldLeft - (ev.clientX - oldX) + 'px';
+            oDiv.style.bottom = oldTop + (ev.clientY + oldY) + 'px';
+          }
+        };
+
+        document.onmouseup = function() {
+          document.onmousemove = null;
+        };
+        return false;
+      };
+    }
+    document.getElementById("box").onmousedown = function(ev) {
+      var oevent = ev || event;
+      oevent.preventDefault();
+
+      var distanceX = oevent.clientX - oDiv.offsetLeft;
+      var distanceY = oevent.clientY - oDiv.offsetTop;
+
+      document.onmousemove = function(ev) {
+        var oevent = ev || event;
+        oDiv.style.left = oevent.clientX - distanceX + 'px';
+        oDiv.style.top = oevent.clientY - distanceY + 'px';
+      };
+      document.onmouseup = function() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    }
+  };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <pre>
+		输入：["h","e","l","l","o"]
+		输出：["o","l","l","e","h"]
+	</pre>
+  <script type="text/javascript">
+  // 方法一 首尾替换法
+  /**
+   * @param {character[]} s
+   * @return {void} Do not return anything, modify s in-place instead.
+   */
+  const reverseString = function(s) {
+    for (let i = 0; i < s.length / 2; i++) {
+      [s[i], s[s.length - 1 - i]] = [s[s.length - 1 - i], s[i]];
+    }
+    return s;
+  };
+
+  // 方法二 中间变量首尾替换法
+  /**
+   * @param {character[]} s
+   * @return {void} Do not return anything, modify s in-place instead.
+   */
+  // const reverseString = function (s) {
+  //   for (let i = 0; i < s.length / 2; i++) {
+  //     const a = s[i];
+  //     s[i] = s[s.length - i - 1];
+  //     s[s.length - i - 1] = a;
+  //   }
+  // };
+
+
+
+  // 反转一个32位的有符号整数
+  // function reverse(x) {
+  //   // 极值
+  //   const MAX = 2147483647;
+  //   const MIN = -2147483648;
+  //   if (typeof x !== 'number') {
+  //     return x
+  //   }
+
+  //   const ret = x > 0 ?
+  //     String(x).split('').reverse().join('') :
+  //     String(x).slice(1).split('').reverse().join('')
+  //   const result = x > 0 ? parseInt(ret, 10) : 0 - parseInt(ret, 10)
+
+  //   if (result >= MIN && result <= MAX) {
+  //     return result
+  //   }
+  //   return 0
+  // }
+
+  const reverse = (x) => {
+    // 获取相应数的绝对值
+    let int = Math.abs(x);
+    // 极值
+    const MAX = 2147483647;
+    const MIN = -2147483648;
+    let num = 0;
+
+    // 遍历循环生成每一位数字
+    while (int !== 0) {
+      // 借鉴欧几里得算法，从 num 的最后一位开始取值拼成新的数
+      console.log(int) // 109923 10992 1099 109 10 1
+      num = (int % 10) + (num * 10); // 和10取余 自然就能取到0-9的数
+      console.log(num) // 3 32 329 3299 ...
+      // 剔除掉被消费的部分
+      int = Math.floor(int / 10); // 再删除最后一位
+    }
+    // 异常值
+    if (num >= MAX || num <= MIN) {
+      return 0;
+    }
+    if (x < 0) {
+      return num * -1;
+    }
+    return num;
+  };
+
+  console.log(reverse(109923))
+  console.log(reverse(-989222))
+
+  function isAnagram(s, t) {
+    if (s.length !== t.length) {
+      return false
+    }
+    let keyMap = {}
+    for (let k of s) {
+      keyMap[k] = keyMap[k] ? keyMap[k] + 1 : 1
+    }
+    for (let k of t) {
+      if (keyMap[k]) {
+        keyMap[k] -= 1
+      } else {
+        return false
+      }
+    }
+    return true
+  };
+  isAnagram("anagram", "nagaram")
+  </script>
+</body>
+
+</html>

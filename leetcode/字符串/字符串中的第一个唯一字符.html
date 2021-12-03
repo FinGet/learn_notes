@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <pre>
+		给定一个字符串，找到它的第一个不重复的字符，并返回它的索引。如果不存在，则返回 -1。
+		示例
+		s = "leetcode"
+		返回 0.
+
+		s = "loveleetcode",
+		返回 2.
+	</pre>
+  <script type="text/javascript">
+	  /**
+	   * @param {string} s
+	   * @return {number}
+	   */
+	  const firstUniqChar = function(s) {
+	    for (let i = 0; i < s.length; i += 1) {
+	    	// 判断每个位置的字符的 index() 和 lastIndexOf() 的结果是否相等
+	      if (s.indexOf(s[i]) === s.lastIndexOf(s[i])) {
+	        return i;
+	      }
+	    }
+	    return -1;
+	  };
+	  // 时间复杂度：O(n^2)O(n2)​外层遍历，时间复杂度为 O(n)O(n)，调用 indexOf 的复杂度为 O(n)O(n)，得出总的时间复杂度为 O(n^2)O(n2)
+
+		/**
+		 * @param {string} s
+		 * @return {number}
+		 */
+		const firstUniqChar1 = function (s) {
+		  const hash = {};
+		  for (let i = 0; i < s.length; i += 1) {
+		    if (!hash[s[i]]) {
+		      hash[s[i]] = 1;
+		    } else {
+		      hash[s[i]] += 1;
+		    }
+		  }
+		  for (let i = 0; i < s.length; i += 1) {
+		    if (hash[s[i]] === 1) {
+		      return i;
+		    }
+		  }
+		  return -1;
+		};
+  </script>
+</body>
+
+</html>

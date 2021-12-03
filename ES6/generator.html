@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		// function *show() {
+		// 	console.log('a')
+
+		// 	yield;
+
+		// 	console.log('b')
+		// }
+		// let genObj = show()
+		// genObj.next()
+		// alert('中间暂停')
+		// genObj.next()
+
+		// function *show() {
+	 //  	console.log('a')
+		//   let num = yield;
+		//   console.log(num) // 5
+		// }
+		// let genObj = show()
+		// genObj.next(12)
+
+		// genObj.next(5)
+
+		function *show() {
+		  console.log('a')
+		  yield;
+		  console.log('b') 
+		  return 13
+		}
+		let genObj = show()
+		let res1 = genObj.next()
+		console.log(res1)
+		// {value: 12, done: false}
+		let res2 = genObj.next()
+		console.log(res2)
+		// {value: 13, done: true}
+		
+
+		function *foo(x) {
+		  let y = 2 * (yield (x + 1))
+		  let z = yield (y / 3)
+		  return (x + y + z)
+		}
+		let it = foo(5)
+		console.log(it.next())   // => {value: 6, done: false}
+		console.log(it.next(12)) // => {value: 8, done: false}
+		console.log(it.next(13)) // => {value: 42, done: true}
+		/* 5 + 24 + 13 = 42
+			第一次调用next，传参是没用的！yield 后面的表达式的值，会作为返回值返回，例如第一次调用it.next()
+			返回值就是x+1,x=5 ==> 6。
+			it.next(12) 是作为 yield的参数传入的，let y = 2 * 12,
+			这里最容易被let y = 2 * (yield (x + 1)) 误导是 2 * 6。
+			在generator中yeild后的值 是作为状态值返回的，这个状态值 就是 每执行一次next 得到的结果
+		 */
+	</script>
+</body>
+</html>

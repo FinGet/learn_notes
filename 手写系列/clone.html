@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		const isType = (obj, type) => {
+			if(typeof obj !== 'object') return false;
+			const typeString = Object.prototype.toString.call(obj)
+			let flag;
+			switch(type) {
+				case 'Array':
+					flag = typeString === '[object Array]';
+					break;
+				case 'Date':
+					flag = typeString === '[object Date]';
+					break;
+				case 'RegExp':
+					flag = typeString === '[object RegExp]'
+					break;
+				default: 
+					flag = false
+			}
+			return flag;
+		}
+		const getRegExp = re => {
+			let flag = '';
+			if(re.global) flag += 'g';
+			if(re.ignoreCase) flag +='i';
+			if(re.multiline) flag += 'm'
+			return flag
+		}
+
+		const clone = parent => {
+			const children = {}
+
+			const _clone = property => {
+				if(typeof property === null) return null;
+				if(typeof property !== 'object') return property;
+				let child, proto;
+
+				if(isType(property, 'Array')) {
+					child = [...property]
+				} else if(isType(property, 'RegExp')) {
+					child = new RegExp(property.source, getRegExp(property))
+					if(property.lastIndex) child.lastIndex = property.lastIndex
+				} else if(isType(property, 'Date')) {
+					child = new Date(property.getTime())
+				} else {
+					proto = Object.getPrototypeOf(property)
+					child = Object.create(proto)
+				}
+				return child
+			}
+			for(let k in parent) {
+				children[k] = _clone(parent[k])
+			}
+			return children
+		}
+
+		// 构造函数
+		function person(pname) {
+		  this.name = pname;
+		}
+		const Messi = new person('Messi');
+		// 函数
+		function say() {
+		  console.log('hi');
+		};
+		const oldObj = {
+		  a: say,
+		  b: [1,2,3,4],
+		  c: new RegExp('ab+c', 'i'),
+		  d: Messi,
+		  sex: Symbol('male'),
+		};
+		const newObj = clone(oldObj) 
+		console.log(newObj)
+		console.log(newObj.a, oldObj.a); 
+
+		console.log(newObj.b[0], oldObj.b[0]); 
+
+		console.log(newObj.c, oldObj.c); 
+		console.log(newObj.sex, oldObj.sex); 
+
+		console.log(newObj.d.constructor, oldObj.d.constructor); 
+	</script>
+</body>
+</html>

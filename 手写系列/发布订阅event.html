@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script type="text/javascript">
+  class Events {
+    constructor() {
+      // 相当于中介来记录订阅的类型和对应的事件
+      this._events = {}
+    }
+    /** 
+     * 订阅
+     * @param {String} eventName 类型
+     * @param {Function} callback 对应的事件
+     */
+    on(eventName, callback) {
+      if (!this._events) {
+        // 若没有这个中介值则创建一个干净的对象
+        this._events = Object.create(null);
+      }
+      if (this._events[eventName]) {
+        this._events[eventName].push(callback);
+      } else {
+        this._events[eventName] = [callback];
+      }
+    }
+    /**
+     * 发布
+     * @param {String} eventName 类型
+     * 后续的参数传递给对应的订阅事件
+     */
+    emit(eventName, ...args) {
+      if (!this._events[eventName]) return;
+      this._events[eventName].forEach(fn => fn(...args))
+    }
+    /**
+     * 移除已经订阅的类型
+     * @param {String} eventName 类型
+     * @param {Function} callback 对应的事件
+     */
+    off(eventName, callback) {
+      if (!this._events) return;
+      if (!this._events[eventName]) return;
+      // 在删除的时候要多判断一个条件，有可能是once绑定的
+      this._events[eventName] = this._events[eventName].filter(fn => fn !== callback && fn.l !== callback);
+    }
+    /**
+     * 订阅（只订阅一次，而且订阅完就移除掉）
+     * @param {String} eventName 类型
+     * @param {Function} callback 对应的事件
+     */
+    once(eventName, callback) {
+      // 把调用的函数包一层，再调用完就移出掉
+      const _once = (...args) => {
+        callback(...args);
+        this.off(eventName, _once);
+      }
+      /*
+      	这里会一个小问题，我们存进去的是once，不是callback,但是我们要移出的时候，
+      	是这样调用，event.off(eventName, callback);此时就删不掉，所以我们要做一个标识，
+      	在once上加个属性保存当前的callback
+      */
+      _once.l = callback;
+      this.on(eventName, _once);
+    }
+
+  }
+
+
+
+  const event = new Events();
+
+  event.on('lisi', (msg) => {
+    console.log('李四说:' + msg);
+  });
+  event.on('lisi', (msg) => {
+    console.log('李四说:' + msg);
+  });
+  const say = (msg) => {
+    console.log('张三说:' + msg);
+  }
+  event.once('zhangsan', say);
+
+  // event.off('zhangsan', say);
+
+  event.once('event2', () => {
+    console.log('event2触发事件-----------');
+  });
+
+  setTimeout(function() {
+  	event.emit('lisi', '我吃饭了');
+  	event.emit('zhangsan', '我吃饭了1');
+  	event.emit('zhangsan', '我吃饭了2'); // 不会执行
+  }, 1000)
+  </script>
+</body>
+
+</html>

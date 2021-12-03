@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+<pre>
+		两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+
+给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+
+ 
+
+示例 1：
+
+输入：x = 1, y = 4
+输出：2
+解释：
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+上面的箭头指出了对应二进制位不同的位置。
+示例 2：
+
+输入：x = 3, y = 1
+输出：1
+</pre>
+<script type="text/javascript">
+	var hammingDistance = function(x, y) {
+	  let xStr = Number(x).toString(2)
+	  let xLen = xStr.length
+	  let yStr = Number(y).toString(2)
+	  let yLen = yStr.length
+	  let counter = 0
+	  if(xLen < yLen) {
+	    xStr = xStr.padStart(yLen, 0)
+	  } else if(yLen < xLen) {
+	    yStr = yStr.padStart(xLen, 0)
+	  }
+	  for(let i = 0; i < xStr.length; i++) {
+	      if(xStr[i] !== yStr[i]) {
+	        counter +=1
+	      }
+	  }
+	  return counter
+	};
+
+	// 比较两个数二进制的不同位置的数量，其实可以先做异或运算，也就是把不同位置相加，相同的会是0，最后可以match 1得到一个数组
+
+	/**
+	 * str.match(regexp)
+		参数
+		regexp
+		一个正则表达式对象。如果传入一个非正则表达式对象，则会隐式地使用 new RegExp(obj) 将其转换为一个 RegExp 。如果你没有给出任何参数并直接使用match() 方法 ，你将会得到一 个包含空字符串的 Array ：[""] 。
+		返回值
+		如果使用g标志，则将返回与完整正则表达式匹配的所有结果，但不会返回捕获组。
+		如果未使用g标志，则仅返回第一个完整匹配及其相关的捕获组（Array）。 在这种情况下，返回的项目将具有如下所述的其他属性。
+		
+		'101'.match(/[1]/g) => ['1','1']
+		'101'.match(/[1]/) => ['1', index: 0, input: '101', groups: undefined]
+		'101'.match(/1/g) => ['1','1']
+	 */
+
+  
+
+	var hammingDistance1 = function(x, y) {
+	  return ((x ^ y).toString(2).match(/[1]/g) || []).length
+	};
+</script>
+</body>
+</html>

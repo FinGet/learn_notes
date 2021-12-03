@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <script>
+    setTimeout(function() {
+        console.log('timeout1');
+    })
+
+    new Promise(function(resolve) {
+        console.log('promise1');
+        for (var i = 0; i < 1000; i++) {
+            i == 99 && resolve();
+        }
+        console.log('promise2');
+    }).then(function() {
+        console.log('then1');
+    })
+
+    console.log('global1');
+    </script>
+</body>
+
+</html>

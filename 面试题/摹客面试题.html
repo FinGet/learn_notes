@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		#foo ul:nth-child(2) li:nth-child(even)                              {
+			color: red;
+		}
+		/* E:first-child{ sRules }
+			匹配"父元素"的第一个子元素E。要使该属性生效，E对象必须是某个对象的子元素。
+		*/
+		.btn-out{
+			width: 200px;
+			border: 2px solid #757575;
+			border-radius: 10px;
+			padding: 2px;
+		}
+		.btn-mid {
+			padding: 4px;
+			margin: 0 auto;
+			background: #c7c7c7;
+			border-radius: 8px;
+		}
+		.btn-in{
+			height: 100%;
+			height: 46px;
+			font-weight: bold;
+			font-size: 20px;
+			color: #5d5a5a;
+			line-height: 46px;
+			text-align: center;
+			border-radius: 6px;
+			-moz-box-shadow: 0 0.08em 0 rgba(0,0,0,0.4),  0px 0px 2px black;
+			-webkit-box-shadow: 0 0.08em 0 rgba(0,0,0,0.4),  0px 0px 2px black;
+			box-shadow: 0 0.08em 0 rgba(0,0,0,0.4), 0px 0px 2px black;
+			text-shadow: rgba(0,0,0,0.5) -1px 0, rgba(0,0,0,0.3) 0 -1px, rgba(255,255,255,0.5) 0 1px, rgba(0,0,0,0.3) -1px -1px;
+			background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+		}
+	</style>		
+</head>
+<body>
+	<div id="foo">
+		<p>Countries</p>
+		<ul>
+			<li>China</li>
+			<li>Japan</li>
+			<li>Korea</li>
+		</ul>
+		<p>Age</p>
+		<ul>
+			<li>13</li>
+			<li>17</li>
+			<li>20</li>
+		</ul>
+	</div>
+
+	<div class="btn-out">
+		<div class="btn-mid">
+			<div class="btn-in">CHECKOUT</div>
+		</div>
+	</div>
+		
+	<script type="text/javascript">
+		/**
+		 * 十进制转其他进制
+		 * @param  {[type]} num [数字]
+		 * @param  {[type]} a   [进制]
+		 * @return {[type]}     [返回一个]
+		 */
+		function convert(num,radix){
+			return j = parseInt(num).toString(radix);
+		}
+		convert(123,2);
+
+		/**
+		 * 其他进制转10进制
+		 * @param  {[type]} num   [数字]
+		 * @param  {[type]} radix [进制]
+		 * @return {[type]}       [返回一个10进制数字]
+		 */
+		function convert10(num, radix){
+			return parseInt(num, radix);
+		}
+	</script>
+</body>
+</html>

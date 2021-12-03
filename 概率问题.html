@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		let arr = [0,0,1,1,1,2,2,2,2,2]
+		let sum = 0;
+		let a = 0,b=0,c=0;
+		setInterval(() => {
+			let ran = Math.floor(Math.random()*9)
+			sum ++;
+			let res = arr[ran];
+			if(res == 0) {
+				a++
+			} else if(res ==1 ){
+				b++
+			} else if(res == 2){
+				c++
+			}
+			console.log(`总数：${sum},A的概率:${a/sum},B的概率:${b/sum},C的概率:${c/sum}`)
+		},1000)
+	</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<pre>
+		示例 1：
+
+		输入：[3,2,3]
+		输出：3
+		示例 2：
+
+		输入：[2,2,1,1,1,2,2]
+		输出：2
+	</pre>
+	<script type="text/javascript">
+		// 摩尔投票算法
+		var majorityElement = function(nums) {
+		  // 指针，指向符合输出条件的元素
+		  let majorityIndex = 0;
+		  // 计数器
+		  let count = 1;
+		  for (let i = 1; i < nums.length; i += 1) {
+		    // 判断相邻两元素是否相等  
+		    // 这其实是一种相互抵消的概念，把你抵消完了我还有，说明我最多 / 核心就是对拼消耗。
+		    // [2,2,1,1,1,2,2]
+		    // 3个1 抵消前面2个2 ，后面有来2了
+		    nums[majorityIndex] === nums[i] ? count += 1 : count -= 1;
+		    if (count === 0) {
+		      majorityIndex = i;
+		      count = 1;
+		    }
+		  }
+		  return nums[majorityIndex];
+		};
+
+		var majorityElement = function(nums) {
+		  let n = parseInt(nums.length / 2)
+		  let map = {}
+		  for(let v of nums) {
+		    map[v] = ~~map[v] + 1
+		    if(map[v] > n) {
+		      return v
+		    }
+		  }
+		};
+	</script>
+</body>
+</html>

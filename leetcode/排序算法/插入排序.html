@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		Array.prototype.insertion = function(){
+			// 1. 我们规定第一个数已经是排序了的，现在我们就要从第二个数开始，往这个已经排好序的，只有一个数的数组中一个个的插入
+			for(let i = 1; i < this.length; i++){
+				// 2. j 从 i - 1开始，例如 i = 1， j = 0;如果此时，this[j] > this[j+1] => this[0]>this[1],也就是说即将插入的这个数字，比较小，那就将它们交换位置。
+				// 3. 为什么从已排序的数组的最后一项开始，正是因为它们已经排好序，如果最后一项都比即将插入的数字小，那么就没有再继续循环的必要了 例如 arr = [2,5,6,| 8, 0, 10] 即将插入 8, 那么判断arr[2]>arr[3]就可以了
+				for(let j = i - 1; i>=0&this[j] > this[j+1]; j-- ){
+					[this[j], this[j+1]] = [this[j+1], this[j]]
+				}
+			}
+			return this;
+		}
+		let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
+		arr.insertion();
+		console.log(arr)
+	</script>
+</body>
+</html>

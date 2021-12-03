@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script type="text/javascript">
+  function DNEW() {
+    // 构造函数
+    let constructor = [].shift.call(arguments);
+    // 创建一个对象，对象的隐士原型执行构造函数的显示原型,这样就可以访问原型上的方法和属性
+    let obj = Object.create(constructor.prototype);
+    // 使用apply(call)改变构造函数this的指向到新建的对象，这样obj可以访问构造函数的属性。这里的arguments是剔除了第一个参数的。
+    let result = constructor.apply(obj, arguments);
+
+    return typeof result === 'object' ? result || obj : obj; // 返回对象
+  }
+
+  function Person(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  Person.prototype.run = function() {
+    console.log('跑起来。。。。')
+  }
+
+  let person = DNEW(Person, 'FinGet', 23);
+  console.log(person)
+  </script>
+</body>
+
+</html>

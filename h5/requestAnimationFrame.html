@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#app{
+			width: 200px;
+			height: 100px;
+			background: red;
+		}
+	</style>
+</head>
+<body>
+	<div id="app"></div>
+	<script>
+		var start = null;
+		var element = document.getElementById('app');
+		element.style.position = 'absolute';
+
+		function step(timestamp) {
+		  if (!start) start = timestamp;
+		  var progress = timestamp - start;
+		  element.style.left = Math.min(progress / 10, 200) + 'px';
+		  if (progress < 2000) {
+		    window.requestAnimationFrame(step);
+		  }
+		}
+
+		window.requestAnimationFrame(step);
+	</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <link rel="stylesheet" href="" />
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      let str = "010010";
+      var restoreIpAddresses = function(str) {
+        // 保存所有符合条件的IP地址
+        let r = [];
+        // 分四步递归处理ip分段
+        let search = (cur, sub) => {
+          // 边界条件
+          if (cur.length === 4 && cur.join("") === str) {
+            r.push(cur.join("."));
+          } else {
+            // 正常的处理过程
+            for (let i = 0, len = Math.min(3, sub.length), tmp; i < len; i++) {
+              tmp = sub.substr(0, i + 1);
+              if (tmp < 256) {
+                if (tmp.length > 1) {
+                  if (tmp[0] != "0") {
+                    search(cur.concat([tmp]), sub.substr(i + 1));
+                  }
+                } else {
+                  search(cur.concat([tmp]), sub.substr(i + 1));
+                }
+              }
+            }
+          }
+        };
+        search([], str);
+        return r;
+      };
+      console.log(restoreIpAddresses(str));
+    </script>
+  </body>
+</html>

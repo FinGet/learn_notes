@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<script type="text/javascript" src="./vue-compiler-browser.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		// template => ast => codegen => width+function 实现render方法
+		let {ast, render} = VueTemplateCompiler.compile('<div id="demo"><div v-if="isShow" v-for="item in lists"></div></div>');
+		console.log(ast);
+		console.log(render)
+		console.log(new Function(render).toString())
+		// render方法执行完后生成虚拟dom
+	</script>
+</body>
+</html>

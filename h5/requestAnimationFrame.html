@@ -19,6 +19,7 @@
 		element.style.position = 'absolute';
 
 		function step(timestamp) {
+			console.log(timestamp)
 		  if (!start) start = timestamp;
 		  var progress = timestamp - start;
 		  element.style.left = Math.min(progress / 10, 200) + 'px';

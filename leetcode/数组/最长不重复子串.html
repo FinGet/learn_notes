@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script type="text/javascript">
+		const lengthOfLongestSubstring = function (s) {
+			let max = 0;
+			let sub = []; // 存子串
+			for(let i = 0; i < s.length; i ++) {
+				while(sub.includes(s[i])) { // 有就删除
+					sub.shift();
+				}
+				// 每个都要放进去
+				sub.push(s[i]);
+				max = Math.max(max, sub.length)
+			}
+			return max;
+		}
+	</script>
+</body>
+</html>

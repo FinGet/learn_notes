@@ -55,15 +55,15 @@ do{
 }while(!flag)
 
 
-  function *foo(x) {
-    let y = 2 * (yield (x + 1))
-    let z = yield (y / 3)
-    return (x + y + z)
-  }
-  let fooit = foo(5)
-  console.log(fooit.next())   // => {value: 6, done: false}
-  console.log(fooit.next(12)) // => {value: 8, done: false}
-  console.log(fooit.next(13)) // => {value: 42, done: true}
+function *foo(x) {
+  let y = 2 * (yield (x + 1))
+  let z = yield (y / 3)
+  return (x + y + z)
+}
+let fooit = foo(5)
+  // console.log(fooit.next())   // => {value: 6, done: false}
+  // console.log(fooit.next(12)) // => {value: 8, done: false}
+  // console.log(fooit.next(13)) // => {value: 42, done: true}
 
 const fs = require('fs').promises
 function * readFile() {
@@ -75,11 +75,12 @@ function * readFile() {
 
 const co = it => {
   return new Promise((resolve, reject) => {
-    function next() {
-      let {value, done} = it.next()
+    function next(data) {
+      let {value, done} = it.next(data)
       if(!done) {
+        // value 可能是promise 也可能不是，但是包一下 就可以容错处理
         Promise.resolve(value).then((data) => {
-          it.next(data)
+          next(data)
         }, reject)
       } else {
         resolve(value)
@@ -92,6 +93,9 @@ const co = it => {
 
 co(readFile()).then(data => {
   console.log(data)
+})
+co(foo()).then(data => {
+  console.log('data', data)
 })
 
 

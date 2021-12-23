@@ -10,6 +10,12 @@
 	<script type="text/javascript">
 		let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22];
 
+		/**
+		 * 快排就是中一个随机数，比他小的放左边，比他大的放右边，
+		 * 左右两边也按这个方式进行，直到 length <= 1
+		 * 快排的时间复杂度为 O(logn)
+		 */
+
 		Array.prototype.quickSort = function() {
 			 if (this.length <= 1) {
 		    return this;

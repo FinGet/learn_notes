@@ -23,6 +23,20 @@
 		let obj = {}
 		fn.myapply(obj)
 		console.log(obj)
+
+
+		// 原理：利用 context.xxx = self obj.xx = func-->obj.xx()
+		Function.prototype.myCall = function(context = window, ...args) {
+		  // this-->func  context--> obj  args--> 传递过来的参数
+
+		  // 在context上加一个唯一值不影响context上的属性
+		  let key = Symbol('key')
+		  context[key] = this; // context为调用的上下文,this此处为函数，将这个函数作为context的方法
+		  
+		  let result = context[key](...args);
+		  delete context[key]; // 不删除会导致context属性越来越多
+		  return result;
+		};
 	</script>
 </body>
 </html>

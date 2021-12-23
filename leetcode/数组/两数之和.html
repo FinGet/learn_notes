@@ -16,6 +16,28 @@
 		  } 
 		};
 		console.log(twoSum([3,2,4],6))
+
+		var twoSum1 = function(nums, target) {
+	    let map = {}; // 用hash的方式记录
+	    for(let i = 0; i < nums.length; i++) {
+        if(map[target - nums[i]] !== undefined) {
+          return [map[target - nums[i]], i]
+        } else {
+          map[nums[i]] = i
+        }
+	    }
+		};
+
+		var twoSum2 = function(nums, target) {
+	    let map = new Map(); // 用hash的方式记录
+	    for(let i = 0; i < nums.length; i++) {
+        if(map.has(target - nums[i])) {
+          return [map.get(target - nums[i]), i]
+        } else {
+          map.set(nums[i], i)
+        }
+	    }
+		};
 	</script>
 </body>
 </html>

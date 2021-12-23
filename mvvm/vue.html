@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="./vue.2.6.10.js"></script>
+    <style>
+      span {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        cursor: pointer;
+        border: 1px solid darkmagenta;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <span v-for="(item, index) in arr" @click="clickItem(item,index)">{{item}}</span>
+      {{obj.name}}
+      {{obj.age}}
+      {{mine}}
+    </div>
+    <script>
+      let vm = new Vue({
+        el: '#app',
+        data: {
+          arr: [1,2,3],
+          obj: {
+            name: 'finget'
+          }
+        },
+        watch: {
+          obj() {
+            console.log('改变')
+          }
+        },
+        computed: {
+          mine() {
+            return this.obj.name + this.obj.age
+          }
+        },
+        methods: {
+          clickItem(item, index) {
+            console.log(item, index);
+            this.arr[index] += 1;
+            this.obj.age = 26
+            // this.$set(this.obj,'age', 26)
+            this.$forceUpdate()
+          }
+        }
+      })  
+    </script>
+  </body>
+</html>

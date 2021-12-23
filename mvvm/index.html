@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<script src="watcher.js"></script>
+	<script src="observe.js"></script>
+	<script src="compile.js"></script>
+	<script src="mvvm.js"></script>
+</head>
+<body>
+	<div id="app">
+		<input type="text" v-model="message">
+		{{obj.a}},哈哈哈,{{message}}
+	</div>
+	<script type="text/javascript">
+		let vm = new MVVM({
+			el: '#app',
+			data: {
+				obj: {
+					a: '对象属性'
+				},
+				message: 'hello MVVM'
+			}
+		})
+	</script>
+</body>
+</html>

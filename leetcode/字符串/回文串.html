@@ -19,140 +19,149 @@
    * @param {string} s
    * @return {boolean}
    */
-  var isPalindrome = function(s) {
+  // 双指针
+  const isPalindrome = function(s) {
     let arr = s.replace(/[^A-Za-z0-9]+/ig, '').toLocaleLowerCase().split('')
     if (arr.length == 0) {
       return true
     }
-    // // 双指针 从头和尾开始
-    // let j = arr.length - 1
-    // for(let i = 0;i<=j;i++) {
-    //    if (arr[i]!=arr[j]) {
-    //      return false
-    //    }
-    //    j -- 
-    // }
-    // return true
+    // 双指针 从头和尾开始
+    let j = arr.length - 1
+    for (let i = 0; i <= j; i++) { // 这里 i <= j,其实相当于就是 (arr.length / 2)
+      if (arr[i] != arr[j]) {
+        return false
+      }
+      j--
+    }
+    return true
+  };
+
+  // 数组的API
+  const isPalindrome1 = function(s) {
+    let arr = s.replace(/[^A-Za-z0-9]+/ig, '').toLocaleLowerCase().split('')
+    if (arr.length == 0) {
+      return true
+    }
     // 将新字符串转换为数组,利用数组的方法获得反转的字符串
     const newArr = arr.reverse().join('');
     // 将2个字符进行比较得出结果
     return arr === newArr;
   };
 
-  const isAnagram = (s, t) => {
-    const sArr = s.split('');
-    const tArr = t.split('');
-    const sortFn = (a, b) => {
-      return a.charCodeAt() - b.charCodeAt();
-    };
-    sArr.sort(sortFn);
-    tArr.sort(sortFn);
-    return sArr.join('') === tArr.join('');
-  };
+  // ------------------------- //
+  // 回文子串 中心扩展法
+  /*
+    这是一个比较巧妙的方法，实质的思路和动态规划的思路类似。
 
-  const isAnagram1 = (s, t) => {
-    if (s.length !== t.length) {
-      return false;
-    }
-    const hash = {};
-    for (const k of s) {
-      hash[k] = hash[k] || 0;
-      hash[k] += 1;
-    }
-    for (const k of t) {
-      if (!hash[k]) {
-        return false;
+    比如对一个字符串 ababa，选择最中间的 a 作为中心点，往两边扩散，第一次扩散发现 left 指向的是 b，right 指向的也是 b，所以是回文串，继续扩散，同理 ababa 也是回文串。
+
+    这个是确定了一个中心点后的寻找的路径，然后我们只要寻找到所有的中心点，问题就解决了。
+
+    中心点一共有多少个呢？看起来像是和字符串长度相等，但你会发现，如果是这样，上面的例子永远也搜不到 abab，想象一下单个字符的哪个中心点扩展可以得到这个子串？似乎不可能。所以中心点不能只有单个字符构成，还要包括两个字符，比如上面这个子串 abab，就可以有中心点 ba 扩展一次得到，所以最终的中心点由 2 * len - 1 个，分别是 len 个单字符和 len - 1 个双字符。
+
+    如果上面看不太懂的话，还可以看看下面几个问题：
+
+    为什么有 2 * len - 1 个中心点？
+    aba 有5个中心点，分别是 a、b、a、ab、ba
+    abba 有7个中心点，分别是 a、b、b、a、ab、bb、ba
+    什么是中心点？
+    中心点即 left 指针和 right 指针初始化指向的地方，可能是一个也可能是两个
+    为什么不可能是三个或者更多？
+    因为 3 个可以由 1 个扩展一次得到，4 个可以由两个扩展一次得到
+
+   */
+  var countSubstrings = function(s) {
+    const n = s.length;
+    let ans = 0;
+    for (let i = 0; i < 2 * n - 1; ++i) {
+      let l = i / 2, r = l + i % 2;
+      // 始终相差 0 或者 1， 以他们为中心，向两边扩展，
+      // 如果相等ans+1，--l,++r
+      // 不想等 又进入下一次循环
+      while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+        --l;
+        ++r;
+        ++ans;
       }
-      hash[k] -= 1;
     }
-    return true;
+    return ans;
   };
 
-  console.log(isPalindrome('A man, a plan, a canal: Panama'))
+  // 这是从最长回文子串的方法来做的（奇对称和偶对称）
+  var countSubstrings1 = function(s) {
+    let total = 0
+    const expandFromCenter = (s, left, right) => {
+      let count = 0;
+      while (left >= 0 && right < s.length && s[left] === s[right]) {
+        left -= 1;
+        right += 1;
+        count++;
+      }
+      return count;
+    };
+    for (let i = 0; i < s.length; i += 1) {
+      // 中心的两种选取（奇对称和偶对称）
+      total += expandFromCenter(s, i, i); // 奇数中心
+      total += expandFromCenter(s, i, i + 1); // 偶数中心
+    }
+    return total;
+  };
 
+// ---------------------------- //
 
   // 最长回文子串
-  const longestPalindrome = function(s) {
-    const dp = [];
-    for (let i = 0; i < s.length; i += 1) {
-      dp[i] = [];
+  var longestPalindrome = function(s) {
+    if (s == null || s.length < 2) {
+        return s;
     }
-    let max = -1;
-    let str = '';
-    for (let l = 0; l < s.length; l += 1) {
-      // l为所遍历的子串长度 - 1，即左下标到右下标的长度
-      for (let i = 0; i + l < s.length; i += 1) {
-        const j = i + l;
-        // i为子串开始的左下标，j为子串开始的右下标
-        if (l === 0) {
-          // 当子串长度为1时，必定是回文子串
-          dp[i][j] = true;
-        } else if (l <= 2) {
-          // 长度为2或3时，首尾字符相同则是回文子串
-          if (s[i] === s[j]) {
-            dp[i][j] = true;
-          } else {
-            dp[i][j] = false;
-          }
-        } else {
-          // 长度大于3时，若首尾字符相同且去掉首尾之后的子串仍为回文，则为回文子串
-          if ((s[i] === s[j]) && dp[i + 1][j - 1]) {
-            dp[i][j] = true;
-          } else {
-            dp[i][j] = false;
-          }
+    let maxIndex = 0; // 最长子串的开始位置
+    let maxLength = 1; // 最长子串的长度，默认是1
+    let n = s.length;
+    // 以查找回文子串的中心扩展法
+    for(let i = 0; i < 2 * n - 1; i++) {
+      let l = i / 2, r = l + i %2;
+      while(l >=0 && r < n && s.charAt(l) === s.charAt(r)) {
+        let len = r - l + 1; // 当前回文子串的长度
+        if(len >= maxLength) { // 存储较长的子串开始位置和长度
+          maxIndex = l;
+          maxLength = len;
         }
-        console.log(dp)
-        if (dp[i][j] && l > max) {
-          max = l;
-          str = s.substring(i, j + 1);
-        }
+        ++r;
+        --l;
       }
     }
-    return str;
+    return s.substr(maxIndex, maxLength); // [start, length]
   };
-  console.log(longestPalindrome('babad'))
 
   var longestPalindrome1 = function(s) {
-    if (s.length == 1) {
-      // 长度1，返回本身
-      return s;
+    if (s == null || s.length < 2) {
+        return s;
     }
-
-    // 创建二阶数组存储从j到i是否是回文数组，0为不回文，1为回文
-    let arr = [];
-    for (let i = 0; i < s.length; i++) {
-      arr[i] = [];
+    let start = 0; let end = 0;
+    // 从中心向两边扩展
+    const expandFromCenter = (s, left, right) => {
+      while (left >= 0 && right < s.length && s[left] === s[right]) {
+        left -= 1;
+        right += 1;
+      }
+      return right - left - 1;
     };
-
-    // 存储最长回文子串的起始位置
-    let begin = 0;
-    // 存储最长子串的长度
-    let max = 0;
-
-    for (let i = 0; i < s.length; i++) {
-      let j = 0;
-      while (j <= i) {
-        // 如果 i-j <= 1 时，说明i位置和j位置要么是重合的，要么是相邻的，即为最后一次查找
-        // 否则继续查询[j + 1]到[i - 1]是否为回文
-        if (s[j] == s[i] && (i - j <= 1 || arr[j + 1][i - 1])) {
-          // 如果符合上述条件，说明j到i是回文
-          console.log(j, i, s[j], s[i])
-          arr[j][i] = 1
-          console.log(arr)
-          if (i - j + 1 > max) {
-            // 如果当前子串大于存储的子串长度，则替换之
-            begin = j;
-            // 注意+1，比如从3到5的长度为3 = 5 - 3 + 1
-            max = i - j + 1;
-          }
-        }
-        j++;
+    for (let i = 0; i < s.length; i += 1) {
+      // 中心的两种选取（奇对称和偶对称）
+      const len1 = expandFromCenter(s, i, i);
+      const len2 = expandFromCenter(s, i, i + 1);
+      // 两种组合取最大的回文子串长度
+      const len = Math.max(len1, len2);
+      // 如果此位置为中心的回文数长度大于之前的长度，则进行处理
+      if (len > end - start) {
+        start = i - Math.floor((len - 1) / 2); // 这里不能之间取i，i在expandFromCenter改变过了，所以真实的开始位置不一定是i
+        end = i + Math.floor(len / 2); // 同理
       }
     }
-    return s.substr(begin, max);
+    return s.substring(start, end + 1);
   };
-  console.log(longestPalindrome1('cbbd'))
+
+
   </script>
 </body>
 

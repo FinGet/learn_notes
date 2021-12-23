@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style>
+	.father{
+	  height: 400px;
+	  width: 400px;
+	  transform: rotate(90deg);
+	  /* background: lightgoldenrodyellow; */
+	}
+	.content{
+	  overflow: hidden;
+	  height: 400px;
+	  width: 400px;
+	  /* background: lightcoral; */
+	  position: absolute;
+	  z-index: 999;
+	  clip: rect(0px, 400px, 400px, 200px);
+	}
+	.container{
+	  height: 400px;
+	  width: 400px;
+	  background: lightblue;
+	  position: absolute;
+	  border-radius: 50%;
+	  clip: rect(0px, 200px, 400px, 0);
+	  transform: rotate(60deg);
+	}
+	</style>
+</head>
+<body>
+	<div class="father">
+	  <div class="content">
+	    <div class="container"></div>
+	  </div>
+	</div>
+</body>
+</html>

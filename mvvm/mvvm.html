@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <main>
+    <p>请输入:</p>
+    <input type="text" id="input">
+    <p id="p"></p>
+  </main>
+
+  <script type="text/javascript">
+  const obj = {};
+  Object.defineProperty(obj, 'text', {
+    get: function() {
+      console.log('get val');
+    },
+    set: function(newVal) {
+      console.log('set val:' + newVal);
+      document.getElementById('input').value = newVal;
+      document.getElementById('p').innerHTML = newVal;
+    }
+  });
+
+  const input = document.getElementById('input');
+  input.addEventListener('keydown', function(e) {
+    obj.text = e.target.value;
+  })
+  </script>
+
+
+  <script type="text/javascript">
+  var uid = 0;
+
+  /**
+   * A dep is an observable that can have multiple
+   * directives subscribing to it.
+   */
+  var Dep = function Dep() {
+    this.id = uid++;
+    this.subs = [];
+  };
+
+  Dep.prototype.addSub = function addSub(sub) {
+    this.subs.push(sub);
+  };
+
+  Dep.prototype.removeSub = function removeSub(sub) {
+    remove(this.subs, sub);
+  };
+
+  Dep.prototype.depend = function depend() {
+    if (Dep.target) {
+      Dep.target.addDep(this);
+    }
+  };
+
+  Dep.prototype.notify = function notify() {
+    // stabilize the subscriber list first
+    var subs = this.subs.slice();
+    if (!config.async) {
+      // subs aren't sorted in scheduler if not running async
+      // we need to sort them now to make sure they fire in correct
+      // order
+      subs.sort(function(a, b) { return a.id - b.id; });
+    }
+    for (var i = 0, l = subs.length; i < l; i++) {
+      subs[i].update();
+    }
+  };
+
+  // The current target watcher being evaluated.
+  // This is globally unique because only one watcher
+  // can be evaluated at a time.
+  Dep.target = null;
+  var targetStack = [];
+
+  function pushTarget(target) {
+    targetStack.push(target);
+    Dep.target = target;
+  }
+
+  function popTarget() {
+    targetStack.pop();
+    Dep.target = targetStack[targetStack.length - 1];
+  }
+
+
+
+
+
+  function reactiveMVVM(obj, key, val, customSetter) {
+
+    // 获取该属性的信息，判断能不能配置，不能配置直接返回
+    var property = Object.getOwnPropertyDescriptor(obj, key);
+    if (property && property.configurable === false) {
+      return
+    }
+
+    // 获取该属性的get 和 set 方法（用户自己配置的）
+    var getter = property && property.get;
+    var setter = property && property.set;
+    if ((!getter || setter) && arguments.length === 2) {
+      val = obj[key];
+    }
+
+
+    Object.defineProperty(obj, key, {
+      enumerable: true,
+      configurable: true,
+      get: function reactiveGetter() {
+        // 如果用户配置了get 就调用它
+        var value = getter ? getter.call(obj) : val;
+
+        // 这是作依赖监听
+        // if (Dep.target) {
+        //   dep.depend();
+        //   if (childOb) {
+        //     childOb.dep.depend();
+        //     if (Array.isArray(value)) {
+        //       dependArray(value);
+        //     }
+        //   }
+        // }
+        return value
+      },
+      set: function reactiveSetter(newVal) {
+        // 如果用户配置了set 就调用它
+        var value = getter ? getter.call(obj) : val;
+        /* eslint-disable no-self-compare */
+        if (newVal === value || (newVal !== newVal && value !== value)) {
+          return
+        }
+        //  可以自定义传入一个set
+        if (customSetter) {
+          customSetter();
+        }
+        // #7981: for accessor properties without setter
+        if (getter && !setter) { return }
+        if (setter) {
+          setter.call(obj, newVal);
+        } else {
+          val = newVal;
+        }
+
+        // 值改变了，就出发observe(watcher)，更新视图
+        // childOb = !shallow && observe(newVal); 
+        // dep.notify();
+      }
+    });
+  }
+
+
+
+  let obj = {
+    a: {
+      b: {
+        c: {
+          d: {
+            e: {
+              f: {
+                g: {
+                  h: {
+                    i: {
+                      j: {
+                        k: {
+                          name: 'FinGet'
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  let str = 'a.b.c.d.e.f.g.h.i.j.k.name'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  str = str.split('.')
+  let name = str.reduce((prev, next) => {
+    return prev[next];
+  }, obj)
+  console.log(name);
+  </script>
+</body>
+
+</html>

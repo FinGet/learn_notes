@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <pre>
+		输入: prices = [7,1,5,3,6,4]
+		输出: 7
+		解释: 在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。
+		     随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6-3 = 3 。
+	</pre>
+  <script type="text/javascript">
+  	var maxProfit = function(prices) {
+		  if (prices.length === 0 || prices.length === 1) {
+		    return 0
+		  }
+
+		  const dp1 = []
+		  dp1[0] = -prices[0]
+
+		  const dp2 = []
+		  dp2[0] = 0
+
+		  for (let i = 1; i < prices.length; i++) {
+		    dp1[i] = Math.max(dp1[i - 1], dp2[i - 1] - prices[i])
+		    dp2[i] = Math.max(dp2[i - 1], prices[i] + dp1[i - 1])
+		  }
+
+		  return dp2[prices.length - 1]
+		};
+
+		var maxProfit = function(prices) {
+		  const len = prices.length;
+		  let dp0 = 0, dp1 = -prices[0];
+		  for(let i = 1; i < prices.length; i++) {
+		    dp0 = Math.max(dp0, dp1 + prices[i]);
+		    dp1 = Math.max(dp1, dp0 - prices[i]);
+		  }
+		  return dp0;
+		};
+
+  // 贪心算法
+  //遍历每日的价格，从第二天起，如果每日的价格都比前一日的价格高，则相减得出利润差，累加在总利润上，直到遍历到最后一日。
+  var maxProfit1 = function(prices) {
+    // 总利润
+    let num = 0;
+    let index = 1;
+    let len = prices.length
+    while (index < len) {
+      if (prices[index] > prices[index - 1]) {
+        num += prices[index] - prices[index - 1]
+      }
+      index++
+    }
+    return num
+  };
+
+  const maxProfit2 = function(prices) {
+  	let sum = 0
+  	for(let i = 1; i < prices.length; i ++) {
+  		if(prices[i] > prices[i-1]) {
+  			num + = prices[i] > prices[i-1]
+  		}
+  	}
+  	return sum
+  }
+  </script>
+</body>
+
+</html>

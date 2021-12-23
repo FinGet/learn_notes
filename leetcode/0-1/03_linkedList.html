@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>链表</title>
-	<link rel="stylesheet" href="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>链表</title>
+  <link rel="stylesheet" href="">
 </head>
+
 <body>
-	<pre>
+  <pre>
 		链表： 多个元素组成的列表，元素存储不连续，用next指针连在一起
 
 		数组与链表：
@@ -117,41 +119,125 @@
 		    return head;
 		};
 	</pre>
-	<script type="text/javascript">
-		const a = {val: 'a'};
-		const b = {val: 'b'};
-		const c = {val: 'c'};
-		const d = {val: 'd'};
+  <script type="text/javascript">
+  const a = { val: 'a' };
+  const b = { val: 'b' };
+  const c = { val: 'c' };
+  const d = { val: 'd' };
 
-		a.next = b;
-		b.next = c;
-		c.next = d;
+  a.next = b;
+  b.next = c;
+  c.next = d;
 
-		// 遍历链表
-		let p = a;
-		while(p) {
-			console.log(p.val);
-			p = p.next;
-		}
+  // 遍历链表
+  let p = a;
+  while (p) {
+    console.log(p.val);
+    p = p.next;
+  }
 
-		// 插入
-		const e = {val: 'e'}
-		c.next = e;
-		e.next = d;
+  // 插入
+  const e = { val: 'e' }
+  c.next = e;
+  e.next = d;
 
-		let p1 = a;
-		while(p1) {
-			console.log(p1.val);
-			p1 = p1.next;
-		}
+  let p1 = a;
+  while (p1) {
+    console.log(p1.val);
+    p1 = p1.next;
+  }
 
-		// 删除
-		c.next = d; // 只需要改变需要删除元素的指向元素的next，没有元素指向它，它就不在链表中了
-		let p2 = a;
-		while(p2) {
-			console.log(p2.val);
-			p2 = p2.next;
-		}
-	</script>
+  // 删除
+  c.next = d; // 只需要改变需要删除元素的指向元素的next，没有元素指向它，它就不在链表中了
+  let p2 = a;
+  while (p2) {
+    console.log(p2.val);
+    p2 = p2.next;
+  }
+
+  // 定义单个节点
+  class Node {
+    constructor(el) {
+      this.el = el;
+      this.next = null;
+    }
+  }
+
+  class LinkedList {
+    constructor() {
+      this.head = new Node('head');
+    }
+
+    // 用于查找
+    find(item) {
+      let node = this.head;
+      while (node !== null && node.el !== item) {
+        node = node.next;
+      }
+      return node;
+    }
+
+    findPrev() {
+      let node = this.head;
+      while (node.next !== null && node.next.el !== item) {
+        node = node.next;
+      }
+      return node;
+    }
+
+    // 插入节点
+    insert(el, item) {
+      const newNode = new Node(el);
+      const currentNode = this.find(item);
+      newNode.next = currentNode.next;
+      currentNode.next = newNode;
+    }
+
+    // 删除节点
+    remove(item) {
+      const prevNode = this.findPrev(item);
+      if (prevNode.next !== null) {
+        // 指向下一个元素，这行代码很关键
+        prevNode.next = prevNode.next.next;
+      }
+    }
+  }
+  </script>
+  <script type="text/javascript">
+  class LinkedList {
+    constructor() {
+      this.head = new Node('head');
+    }
+    // 用于查找
+    find(item) {
+    	let node = this.head
+    	while (node !== null && node.val !== item) {
+        node = node.next;
+      }
+      return node;
+    }
+    // 查找前一个
+    findPrev(item) {
+    	let node = this.head;
+    	while (node.next !== null && node.next.val !== item) {
+        node = node.next;
+      }
+      return node;
+    }
+    // 插入节点
+    insert(el, item) {
+      const newNode = new Node(el);
+      const currentNode = this.find(item);
+      newNode.next = currentNode.next;
+      currentNode.next = newNode;
+    }
+    // 删除节点
+    remove(item) {
+    	let node = this.findPrev(item)
+    	node.next = nodex.next.next
+    }
+  }
+  </script>
 </body>
+
 </html>

@@ -146,6 +146,7 @@ console.log('age:' + bindfoo1.age);
   }
   let fn = printName.__mybind(obj)
   fn()
+  console.log(fn)
   let fn2 = new fn()
-  console.log(fn2)
+  console.log(fn2.__proto__)
 </script>

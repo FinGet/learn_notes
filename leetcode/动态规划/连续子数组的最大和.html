@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script type="text/javascript">
+  	// 暴力求解
+	  var maxSubArray = function(nums) {
+	    let sum = 0;
+	    let maxNumber = nums[0];
+
+	    for (let i = 0; i < nums.length; i++) { // 从数组子序列左端开始
+	      for (let j = i; j < nums.length; j++) { // 从数组子序列右端开始
+	        sum = 0;
+	        for (let k = i; k <= j; k++) { // 暴力计算
+	          sum += nums[k];
+	        }
+	        if (sum > maxNumber) {
+	          maxNumber = sum;
+	        }
+	      }
+	    }
+	    return maxNumber;
+	  };
+
+	  // 动态规划
+	  // n > 0, n + i > i; n <= 0, n + i <= i
+	  var maxSubArray1 = function(nums) {
+	  	let sum = nums[0], pre = nums[0];
+	  	for(let i = 1; i < nums.length; i ++) {
+	  		pre = Math.max(pre + num[i], nums[i]);
+	  		/**
+	  		 * if(n > 0) {
+	  		 *   n = n + nums[i]
+	  		 * } else {
+	  		 *   n = nums[i]
+	  		 * }
+	  		 */
+	  		sum = Math.max(pre, sum)
+	  	}
+	  	return sum;
+	  }
+  </script>
+</body>
+
+</html>

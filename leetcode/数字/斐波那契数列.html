@@ -18,6 +18,15 @@
 			return arr;
 		}
 		console.log(fib(12))
+
+		function fib1(n) {
+			let arr = [1, 1, 2];
+			for(let i = 3; i <= n; i++) {
+				arr[i] = arr[i - 1] + arr[i - 2]
+			}
+			return arr;
+		}
+		console.log(fib1(12))
 	</script>
 </body>
 </html>

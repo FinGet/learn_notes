@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		const delNode = (head) => {
+			let cur = head;
+			while(cur && cur.next) {
+				if(cur.value === cur.next.value) {
+					cur.next = cur.next.next
+				} else {
+					cur = cur.next
+				}
+			}
+			return cur
+		}
+	</script>
+</body>
+</html>

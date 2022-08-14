@@ -9,7 +9,7 @@
 		var twoSum = function(nums, target) {
 		  for (let i = 0; i<nums.length;i++)  {
 	      let n = target - nums[i]
-	      let index = nums.indexOf(n)
+	      let index = nums.indexOf(n) // 也是遍历一次
 	      if (index>-1&&index!==i) {
 	          return [i,index]
 	      }

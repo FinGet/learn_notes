@@ -136,7 +136,7 @@
 
         // 如果参数个数小于最初的func.length，则递归调用，继续收集参数
         if (_args.length < arity) {
-            return createCurry.call(this, func, _args);
+          return createCurry.call(this, func, _args);
         }
 
         // 参数收集完毕，则执行func
@@ -153,6 +153,10 @@
 		_add(1,2,3)(4);
 		_add(1)(2)(3)(4);
 		_add(1)(2,3,4);
+
+
+
+
 	</script>
 </body>
 </html>

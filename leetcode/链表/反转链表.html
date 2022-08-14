@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <pre>
+		给定单链表的头节点 head ，请反转链表，并返回反转后的链表的头节点。
+
+
+    示例 1：
+
+		输入：head = [1,2,3,4,5]
+		输出：[5,4,3,2,1]
+	<script type="text/javascript">
+		/**
+	 * @param {ListNode} head
+	 * @return {ListNode}
+	 */
+	var reverseList = function(head) {
+	  let prev = null;
+	  let curr = head;
+	  while (curr) {
+	  	// 记录一下 next 结点
+	    const next = curr.next;
+	    // 反转指针
+	    curr.next = prev;
+	    // pre 往前走一步
+	    prev = curr;
+	    // cur往前走一步
+	    curr = next;
+	  }
+	  // 反转结束后，pre 就会变成新链表的头结点
+	  return prev;
+	};
+	</script>
+</body>
+</html>

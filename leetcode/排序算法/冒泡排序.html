@@ -2,88 +2,87 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <link rel="stylesheet" href="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
 </head>
 
 <body>
-    <script>
-    let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
+  <script>
+  let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
 
-    function bubbleSort(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < arr.length - 1 - i; j++) {
-            console.log(`len:${arr.length},j:${j}`)
-            if (arr[j] > arr[j + 1]) {
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-            }
-            console.log(arr)
+  function bubbleSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - 1 - i; j++) {
+        console.log(`len:${arr.length},j:${j}`)
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        }
+        console.log(arr)
+      }
+    }
+    return arr;
+  }
+  // bubbleSort(arr)
+
+  Array.prototype.bubbleSort = function() {
+    if (this.length == 1) {
+      return this
+    }
+    for (let i = this.length - 1; i > 0; i--) {
+      for (let j = 0; j < i; j++) {
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       }
-      return arr;
     }
-    // bubbleSort(arr)
+    return this
+  }
+  console.log(arr.bubbleSort())
 
-    Array.prototype.bubbleSort = function() {
-        if(this.length == 1) {
-            return this
-        }
-        for(let i = this.length - 1; i > 0; i--) {
-            for(let j = 0; j < i; j++ ) {
-                if(arr[j] > arr[j+1]){
-                    [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
-                }
-            }
-        }
-        return this
+
+  // let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
+
+  // function bubbleSort(arr) {
+  // // 用i来做边界最大值
+  //   let len = arr.length
+  //   for (let i = len - 1 ; i > 0 ; i--) {
+  //     console.log(arr)
+  //     for (let j = 0; j < i; j++) {
+  //       if (arr[j] > arr[j + 1]) {
+  //         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+  //       }
+  //     }
+  //   }
+  //   return arr;
+  // }
+  // bubbleSort(arr)
+
+  // for(var i=0;i<arr.length;i++){
+  //     for(var j=0;j<arr.length;j++){
+  //         if(arr[i]<arr[j]){
+  //             [arr[j], arr[i]] = [arr[i], arr[j]]
+  //         }
+  //     }
+  // }
+  // console.log(arr)
+
+  function fn(arr) {
+    let len = arr.length
+    if (len === 1) {
+      return arr
     }
-    console.log(arr.bubbleSort())
-    
-
-    // let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
-
-    // function bubbleSort(arr) {
-    // // 用i来做边界最大值
-    //   let len = arr.length
-    //   for (let i = len - 1 ; i > 0 ; i--) {
-    //     console.log(arr)
-    //     for (let j = 0; j < i; j++) {
-    //       if (arr[j] > arr[j + 1]) {
-    //         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-    //       }
-    //     }
-    //   }
-    //   return arr;
-    // }
-    // bubbleSort(arr)
-
-    // for(var i=0;i<arr.length;i++){
-    //     for(var j=0;j<arr.length;j++){
-    //         if(arr[i]<arr[j]){
-    //             [arr[j], arr[i]] = [arr[i], arr[j]]
-    //         }
-    //     }
-    // }
-    // console.log(arr)
-    
-    function fn(arr) {
-        let len = arr.length
-        if(len === 1) {
-            return arr
+    for (let i = len - 1; i > 0; i++) {
+      for (let j = 0; j < i; j++) {
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
-        for(let i = len - 1; i > 0; i ++) {
-            for(let j = 0; j < i; j ++) {
-                if(arr[j] > arr[j+1]) {
-                    [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
-                }
-            }
-        }
-        return arr
+      }
     }
-
-    </script>
+    return arr
+  }
+  </script>
 </body>
 
 </html>

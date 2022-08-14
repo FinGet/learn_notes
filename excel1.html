@@ -1,0 +1,148 @@
+<script src="https://cdn.bootcdn.net/ajax/libs/exceljs/4.2.0/exceljs.min.js"></script>
+<script>
+///
+async function ddd() {
+  console.log(111)
+
+  const wb = new ExcelJS.Workbook();
+  const Sheet1 = wb.addWorksheet('Sheet1');
+  const Sheet2 = wb.addWorksheet('Sheet2');
+  const test = wb.addWorksheet('test');
+
+  //表2 性别
+  Sheet2.columns = [{
+      header: '性别',
+      key: 'sex',
+      width: 20
+    },
+    {
+      header: '性别值',
+      key: 'sexVal',
+      width: 20
+    },
+  ];
+
+
+  const Sheet2_data = [{
+    sex: '女',
+    sexVal: '0',
+  }, {
+    sex: '男',
+    sexVal: '1',
+  }];
+
+  Sheet2.addRows(Sheet2_data);
+
+  // 添加性别管理器
+  const _data = Sheet2_data.reduce((p, c) => {
+    if (!p.has(c.sex)) {
+      p.set(c.sex, [c.sexVal]);
+    } else {
+      const arr = p.get(c.sex);
+      arr.push(c.sexVal);
+    }
+    return p;
+  }, new Map());
+
+  // console.log(_data)
+
+  const sexs = Array.from(_data.keys());
+  const sexVals = Array.from(_data.values());
+
+  test.addRows(sexVals);
+
+
+  test.eachRow(function(row, i) {
+    const sex = sexs[i - 1];
+    // console.log(sex, i);
+    row.eachCell(function(cell, colNumber) {
+      cell.addName(sex);
+    });
+  });
+
+
+
+  Sheet1.columns = [{
+      header: '编号',
+      key: 'no',
+      width: 20
+    }, // A1
+    {
+      header: '姓名',
+      key: 'name',
+      width: 20
+    }, // B2
+    {
+      header: '性别',
+      key: 'sex',
+      width: 20
+    }, // C3
+    {
+      header: '性别值',
+      key: 'sexVal',
+      width: 20
+    }, // D4
+  ];
+
+  const Sheet1_data = [{
+    no: '1',
+    name: '小红',
+    sex: '女',
+    sexVal: '0',
+  }]
+
+
+  Sheet1.addRows(Sheet1_data);
+  const selectOptions = ['"1,2,3,4,5,6"']
+  ///
+  new Array(1000).fill(0).forEach((_, idx) => {
+    const row = idx + 2;
+    // 渲染部门下拉框
+    Sheet1.getCell(row, 3).dataValidation = {
+      type: 'list',
+      formulae: selectOptions
+    };
+    // 使用indirect函数添加引用, 渲染性别值
+    Sheet1.getCell(row, 4).dataValidation = {
+      type: 'list',
+      formulae: [`=INDIRECT(C${row})`]
+    };
+  });
+
+  // await wb.xlsx.writeFile('C:/Users/Administrator/Desktop/dd/模板列表.xlsx');
+  // await wb.xlsx.writeFile('./dd.xlsx');
+  const buffer = await wb.xlsx.writeBuffer();
+
+  var blob = new Blob([buffer], {
+    type: "application/octet-stream"
+  });
+
+  var url = blob,
+    saveName = 'test.xlsx';
+
+  if (typeof url == 'object' && url instanceof Blob) {
+    url = URL.createObjectURL(url); // 创建blob地址
+  }
+  var aLink = document.createElement('a');
+  aLink.href = url;
+  aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+  var event;
+  if (window.MouseEvent) event = new MouseEvent('click');
+  else {
+    event = document.createEvent('MouseEvents');
+    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0,
+      null);
+  }
+  aLink.dispatchEvent(event);
+
+
+  console.log(111)
+
+  return;
+
+  // return blob;
+}
+
+
+ddd();
+</script>

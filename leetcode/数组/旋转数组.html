@@ -32,7 +32,8 @@
 		//可以一次性将最后的 k % l 项全部截取，通过扩展运算符‘...’将截取的值放到数组的前边，实现旋转。
 		const rotate1 = function (nums, k) {
 		  const l = nums.length;
-		  k = k % l;
+		  k = k % l; // 因为k 可能大于 l 所以要取余
+		  // 这个题，简单说就是移动几步，就是把数组末尾的几项 移动到数组前面
 		  nums.unshift(...nums.splice(l - k, k));
 		};
 	</script>

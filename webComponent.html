@@ -8,6 +8,15 @@
 </head>
 
 <body>
+  <pre>
+    <h2>Web Components 实际上一系列技术的组合，主要包含 3 部分：</h2>
+
+    自定义元素。 在 HTML 基础标签外扩展自定义标签元素
+    Shadow DOM。 主要用于将 Shadow DOM 的内容与外层 document DOM 隔离
+    HTML 模板。 使用 &lt;template&gt; 来定义组件模板，使用 &lt;slot&gt; 作为插槽使用
+  </pre>
+  <p>这是一个p标签</p>
+  <div id="shadowDiv"></div>
   <user-card image="https://semantic-ui.com/images/avatar2/large/kristy.png" name="User Name" email="yourmail@some-email.com"></user-card>
   <template id="userCardTemplate">
     <style>
@@ -65,17 +74,36 @@
       <button class="button">Follow John</button>
     </div>
   </template>
-  <zf-button type="primary">珠峰架构</zf-button>
+  <custom-button type="primary">点击</custom-button>
   <template id="btn">
-    <button class="zf-btn">
+    <button class="custom-btn">
       <slot>按钮</slot>
     </button>
   </template>
   <script type="text/javascript">
+  let shadowDom = shadowDiv.attachShadow({ mode: 'closed' }); // shadowDiv.shadowRoot
+
+  let pElm = document.createElement('p');
+  pElm.innerHTML = 'hello shadow';
+
+  let styleElm = document.createElement('style');
+
+  styleElm.textContent = `
+      p {
+        color: red;
+      }
+    `
+
+  shadowDom.appendChild(styleElm);
+  shadowDom.appendChild(pElm);
+
+
+
+
   class UserCard extends HTMLElement {
     constructor() {
       super();
-      var shadow = this.attachShadow({ mode: 'closed' });
+      var shadow = this.attachShadow({ mode: 'open' });
 
       var templateElem = document.getElementById('userCardTemplate');
       var content = templateElem.content.cloneNode(true);
@@ -88,7 +116,7 @@
   }
   window.customElements.define('user-card', UserCard);
 
-  class zfButton extends HTMLElement {
+  class customButton extends HTMLElement {
     constructor() {
       super();
       // 创建影子
@@ -109,24 +137,24 @@
       }
       const btnType = this.getAttribute('type') || 'default';
       style.innerHTML = `
-            .zf-btn {
-                outline:none;
-                border:none;
-                border-radius:4px;
-                display:inline-block;
-                cursor:pointer;
-                padding:6px 20px;
-                background:var(--background-color,${types[btnType].backgroundColor});
-                color:var(--text-color,${types[btnType].color});
-            }
-        `
+              .custom-btn {
+                  outline:none;
+                  border:none;
+                  border-radius:4px;
+                  display:inline-block;
+                  cursor:pointer;
+                  padding:6px 20px;
+                  background:var(--background-color,${types[btnType].backgroundColor});
+                  color:var(--text-color,${types[btnType].color});
+              }
+          `
       shadow.appendChild(style);
       shadow.appendChild(cloneTemplate);
 
     }
   }
 
-  window.customElements.define('zf-button', zfButton);
+  window.customElements.define('custom-button', customButton);
   </script>
 </body>
 

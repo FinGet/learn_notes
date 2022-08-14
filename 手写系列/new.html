@@ -13,7 +13,7 @@
   function DNEW() {
     // 构造函数
     let constructor = [].shift.call(arguments); // constructor 是一个函数， 并不是对象哦，卡我好久
-    // 创建一个对象，对象的隐士原型执行构造函数的显示原型,这样就可以访问原型上的方法和属性
+    // 创建一个对象，对象的隐士原型指向构造函数的显示原型,这样就可以访问原型上的方法和属性
     let obj = Object.create(constructor.prototype);
     // 使用apply(call)改变构造函数this的指向到新建的对象，这样obj可以访问构造函数的属性。这里的arguments是剔除了第一个参数的。
     let result = constructor.apply(obj, arguments);

@@ -14,8 +14,47 @@
       });
 
     </script>
+    <style>
+  .list {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  /*最关键的点
+  width: calc(33.33% - 11px);
+  意思是子元素分成3等份 减去 margin-right
+  .list .item:nth-child(3n)
+  意思是下标是 3 的倍数的所有 .item 元素的margin-right: 0;
+  margin-right: calc(11px * 3 / 2);
+  意思是每一行 margin-right 2次, 值就是11px * 3 / 2
+  */
+  .item{
+    background-color: #923fe0;
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 17px;
+    margin-right: calc(11px * 3 / 2);
+    margin-bottom: 15px;
+    width: calc(33.33% - 11px)
+  }
+  .list .item:nth-child(3n){
+    margin-right: 0;
+  }
+</style>
   </head>
   <body>
+
+<div class="list">
+  <div class="item">item</div>
+  <div class="item">item</div>
+  <div class="item">item</div>
+  <div class="item">item</div>
+</div>
+
+
     <div id='calendar' data-event='{ "title": "my event", "duration": "02:00" }'></div>
   </body>
 </html>

@@ -1,0 +1,1 @@
+!function(l){"function"==typeof define&&define.amd?define(l):l()}((function(){"use strict";var l={name:"rollup-test",version:"1.0.0",main:"index.js",license:"MIT",scripts:{build:"rollup -c rollup.config.js"},dependencies:{"@rollup/plugin-json":"^4.1.0",rollup:"^2.77.3","rollup-plugin-terser":"^7.0.2"}};console.log("hello rollup!"),console.log(l),console.log("fna")}));

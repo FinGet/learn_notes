@@ -15,7 +15,7 @@ http.createServer( async (request, response)  => {
   }
 
   if (request.url === '/index.js') {
-
+  // 强缓存
     /**
      *  
      response.writeHead(200, {
@@ -25,8 +25,8 @@ http.createServer( async (request, response)  => {
      response.end('console.log("script loaded")')
      */
 
-
-   /**
+   // latModified
+   /*
    const filePath = path.join(__dirname, request.url); // 拼接当前脚本文件地址
     const stat = fs.statSync(filePath); // 获取当前脚本状态
     const mtime = stat.mtime.toGMTString() // 文件的最后修改时间
@@ -51,9 +51,10 @@ http.createServer( async (request, response)  => {
 
     const readStream = fs.createReadStream(filePath);
     readStream.pipe(response);
-    */ 
+     */
    
 
+    // etag
     const filePath = path.join(__dirname, request.url); // 拼接当前脚本文件地址
     const buffer = fs.readFileSync(filePath); // 获取当前脚本状态
     const fileMd5 = md5(buffer); // 文件的 md5 值
@@ -68,7 +69,7 @@ http.createServer( async (request, response)  => {
     console.log('Etag 缓存失效');
     response.writeHead(200, {
         'Content-Type': 'text/javascript',
-        'Cache-Control': 'max-age=0',
+        'Cache-Control': 'no-cache',
         'ETag': fileMd5,
     });
 

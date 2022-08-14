@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title></title>
-	<link rel="stylesheet" href="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
 </head>
+
 <body>
-	<pre>
+  <pre>
 		树 是一种分层数据的抽象模型
 
 		深度优先遍历：
@@ -20,58 +22,116 @@
 			3. 把队头的children挨个入队
 			4. 重复2，3，直到队列为空
 	</pre>
-	<script type="text/javascript">
-		const tree = {
-			val: 'a',
-			children: [
-				{
-					val: 'b',
-					children: [
-						{
-							val: 'd',
-							children: []
-						},
-						{
-							val: 'e',
-							children: []
-						}
-					]
-				},
-				{
-					val: 'c',
-					children: [
-						{
-							val: 'f',
-							children: []
-						},
-						{
-							val: 'g',
-							children: []
-						}
-					]
-				}
-			]
-		}
+  <script type="text/javascript">
+  const tree = {
+    val: 'a',
+    children: [{
+        val: 'b',
+        children: [{
+            val: 'd',
+            children: []
+          },
+          {
+            val: 'e',
+            children: []
+          }
+        ]
+      },
+      {
+        val: 'c',
+        children: [{
+            val: 'f',
+            children: []
+          },
+          {
+            val: 'g',
+            children: []
+          }
+        ]
+      }
+    ]
+  }
 
-		// 深度优先遍历
-		const dfs = (root) => {
-			console.log(root.val)
-			root.children.forEach(dfs)
-		}
-		dfs(tree);
+  // 深度优先遍历
+  const dfs = (root) => {
+    console.log(root.val)
+    root.children.forEach(dfs)
+  }
+  dfs(tree);
 
-		// 广度优先遍历
-		const bfs = (root) => {
-			const q = [root];
-			while (q.length) {
-				const n = q.shift();
-				console.log(n.val);
-				n.children.forEach(c => {
-					q.push(c)
-				})
-			}
-		}
-		bfs(tree)
-	</script>
+  // 广度优先遍历
+  const bfs = (root) => {
+    const q = [root];
+    while (q.length) {
+      const n = q.shift();
+      console.log(n.val);
+      n.children.forEach(c => {
+        q.push(c)
+      })
+    }
+  }
+  bfs(tree)
+
+  const data = [
+  	{
+      "id": "1",
+      "sub": [{
+        "id": "2",
+        "sub": [{
+            "id": "3",
+            "sub": null
+          },
+          {
+            "id": "4",
+            "sub": [{
+              "id": "6",
+              "sub": null
+            }]
+          },
+          {
+            "id": "5",
+            "sub": null
+          }
+        ]
+      }]
+    },
+    {
+      "id": "7",
+      "sub": [{
+        "id": "8",
+        "sub": [{
+          "id": "9",
+          "sub": null
+        }]
+      }]
+    },
+    {
+      "id": "10",
+      "sub": null
+    }
+  ]
+
+  function findPath(data, id, path) {
+    if (typeof path == 'undefined') {
+      path = []
+    }
+    for (let i = 0; i < data.length; i++) {
+      let tempPath = [...path];
+      tempPath.push(data[i].id);
+      if (data[i].id == id) {
+        return tempPath;
+      }
+      if (data[i].sub) {
+        let reuslt = findPath(data[i].sub, id, tempPath);
+        if (reuslt) {
+          return reuslt;
+        }
+      }
+    }
+  }
+  let result = findPath(data, '9')
+  console.log(result)
+  </script>
 </body>
+
 </html>

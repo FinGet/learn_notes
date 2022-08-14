@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script type="text/javascript">
+  const hasCycle = (head) => {
+    if (!head) return false;
+    while (head) {
+      // 给每一个走过的点 打个flag,如果再走到这里 就表示有个环
+      if (head.flag) {
+        return true
+      } else {
+        head.flag = true;
+        head = head.next;
+      }
+    }
+    return false
+  }
+
+  // 快慢指针
+  // 这道题还有一个公认的比较经典的思路，就是用快慢指针来做：
+	// 定义慢指针 slow，快指针 fast。两者齐头并进， slow 一次走一步、fast 一次 走两步。这样如果它们是在一个有环的链表里移动，一定有相遇的时刻。这个原理证明起来也比较简单：我们假设移动的次数为 t，slow 移动的路程就是t，fast 移动的路程为2t，假如环的长度为 s，那么当下面这个条件：
+
+	// 2t - t = s
+	// 也就是：
+
+	// t = s
+	// 满足时，slow 和 fast 就一定会相遇。反之，如果两者没有相遇，同时 fast 遍历到了链表的末尾，发现 next 指针指向 null，则链表中不存在环。
+  const hasCycle1 = (head) => {
+    if(!head || !head.next) return false
+    let slow = head;
+    let fast = head.next
+    while(fast != slow){
+      if (fast == null || fast.next == null) return false;
+      slow = slow.next
+      fast = fast.next.next
+    }
+    return true
+	};
+
+  // 环形链表的入口节点
+  const detectCycle = (head) => {
+    if (!head) return null
+    while (head) {
+      if (head.flag) {
+        return head
+      } else {
+        head.flag = true
+        head = head.next
+      }
+    }
+    return null
+  };
+  </script>
+</body>
+
+</html>

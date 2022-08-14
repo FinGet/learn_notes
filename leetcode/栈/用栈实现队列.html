@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<pre>
+		题目描述：使用栈实现队列的下列操作：
+
+		push(x) -- 将一个元素放入队列的尾部。
+		pop() -- 从队列首部移除元素。
+		peek() -- 返回队列首部的元素。
+		empty() -- 返回队列是否为空。
+
+		示例:
+
+		MyQueue queue = new MyQueue();
+		queue.push(1);
+		queue.push(2);
+		queue.peek(); // 返回 1
+		queue.pop(); // 返回 1
+		queue.empty(); // 返回 false
+	</pre>
+	<script type="text/javascript">
+		class Queue {
+			constructor() {
+				this.list = []
+			}
+			push(n) {
+				this.list.push(n)
+			}
+			pop() {
+				return this.list.shift()
+			}
+			peek() {
+				return this.list[0]
+			}
+			empty() {
+				return !!this.list.length
+			}
+		}
+		const queue = new Queue();
+		queue.push(1);
+		queue.push(2);
+		console.log(queue.peek()); // 返回 1
+		console.log(queue.pop()); // 返回 1
+		console.log(queue.empty()); // 返回 false
+	</script>
+</body>
+</html>

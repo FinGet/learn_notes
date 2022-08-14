@@ -38,7 +38,7 @@
 					return res;
 				},
 				set(target, key, val, receiver) {
-					if(target.hasOwnProperty(key)) {
+					if(target.hasOwnProperty(key)) { // 数组的push等操作不属于数组自身的属性
 						trigger();
 					}
 					// target[key] = val;
@@ -67,9 +67,10 @@
 		console.log(p)
 		// p.arr[100] = 4;
 
-		// let a = reactive(arr);
+		let a = reactive(arr);
+		a.push('2')
 		// 数组更新会触发两次
-		// console.log(a)
+		console.log(a)
 
 	</script>
 </body>

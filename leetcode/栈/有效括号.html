@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		const isValid = function(s) {
+			const dict = {
+				'(':')',
+				'{':'}',
+				'[':']'
+			}
+			const result = []
+			for(let i = 0; i < s.length; i++) {
+				let c = s[i]
+				if(c === '{' || c === '[' || c === '(') {
+					// 存右括号就行了
+					result.push(dict[c])
+				} else if(c !== result.pop()) {
+					return false
+				}	
+			}
+			return !result.length
+		}
+
+		console.log(isValid('({[]})}'))
+	</script>
+</body>
+</html>

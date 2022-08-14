@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		const removeNthFromEnd = (head, n) => {
+			let fast = head, slow = head;
+			while(n) {
+				fast = fast.next;
+				n--;
+			}
+			// 快指针 先走n步，那么此时快慢指针之间相差n-1
+		  // 所以接着快慢指针一起走，当快指针走到头了（!first.next），
+		  // 那么此时 慢指针所对应的就是倒数第n个结点的前一个
+			if(!fast) return head.next;
+			while(fast.next) {
+				fast = fast.next;
+				slow = slow.next;
+			}
+
+			slow.next = slow.next.next;
+			return head;
+		}
+	</script>
+</body>
+</html>

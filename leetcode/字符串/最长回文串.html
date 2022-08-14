@@ -1,0 +1,42 @@
+<script type="text/javascript">
+	/**
+	 * 
+		给定一个包含大写字母和小写字母的字符串s，返回通过这些字母构造成的 最长的回文串。
+
+		在构造过程中，请注意 区分大小写 。比如"Aa"不能当做一个回文字符串。
+
+
+		示例 1:
+
+		输入:s = "abccccdd"
+		输出:7
+		解释:
+		我们可以构造的最长的回文串是"dccaccd", 它的长度是 7。
+	*/
+
+  /**
+  	能形成回文串，左右两边是对等的，如果长度为奇数，那就+1，其他的字符串就去他们的2的最大倍数
+  	最开始，我的想法是 用hash表把每个字符的个数统计，然后把偶数的相加，奇数的-1再相加，最后还得判断
+  	时候有剩下的字符 再 + 1；这样得做两次循环。
+
+  	下面这种解法就巧妙很多，及时相加，而不需要先统计后相加。
+
+   */
+	const longestPalindrome = function(s) {
+	  let n = s.length
+	  if(n <= 1) {
+	    return n
+	  }
+	  let map = new Map()
+	  let result = 0
+	  for(let i = 0; i < n;i ++) {
+	    if(map.has(s[i])) {
+	      result += 2;
+	      map.delete(s[i])
+	    } else {
+	      map.set(s[i])
+	    }
+	  }
+	  return map.size?result + 1: result ;
+	};
+</script>

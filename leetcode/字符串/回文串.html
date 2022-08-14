@@ -48,6 +48,18 @@
     return arr === newArr;
   };
 
+  const isPalindrome2 = function(str) {
+    // 缓存字符串的长度
+    const len = str.length
+    // 遍历前半部分，判断和后半部分是否对称
+    for(let i=0;i<len/2;i++) {
+      if(str[i]!==str[len-i-1]) {
+        return false
+      }
+    }
+    return true
+  }
+
   // ------------------------- //
   // 回文子串 中心扩展法
   /*
@@ -77,7 +89,7 @@
       let l = i / 2, r = l + i % 2;
       // 始终相差 0 或者 1， 以他们为中心，向两边扩展，
       // 如果相等ans+1，--l,++r
-      // 不想等 又进入下一次循环
+      // 不相等 又进入下一次循环
       while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
         --l;
         ++r;

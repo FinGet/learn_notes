@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<!-- 
+		给定一个整数数组temperatures，表示每天的温度，返回一个数组answer，其中answer[i]是指在第 i 天之后，才会有更高的温度。如果气温在这之后都不会升高，请在该位置用0 来代替。
+
+
+
+		示例 1:
+
+		输入: temperatures = [73,74,75,71,69,72,76,73]
+		输出:[1,1,4,2,1,1,0,0]
+
+	 -->
+	<script type="text/javascript">
+		// 维持一个温度递减 的 对应的索引值 的栈，栈的索引元素 对应着 res结果数组的索引， 当前遍历索引值 - 栈顶索引元素 === 最近升温所需天数；
+		const dailyTemperatures = (T) => {
+			let len = T.length;
+			let stack = [];
+			let res = new Array(len).fill(0)
+			for(let i = 0; i < len; i ++) {
+				while(stack.length && T[i] > T[stack[stack.length-1]]) {
+					let top = stack.pop();
+					res[top] = i - top;
+				}
+				stack.push(i)
+				console.log(stack, res)
+				// [0] 							[0, 0, 0, 0, 0, 0, 0, 0]
+				// [1] 							[1, 0, 0, 0, 0, 0, 0, 0]
+				// [2] 							[1, 1, 0, 0, 0, 0, 0, 0]
+				// (2)[2, 3] 				[1, 1, 0, 0, 0, 0, 0, 0]
+				// (3)[2, 3, 4] 		[1, 1, 0, 0, 0, 0, 0, 0]
+				// (2)[2, 5] 				[1, 1, 0, 2, 1, 0, 0, 0]
+				// [6] 							[1, 1, 4, 2, 1, 1, 0, 0]
+				// (2)[6, 7] 				[1, 1, 4, 2, 1, 1, 0, 0]
+			}
+			return res
+		}
+		console.log(dailyTemperatures([73,74,75,71,69,72,76,73]))
+
+		// stack = []
+		// res = [0,0,0,0,0,0,0,0]
+		// 
+		// i = 0 
+		// stack = [0]
+		// res = [0,0,0,0,0,0,0,0]
+		// ------
+		// i = 1 -> 74 > 73
+		// stack -> stack.pop()
+		// res[0] = i - stack.pop() = 1 - 0 = 1
+		// 
+		// stack.push(i)
+		// 
+		// stack = [1]
+		// res = [1,0,0,...]
+		// ------
+		// i = 2 -> 75 > 74
+		// stack -> stack.pop()
+		// res[1] = i - stack.pop() = 2 - 1 = 1
+		// 
+		// stack.push(i)
+		// 
+		// stack = [2]
+		// res = [1,1,0,...]
+		// -----
+		// 
+		// i = 3 -> 71 < 75
+		// 
+		// stack.push(i)
+		// 
+		// stack = [2,3]
+		// res = [1,1,...]
+		// -----
+		// 
+		// i = 4 -> 69 < 71
+		// 
+		// stack.push(i)
+		// stack = [2,3,4]
+		// res = [1,1,...]
+			
+
+
+
+	</script>
+</body>
+</html>		

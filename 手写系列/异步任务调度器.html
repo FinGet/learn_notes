@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script type="text/javascript">
+  class Scheduler {
+    constructor(num) {
+      this.num = num;
+      this.doingList = [];
+      this.waitingList = [];
+    }
+    addTask(task) {
+      return new Promise((resolve, reject) => {
+        task.resolve = resolve;
+        task.reject = reject;
+        if (this.doingList.length < this.num) {
+          this.doingList.push(task);
+          this.performTask(task);
+        } else {
+          this.waitingList.push(task);
+        }
+      });
+    }
+    performTask(task) {
+      task().then(task.resolve, task.reject).then(() => {
+        console.log('当前并行任务数', this.doingList.length);
+        const index = this.doingList.indexOf(task);
+        this.doingList.splice(index, 1);
+        if (this.waitingList.length) {
+          const nextTask = this.waitingList.shift();
+          this.doingList.push(nextTask);
+          this.performTask(nextTask);
+        }
+      });
+    }
+
+  }
+
+  function createAsyncTask(count) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+        console.log(`执行时间${count}s`);
+      }, count * 1000);
+    });
+  }
+
+  // const scheduler2times = new Scheduler(2);
+  // scheduler2times.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
+  // scheduler2times.addTask(() => createAsyncTask(3)).then(() => { console.log('任务2执行完成'); });
+  // scheduler2times.addTask(() => createAsyncTask(1)).then(() => { console.log('任务3执行完成'); });
+  // scheduler2times.addTask(() => createAsyncTask(5)).then(() => { console.log('任务4执行完成'); });
+  // scheduler2times.addTask(() => createAsyncTask(5)).then(() => { console.log('任务5执行完成'); });
+  </script>
+  <script type="text/javascript">
+  class Scheduler2 {
+    // list = []; //用来承载还未执行的异步
+
+    // count = 0; //用来计数
+
+    constructor(limit) {
+      this.limit = limit; //允许同时运行的异步函数的最大个数
+      this.list = []; //用来承载还未执行的异步
+      this.count = 0; //用来计数
+    }
+
+    async addTask(fn) {
+      if (this.count >= this.limit) {
+        // 超出限制的任务会一直 await，直到进行中的任务resolve
+        await new Promise((resolve) => {
+          this.list.push(resolve); // 把resolve 放进去
+        });
+      }
+      this.count++;
+
+      const result = await fn();
+
+      this.count--;
+      // 进行中的任务执行完成，resolve() 的是在此任务之后添加的待执行任务，先进先出
+      if (this.list.length > 0) this.list.shift()(); // resolve 执行之后 下一个任务就进来了
+
+      return result;
+    }
+  }
+  const scheduler2times2 = new Scheduler2(2);
+  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
+  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务2执行完成'); });
+  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务3执行完成'); });
+  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务4执行完成'); });
+  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务5执行完成'); });
+  </script>
+
+</body>
+
+</html>

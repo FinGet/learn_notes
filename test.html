@@ -1,86 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>页面滚动到相应位置运行css3动画</title>
-<style>
-a{text-decoration: none;color:inherit}
-.nav{width: 110px;position: fixed; top: 50px;right: 0}
-.nav ul{padding:0; list-style: none;display: flex;flex-direction:column;justify-content: space-around;background: grey;}
-.nav ul li{
-	line-height: 50px;
-	font-size: 16px;
-	text-align: center;
-	color: #fff;
-	
-}
- 
-.con{ height:1200px;}
-.list{ list-style:none; padding:0; margin:0; border-top:2px solid blue;}
-.list li{ height:500px; border-bottom:1px solid green;}
-.list .move p{ animation:move 1s;}
-@keyframes move{
-	from{ opacity:0; margin-left:500px;}
-	to{ opacity:1; margin-left:0;}
-}
-</style>
-</head>
- 
-<body>
-<div class="nav">
-	<ul>
-		<li class="nt0"><a href="#">顶部</a></li>
-		<li class="nt1"><a href="#">第一屏</a></li>
-		<li class="nt2"><a href="#">第二屏</a></li>
-		<li class="nt3"><a href="#">第三屏</a></li>
-	</ul>
-</div>
-<input type="checkbox" />
-<div class="con">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</div>
-<ul class="list">	
-	<li data-nt="nt1">
-    	<p>第1屏动画进入视线</p>
-    </li>
-    <li data-nt="nt2">
-    	<p>第2屏动画进入视线</p>
-    </li>
-    <li data-nt="nt3">
-    	<p>第3屏动画进入视线</p>
-    </li>
-</ul>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-	var a,b,c;
-	a=$(window).height();	
-	$(window).scroll(function(){		
-		var b=$(this).scrollTop();
-		$(".list li").each(function(){
-			c=$(this).offset().top;							
-			if(a+b>c){
-				$(this).addClass("move");
-			}
-			else{
-				$(this).removeClass("move");
-			}
-		});	
-	});
- 
- 
-	$(".nav ul li").click(function(e) {
-		e.preventDefault();
-		var clickEl = $(this), ofTop = 0;
-		if(clickEl.attr("class") != "nt0"){
-			$("ul.list li").each(function() {
-				if($(this).data("nt") === clickEl.attr("class")){
-					ofTop = $(this).offset().top;
-				}
-			})
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css">
+		div {
+			width: 100px;
+			height: 100px;
+			border: 1px solid #333;
 		}
-		$("html").animate({scrollTop: ofTop}, 300)
-	})
-				
-});
-</script>
+	</style>
+</head>
+<body>
+	<div id="outer">
+		<div id="inner"></div>
+	</div>
+	<input id="input" type="" name="">
+	<script type="text/javascript">
+		document.addEventListener('click', () => console.log('document'), true)
+		outer.addEventListener('click', () => console.log('out'), true)
+		inner.addEventListener('click', () => console.log('inner'), false)
+		inner.click()
+		input.addEventListener('keydown', (e) => console.log(e))
+	</script>
+	<script type="text/javascript">
+		function getValue (path, obj) {
+		  path = path.split('.');
+		  return path.reduce((prev, next) => {
+		    return prev[next];
+		  }, obj);
+		}
+		let data = [
+			{name:'ffinget', age: 12, info: {address: '上海',job: '前端'}},
+			{name:'sjj', age: 23, info: {address: '成都',job: 'java'}},
+		]
+		let filter = ['name','age','info.address','info.job']
+		const _data = data.map(d => {
+			let obj = {}
+			filter.forEach(key => {
+				obj[key] = getValue(key, d)
+			})
+	    return obj
+	  });
+	  console.log(_data)
+	</script>
 </body>
 </html>

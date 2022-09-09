@@ -30,7 +30,7 @@
 			}
 			const handlers = {
 				get(target, key, receiver) {
-					console.log(key)
+					console.log('getKey', key)
 					let res = Reflect.get(target, key);
 					if(isObject(target[key])) {
 						return reactive(res);
@@ -38,6 +38,7 @@
 					return res;
 				},
 				set(target, key, val, receiver) {
+					console.log('setKey', key, target.hasOwnProperty(key))
 					if(target.hasOwnProperty(key)) { // 数组的push等操作不属于数组自身的属性
 						trigger();
 					}
@@ -61,16 +62,20 @@
 			arr: [1,2,3]
 		}
 		let arr = [1,2,3];
-		let p = reactive(obj);
-		// obj.test = 'test'; //不触发更新
-		p.name = 'finget';
-		console.log(p)
+		// let p = reactive(obj);
+		// // obj.test = 'test'; //不触发更新
+		// p.name = 'finget';
+		// console.log(p)
 		// p.arr[100] = 4;
 
 		let a = reactive(arr);
 		a.push('2')
+		setTimeout(()=> {
+			console.log('再次更新')
+			a[4]=6;
+		})
 		// 数组更新会触发两次
-		console.log(a)
+		console.log('a', a)
 
 	</script>
 </body>

@@ -17,7 +17,7 @@ mkdir go-learn
 
 cd go-learn
 
-go mod init go-learn
+go mod init goLearn
 
 touch hello.go
 ```

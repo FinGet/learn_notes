@@ -1,31 +1,56 @@
 <!DOCTYPE html>
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <body>
-<div style="margin:0 auto;height:600px;width:700px;">
+  <div style="margin:0 auto;height:600px;width:700px;">
     <button id="btn">js控制页面的全屏展示和退出全屏显示</button>
-    <div id="content" style="margin:0 auto;height:500px;width:700px; background:#ccc;" >
-        <h1>js控制页面的全屏展示和退出全屏显示</h1>
+    <div id="content" style="margin:0 auto;height:500px;width:700px; background:#ccc;">
+      <h1>js控制页面的全屏展示和退出全屏显示</h1>
     </div>
     <video src="https://cdn.chengkebus.com/con-h/h31.mp4" controls></video>
-</div>
+  </div>
 </body>
 <script>
-    let btn = document.getElementById("btn")
-    btn.οnclick=function(){
-        alert("hello world");
-    }
+let btn = document.getElementById("btn")
+btn.οnclick = function() {
+  alert("hello world");
+}
 
-    function requestFullScreen(element) {
-        var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
-        if (requestMethod) {
-            requestMethod.call(element);
-        } else if (typeof window.ActiveXObject !== "undefined") {
-            var wscript = new ActiveXObject("WScript.Shell");
-            if (wscript !== null) {
-                wscript.SendKeys("{F11}");
-            }
-        }
+function requestFullScreen(element) {
+  var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+  if (requestMethod) {
+    requestMethod.call(element);
+  } else if (typeof window.ActiveXObject !== "undefined") {
+    var wscript = new ActiveXObject("WScript.Shell");
+    if (wscript !== null) {
+      wscript.SendKeys("{F11}");
     }
+  }
+}
+
+function launchFullScreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen()
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen()
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen()
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen()
+  }
+},
+function exitFullScreen() {
+  if (document.exitFullscreen) {
+    document.exitFullScreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen()
+  }
+}
 </script>
+
 </html>

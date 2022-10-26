@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="a1" class="s1">
+    <div id="b1">
+      <div id="c1" class="s1"></div>
+    </div>
+    <div id="b2">
+      <div id="c2" class="s1"></div>
+    </div>
+    <div id="b3">
+      <span id="c3"></span>
+    </div>
+  </div>
+  <div id="A1" class="s1"></div>
+  <p class="myid">Apple</p>
+  <p>Pear</p>
+  <p>Banana</p>
+  <script>
+    // select, selectAll
+    const a1div = d3.select('#a1').select('div') // {_groups: Array(1), _parents: Array(1)}
+    //将会选中id为b1的div
+    console.log(a1div)
+    const a1divs = d3.select('#a1').selectAll('div') 
+    //将会选中id为b1,b2,b3的三个div
+    console.log(a1divs)
+    const a1s1 = d3.select('#a1').selectAll('.s1') 
+    //将会选中id为c1,c2的两个div
+    console.log(a1s1)
+
+    // append, insert
+    // d3.select('#a1').append('div') // 在b3后面添加一个div
+    d3.select('body').insert('div','.s1') // 在b1前面添加一个div
+    // d3.select('body').insert("p",".myid")
+    //     .text("append p element");
+
+    //     d3.selectAll("div").insert("p");
+
+    // remove
+    d3.select('#A1').remove()
+
+    // data 将数组的子元素依次绑定到选择的dom中
+    // datum 将数据全部分别绑定到选择dom中
+    // d3.select('#a1').selectAll('div').data([1,2,3,4,5,6]).text(d => d)
+    // 会为#b1绑定1，会为#b2绑定2，会为#b3绑定3
+
+    // d3.select('#a1').selectAll('div').datum([1,2,3,4,5,6]).text(d => d)
+    // 会为#b1,b2,b3均绑定[1,2,3,4,5,6]
+
+    // enter, exit 用于处理数据绑定后的dom数量和数据数量不一致的情况
+    // enter //选中只有数据没有dom的部分。其后面常跟随.append('div')，这里创建后数据是绑定了的
+    // exit //选中只有dom没有数据的部分。其后面常跟随.remove()，这里删除后数据也会被删除
+
+    var root = d3.select('#a1');
+   	var divs = root.selectAll('div').data([1,2,3,4,5,6]).text(d => d)
+    //删除没有数据的dom
+    divs.exit().remove()
+    //为有数据没有dom的添加dom，并将有数据有dom的合并在一起，修改class
+    divs.enter().append("div")
+  		.merge(divs)
+    	.attr("class",function(d){return 's'+d})
+
+    /**
+    .html() 插入html代码
+    .text() 插入文本
+    .on() 添加事件监听
+    .filter() 过滤
+    .stytle() 修改/获取样式
+    .each() 遍历
+    .node() 返回dom对象
+    .nodes()返回dom对象集
+    */
+  </script>
+</body>
+</html>

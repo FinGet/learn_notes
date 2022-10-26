@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    svg {
+      width: 400px;
+      height: 300px;
+      border: 1px solid #cd0000;
+    }
+  </style>
+</head>
+
+<body>
+  <p>通过cx和cy确定圆心位置，r确定半径</p>
+  <svg viewBox="10 10 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="50" />
+  </svg>
+
+  <svg viewBox="0 0 400 300" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="200" cy="150" rx="200" ry="80" style="fill:rgb(200,100,50);
+  stroke:rgb(0,0,100);stroke-width:2" />
+  </svg>
+
+
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="0" x2="300" y2="300" style="stroke:rgb(99,99,99);stroke-width:2" />
+  </svg>
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="15" fill="red">多边形</text>
+    <polygon points="220,100 300,210 170,250" style="fill:#cccccc;
+    stroke:#000000;stroke-width:1" />
+  </svg>
+
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="15" fill="red">不闭合的线</text>
+    <polyline points="220,100 300,210 170,250" style="fill:#cccccc;
+    stroke:#000000;stroke-width:1" />
+  </svg>
+
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="15" fill="red">矩形</text>
+    <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+  </svg>
+
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="15" fill="red">path</text>
+    <path d="M250 150 L150 350 L350 350 Z" />
+  </svg>
+  <pre>
+    M = moveto 移动到
+    L = lineto 绘制线到
+    H = horizontal lineto 垂直绘制线条到
+    V = vertical lineto 水平绘制到
+    C = curveto 曲线绘制到
+    S = smooth curveto 光滑曲线
+    Q = quadratic Bézier curve 二次贝塞尔曲线
+    T = smooth quadratic Bézier curveto curve 光滑二次贝塞尔曲线
+    A = elliptical Arc 椭圆弧
+    Z = closepath 闭合(将起点与终点连接)
+    注意：以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位。
+  </pre>
+
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <circle cx="60" cy="60" r="50" />
+    </g>
+  </svg>
+</body>
+
+</html>

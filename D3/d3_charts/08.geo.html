@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    var svg = d3.select('#root')
+    .append('svg')
+    .attr('width', 1200)
+    .attr('height', 600)
+    .style("background-color","rgb(142, 137, 137)");
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10)
+    var projection = d3.geoEquirectangular() //圆柱平面投影 geoOrthographic
+    var path = d3.geoPath(projection)
+    var Graticule = d3.geoGraticule()//创建经纬线
+    d3.json("https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json").then(data => {
+      console.log(data)
+      svg.selectAll('g')
+      .data(data.features)
+      .enter()
+      .append('g')
+      .append('path')
+      .attr('d', path)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 1)
+      .attr('fill', (d,i) => color(i))
+      .on('mouseover', function(d, i){
+        d3.select(this).attr('fill', 'red')
+      })
+      .on('mouseout', function(d, i){
+        d3.select(this).attr('fill', color(i))
+      })
+
+      // svg.selectAll('g')
+      // .append('text')
+      // .attr('font-size', 12)
+      // .attr('text-anchor', 'middle')
+      // .attr('x', d => {
+      //   const position = projection(d.properties.centroid || [0, 0])
+      //   return position[0]
+      // })
+      // .attr('y', d => {
+      //   const position = projection(d.properties.centroid || [0, 0])
+      //   return position[1]
+      // })
+      // .attr('dy', d => {
+      //   if(d.properties.name === 'Antarctica') return 0
+      // })
+      // .text(d => d.properties.featurecla)
+    });
+  </script>
+</body>
+</html>

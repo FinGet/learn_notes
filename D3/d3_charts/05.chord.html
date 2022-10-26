@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    const svg = d3.select('#root')
+      .append('svg')
+      .attr('width', 600)
+      .attr('height', 600)
+      .style('background', 'white')
+
+    const city_name = ["北京", "上海", "广州", "深圳", "香港"];
+    const population = [
+      [1000, 3045, 4567, 1234, 3714],
+      [3214, 2000, 2060, 124, 3234],
+      [8761, 6545, 3000, 8045, 647],
+      [3211, 1067, 3214, 4000, 1006],
+      [2146, 1034, 6745, 4764, 5000]
+    ];
+    //处理数据得到适合绘图数据
+    const chords = d3.chord()(population)
+    console.log(chords)
+
+    //构建颜色比例尺  
+    const color = d3.scaleOrdinal(d3.schemeCategory10)
+    //创建分组
+    const rootG = svg.append('g').attr('class', 'rootG')
+      .attr('transform', 'translate(300,300)')
+
+    const groupG = rootG.append('g').attr('class', 'group')
+    const chordG = rootG.append('g').attr('class', 'chords')
+    //创建绘制器
+    const arc = d3.arc()
+      .innerRadius(100)
+      .outerRadius(130)
+
+    const ribbon = d3.ribbon().radius(100) //创建弦绘制器
+
+    //绘制
+    groupG.selectAll("path")
+      .data(chords.groups)
+      .enter()
+      .append('path')
+      .attr("fill", function (d, i) { return color(i) })
+      .attr('d', arc)
+
+    groupG.selectAll(".outerText")
+      .data(chords.groups)
+      .enter()
+      .append('text')
+      .each(function(d, i) {
+        d.angle = (d.startAngle + d.endAngle) / 2;
+        d.name = city_name[i];
+      })
+      .attr("class", "outerText")
+      .attr("dy", ".35em")
+      .attr("transform", function (d) {
+        console.log(d)
+        const jd = d.angle * 180 / Math.PI;
+        // 字体本来是水平的，所以旋转角度需要 - 90
+        return "rotate(" + ( jd- 90) + ")" +
+          "translate(" + (jd >= 180 ? 180 : 140) + ")" +
+          (d.angle > Math.PI ? "rotate(180)" : "");
+      })
+      .text(function (d) { return d.name; });
+    
+    chordG.selectAll('path')
+      .data(chords)
+      .enter()
+      .append('path')
+      .attr("fill", function (d, i) {return color(i)})
+      .attr('d', ribbon)
+  </script>
+</body>
+
+</html>

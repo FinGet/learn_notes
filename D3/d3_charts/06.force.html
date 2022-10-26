@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>人物关系拓扑图</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <script>
+    // 定义画布大小
+    const width = 600;
+    const height = 600;
+
+    // 创建画布
+    const svg = d3.select("body").append("svg")
+      .attr("id", "svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    // 节点数据
+    const nodes = [{
+        name: "张三"
+      }, {
+        name: "李四"
+      }, {
+        name: "王二"
+      },
+      {
+        name: "小李"
+      }, {
+        name: "陈二"
+      }, {
+        name: "某人"
+      },
+      {
+        name: "小二"
+      }, {
+        name: "郭靖"
+      }
+    ];
+
+    // 节点关系 source 和 target 不能变
+    const links = [{
+        source: 0,
+        target: 1,
+        relation: '关系1'
+      },
+      {
+        source: 0,
+        target: 2,
+        relation: '关系2'
+      },
+      {
+        source: 0,
+        target: 3,
+        relation: '关系3'
+      },
+      {
+        source: 0,
+        target: 4,
+        relation: '关系4'
+      },
+      {
+        source: 0,
+        target: 5,
+        relation: '关系5'
+      },
+      {
+        source: 0,
+        target: 6,
+        relation: '关系6'
+      },
+      {
+        source: 0,
+        target: 7,
+        relation: '关系7'
+      }
+    ];
+
+    // 随机颜色
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    function force() {
+      // 新建一个力导向图
+      let simulation = d3.forceSimulation()
+        .force("charge", d3.forceManyBody().strength(-200)) //  万有引力 相互之间的作用力
+        .force("center", d3.forceCenter(width / 2, height / 2)) // 用指定的x坐标和y坐标创建一个居中力
+        .nodes(nodes)
+        .force("link", d3.forceLink(links).distance(100))
+        .on("tick", ticked)
+
+      return simulation
+    }
+
+    let simulation = force()
+
+    console.log(nodes, links)
+    
+    // 画线
+    function drawLine() {
+      let lines = svg.append("g")
+        .selectAll(".force-line").data(links)
+        .enter()
+        .append("line")
+        .attr("class", "line")
+        .attr("stroke", "#999")
+        .attr("stroke-width", "1px");
+
+      return lines
+    }
+    let lines = drawLine()
+
+    // 画节点节点盒子
+    function drawCircle() {
+      let nodeGroups = svg.append("g").attr("class", "nodes-box").selectAll(".force-node")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("class", "force-circle")
+        .call(d3.drag()
+          .on("start", started)
+          .on("drag", dragged)
+          .on("end", ended)
+        );
+        
+        nodeGroups.append('circle')
+          .attr('class','force-circle')
+          .attr('r', 20)
+          .style("fill", function (d, i) {
+            return color(i);
+          })
+      
+        nodeGroups.append("text")
+          .attr("class", "force-text")
+          .attr("dy", ".33em")
+          .attr("font-size","12px")
+          .attr("text-anchor", "middle")
+          .style("fill", "#eee")
+          .text(function(d) { return d.name; });
+
+      return nodeGroups
+    }
+    let nodesCircle = drawCircle()
+
+    function ticked() {
+      lines.attr("x1", d => {
+          return d.source.x
+        })
+        .attr("y1", d => {
+          return d.source.y
+        })
+        .attr("x2", d => {
+          return d.target.x
+        })
+        .attr("y2", d => {
+          return d.target.y
+        })
+
+      nodesCircle.attr("transform", function (d) {
+        // d.fx=d.x;d.fy=d.y; 固定位置
+        return "translate(" + d.x + ", " + d.y + ")";
+      });
+    }
+
+    // 拖拽
+    function started(event) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      event.subject.fx = event.subject.x;
+      event.subject.fy = event.subject.y;
+    }
+
+    function dragged(event) {
+      event.subject.fx = event.x;
+      event.subject.fy = event.y;
+    }
+
+    function ended(event) {
+      if (!event.active) simulation.alphaTarget(0);
+      event.subject.fx = null;
+      event.subject.fy = null;
+    }
+  </script>
+</body>
+
+</html>

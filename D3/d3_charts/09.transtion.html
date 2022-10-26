@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    //创建svg
+    const svg = d3.select('#root')
+      .append('svg')
+      .attr('width', 600)
+      .attr('height', 600)
+      .style("background-color", "white");
+    const length = 12 //生成几个柱
+    //创建颜色比例尺
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    //构建y轴的比例尺
+    const y = d3.scaleLinear()
+      .domain([0, 100]).range([400, 0])
+    const x = d3.scaleLinear().domain([0, 12]).range([0, 400])
+
+    function createData(length) {
+      const re = [];
+      for (let index = 0; index < length; index++) {
+        const item = Math.random().toFixed(2) * 100;
+        re.push(item);
+      }
+      return re;
+    }
+    const barG = svg.append('g')
+      .attr('class', '#barG')
+      .attr('transform', 'translate(100,100)')
+
+    function updateBar(data) {
+      const rect = barG.selectAll('rect')
+        .data(data)
+      rect.exit().remove()
+      rect.enter()
+        .append('rect')
+        .attr('y', 100)
+        .attr('x', function (d, i) {
+          return x(i)
+        })
+        .attr('width', x(1))
+        .attr('height', function (d) {
+          return 400 - y(d)
+        })
+        .attr('fill', function (d, i) {
+          return color(i)
+        }) //以上属性是为新标签创建
+        .merge(rect)
+        .transition()
+        .duration(450)
+        .ease(d3.easeLinear)
+        .attr('x', function (d, i) {
+          return x(i)
+        }) //以下属性是需要更新的属性
+        .attr('y', function (d) {
+          return y(d)
+        })
+        .attr('height', function (d) {
+          return 400 - y(d)
+        })
+    }
+    window.setInterval(function () {
+      const data = createData(length);
+      updateBar(data);
+    }, 1000)
+  </script>
+</body>
+
+</html>

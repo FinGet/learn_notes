@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // 1.创建svg画布
+    const svg = d3.select('#root')
+      .append('svg')
+      .attr('width', 600)
+      .attr('height', 600)
+      .style('background', 'lightblue')
+
+    // const margin = [100, 100, 100, 100]
+
+    // 数据
+    const data = [['制造',3120],['外包',2056],['金融',5754],['咨询',4632]]
+    const transform = 'translate(100,100)'
+
+    // 2.创建y轴柱状图比例尺
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d[1])])
+      .range([400, 0])
+    
+    console.log(y)
+
+    // 创建y轴
+    const yAxis = d3.axisLeft(y) 
+    const yAxisG = svg.append('g')
+    .attr('class','axisY')
+    .attr('transform',transform) // 默认位置 (0,0)
+    .call(yAxis);
+
+    // 刻度线延长
+    yAxisG.selectAll('g.tick')
+    .selectAll('line')
+    .attr('x1',-5)
+    .attr('x2',400)
+    .attr('stroke-dasharray','5, 5');
+    
+    // 3.创建x轴比例尺
+    const x = d3.scaleBand()
+      .domain(data.map(d => d[0]))
+      .range([0, 400])
+      .padding(0.2) // 设置柱子之间的间距
+    
+    console.log(x('制造'))
+      console.log(x)
+
+    // 4.创建x轴
+    const xAxis = d3.axisBottom(x)
+    const xAxisG = svg.append('g')
+      .attr('class', 'axisX')
+      .attr('transform', 'translate(100,500)')
+      .call(xAxis)
+    
+    // const left = x.step()
+    // console.log(left)
+    const bar = svg.append('g')
+      .attr('transform', transform)
+
+    bar.selectAll('rect')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('x', d => x(d[0]))
+      .attr('y', d => y(d[1]))
+      .attr('width', x.bandwidth())
+      .attr('height', d => 400 - y(d[1]))
+  </script>
+</body>
+</html>

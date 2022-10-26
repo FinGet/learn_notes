@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+  <style>
+    .node {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const svg = d3.select('#root').append('svg')
+      .attr('width', 600)
+      .attr('height', 600)
+      .style('background', 'white')
+
+    const data = {
+      "name": "中国",
+      "children": [
+        {"name": "北京"},
+        {"name": "陕西",
+          "children": [
+            {"name": "宝鸡"},
+            {"name": "西安"}
+          ]
+        },
+        {"name": "上海"},
+        {"name": "浙江",
+          "children": [
+            {"name": "杭州"},
+            {"name": "温州"}
+          ]
+        },
+      ]
+    }
+
+    // 随机生成颜色
+    const color = d3.scaleOrdinal(d3.schemeCategory10)
+    //将数据进行层次化
+    const dataSet = d3.hierarchy(data)
+    console.log(dataSet)
+    //创建树布局
+    const tree = d3.tree().size([300, 300])
+    console.log(tree)
+    //所有的节点
+    const nodes = tree(dataSet)
+    console.log(nodes)
+
+    const group = svg.append('g')
+      .attr('transform', 'translate(50, 10)')
+
+    const link = group.selectAll('.link')
+      .data(nodes.links())
+      .enter()
+      .append('path')
+      .attr('class', 'link')
+      .attr('d', d3.linkHorizontal() // linkVertical() 垂直  linkHorizontal() 水平
+        .x(function(d) { return d.y; })
+        .y(function(d) { return d.x; })
+      )
+      .attr('fill', 'none')
+      .attr('stroke', '#ccc')
+    
+    const transform = function(transform, s) {
+      const reg = /scale\(([-+]?\d+(?:\.\d+)?)\)/
+      if(reg.test(transform)) {
+        return transform.replace(reg, `scale(${s})`)
+      } else {
+        return `${transform} scale(${s})`
+      }
+    }
+
+    const node = group.selectAll('.node')
+      .data(nodes.descendants())
+      .enter()
+      .append('g')
+      .attr('class', function(d) {
+        return 'node' + (d.children ? ' node--internal' : ' node--leaf');
+      })
+      .attr('transform', function(d) {
+        return 'translate(' + d.y + ',' + d.x + ')';
+      })
+      .on('mouseenter',function(d, i){
+        const oldTransform = d3.select(this).attr('transform')
+        d3.select(this).attr('transform', transform(oldTransform, 1.2))
+      })
+      //鼠标移入增大其选中的半径
+      .on('mouseleave',function(d, i){
+        const oldTransform = d3.select(this).attr('transform')
+        d3.select(this).attr('transform', transform(oldTransform, 1))
+      })
+
+    node.append('circle')
+      .attr('r', 20)
+      .attr('fill', function(d, i) {
+        return color(i)
+      })
+
+    node.append('text')
+      // .attr('dx', function(d) {
+      //   return d.children ? -8 : 8;
+      // })
+      // .attr('dy', 3)
+      // .style('text-anchor', function(d) {
+      //   return d.children ? 'end' : 'start';
+      // })
+      .attr("dy", ".33em")
+      .attr("font-size","12px")
+      .attr("text-anchor", "middle")
+      .attr('fill', '#fff')
+      .text(function(d) {
+        return d.data.name;
+      })
+  </script>
+</body>
+</html>

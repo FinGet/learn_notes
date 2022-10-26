@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const svg = d3.select('#root')
+      .append('svg')
+      .attr('width', 600)
+      .attr('height', 600)
+      .style('background', 'pink')
+
+    //模拟数据:
+    const data = [['制造',3120],['外包',2056],['金融',5754],['咨询',4632]]
+    //处理数据得到适合绘图数据
+    const pie = d3.pie().value(function(d){return d[1]})(data)
+
+    console.log(pie)
+    //构建绘制器
+    const arc = d3.arc()
+      .innerRadius(50) // 内半径
+      .outerRadius(100) // 外半径
+
+    const arc1 = d3.arc()
+      .innerRadius(50)
+      .outerRadius(120)
+
+    //构建颜色比例尺  
+    const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+    //创建path，并绘制 
+    const arcGroup = svg.append('g')
+  	.attr('transform','translate(300,300)')
+    .selectAll('path')
+    .data(pie)
+    .enter() // 选中只有数据没有dom的部分
+
+    arcGroup
+      .append('path')
+      .attr("fill", function (d, i) { return color(i) })
+      .attr("d", arc)
+      .on('mouseenter',function(d, i){
+        d3.select(this).attr('d',arc1(i))
+      })//鼠标移入增大其选中的半径
+      .on('mouseleave',function(d, i){
+        d3.select(this).attr('d',arc(i))
+      })//鼠标移出还原其选中的半径
+      .append('title').text(function(d){
+        return d.data[0];
+      })//创建tooltip
+  </script>
+</body>
+</html>

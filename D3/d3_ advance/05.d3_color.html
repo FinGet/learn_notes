@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const color = "#FFC312"
+
+    console.log(d3.color(color)) //  {r: 255, g: 195, b: 18, opacity: 1}
+
+    console.log(d3.hsl(color)) // {h: 44.81012658227848, s: 1, l: 0.5352941176470588, opacity: 1}
+    
+    console.log(d3.hcl(color)) // {h: 81.11092958092583, c: 82.59417828176613, l: 82.59809201644778, opacity: 1}
+    
+    console.log(d3.lab(color)) // {l: 82.59809201644778, a: 12.762611261224299, b: 81.6021693328985, opacity: 1}
+ 
+    // 动态修改颜色
+    const co = d3.hsl(color)
+    co.h -= 20
+    const cor = co.toString()
+    console.log(cor)
+
+    console.log(d3.hsl(color).brighter(1).toString()) //brighter 更明亮 darker 更暗
+    
+    const scale = d3.scaleLinear().domain([0,10]).range([0, 1])
+    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const interpolates = [
+      d3.interpolateRgb("steelblue", "brown"),
+      d3.interpolateHsl("steelblue", "brown"),
+      d3.interpolateHslLong("steelblue", "brown"),
+      d3.interpolateLab("steelblue", "brown"),
+      d3.interpolateHcl("steelblue", "brown"),
+      d3.interpolateHclLong("steelblue", "brown"),
+      d3.interpolateCubehelix("steelblue", "brown"),
+      d3.interpolateCubehelixLong("steelblue", "brown"), // 我们可以向这些方法中的大多数添加 Long，以指定我们的插值器采用较长的路
+    ]
+    
+
+    // console.log(interpolate(0.5)) // rgb(118, 86, 111)
+    // console.log(interpolate(scale(5))) // rgb(118, 86, 111)
+    // console.log(interpolate(scale(8))) // rgb(146, 60, 70)
+
+    const svg = d3.select("#root")
+      .append("svg")
+      .attr("width", 500)
+      .attr("height", 500)
+      .style("background", "blue")
+    
+    interpolates.forEach((f, i) => {
+      const group = svg.append('g').attr('transform', `translate(0, ${i * 50})`)
+      group.selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('cx', (d, i) => i * 50 + 25)
+      .attr('cy', 25)
+      .attr('r', 25)
+      .attr('fill', d => f(scale(d)))
+      .attr('stroke', 'black')
+      .attr('stroke-width', 2)
+    })
+
+ </script>
+</body>
+</html>

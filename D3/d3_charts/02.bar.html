@@ -9,6 +9,7 @@
 </head>
 <body>
   <div id="root"></div>
+  <button onclick="handleUpdate()">更新</button>
   <script>
     // 1.创建svg画布
     const svg = d3.select('#root')
@@ -20,33 +21,44 @@
     // const margin = [100, 100, 100, 100]
 
     // 数据
-    const data = [['制造',3120],['外包',2056],['金融',5754],['咨询',4632]]
+    const data = [
+      {name: '制造', value: 3120},
+      {name: '外包', value: 2056},
+      {name: '金融', value: 5754},
+      {name: '咨询', value: 4632},
+    ]
+
+    const data1 = [
+      {name: '外包', value: 3000},
+      {name: '金融', value: 4754},
+      {name: '制造', value: 1120},
+      {name: '咨询', value: 4032},
+    ]
     const transform = 'translate(100,100)'
 
     // 2.创建y轴柱状图比例尺
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d[1])])
-      .range([400, 0])
+      .domain([0, d3.max(data, d => d.value)])
+      .range([0, 400])
     
     console.log(y)
-
     // 创建y轴
-    const yAxis = d3.axisLeft(y) 
+    const yAxis = d3.axisLeft(y).tickSize(-400) // tickSize()设置刻度线的长度
     const yAxisG = svg.append('g')
     .attr('class','axisY')
     .attr('transform',transform) // 默认位置 (0,0)
     .call(yAxis);
 
-    // 刻度线延长
-    yAxisG.selectAll('g.tick')
-    .selectAll('line')
-    .attr('x1',-5)
-    .attr('x2',400)
-    .attr('stroke-dasharray','5, 5');
+    // // 刻度线延长
+    // yAxisG.selectAll('g.tick')
+    // .selectAll('line')
+    // .attr('x1',-5)
+    // .attr('x2',400)
+    // .attr('stroke-dasharray','5, 5');
     
     // 3.创建x轴比例尺
     const x = d3.scaleBand()
-      .domain(data.map(d => d[0]))
+      .domain(data.map(d => d.name))
       .range([0, 400])
       .padding(0.2) // 设置柱子之间的间距
     
@@ -60,8 +72,6 @@
       .attr('transform', 'translate(100,500)')
       .call(xAxis)
     
-    // const left = x.step()
-    // console.log(left)
     const bar = svg.append('g')
       .attr('transform', transform)
 
@@ -69,10 +79,73 @@
       .data(data)
       .enter()
       .append('rect')
-      .attr('x', d => x(d[0]))
-      .attr('y', d => y(d[1]))
+      .attr('x', d => x(d.name))
+      .attr('y', d => 400 - y(d.value)) // 从上往下，需要定位到x轴线上
       .attr('width', x.bandwidth())
-      .attr('height', d => 400 - y(d[1]))
+      .attr('height', d => y(d.value))
+
+    // 控制坐标轴的样式
+    svg.selectAll('.tick')
+    .attr('font-size', '2em')
+
+    svg.append('text').text('柱状图').attr('transform', 'translate(300, 50)').attr('text-anchor', 'middle').attr('font-size', '2em')
+  
+    const handleUpdate = () => {
+      d3.selectAll('rect')
+      .data(data1, d => d.name) // 通过name属性来匹配数据
+      .attr('y', d => 400 - y(d.value))
+      .attr('height', d => y(d.value))
+    }
+
+
+
+
+
+    // 1.创建svg画布
+    const width = 600;
+    const height = 600;
+    const margin = {top: 30, right: 30, bottom: 30, left: 50}
+    const svg2 = d3.select('#root')
+      .append('svg')
+      .attr('class', 'svg2')
+      .attr('width', width)
+      .attr('height', width)
+      .style('background', 'pink')
+
+    const innerWidth = width - margin.left - margin.right
+    const innerHeight = width - margin.top - margin.bottom
+
+
+    const xScale = d3.scaleLinear().domain([0, d3.max(data, d => d.value)]).range([0, innerWidth])
+    const yScale = d3.scaleBand().domain(data.map(d => d.name)).range([0, innerHeight]).padding(0.2)
+    const normalize = d3.scaleLinear().domain([0, d3.max(data, d => d.value)]).range([0, 1])
+
+    const xAxis1 = d3.axisBottom(xScale).tickSize(-innerHeight)
+    // ticks(10) // tick 数量(2, 5, 10)
+    // tickArguments([5, 's']) 
+    // tickValues([100, 500, 1000, 3000, 4000, 5500]) 指定刻度值
+    // tickFormat(d => d + '万') // 格式化刻度值
+    const yAxis1 = d3.axisLeft(yScale)
+
+    const group = svg2.append('g').attr('transform', `translate(${margin.left}, ${margin.right})`)
+
+    // x轴
+    group.append('g')
+    .attr('transform', `translate(0, ${innerHeight})`)
+    .call(xAxis1)
+
+    // y轴
+    group.append('g').call(yAxis1)
+
+    // 柱状图
+    group.selectAll('rect')
+    .data(data, d => d.name)
+    .enter()
+    .append('rect')
+    .attr('fill', (d) => d3.interpolateRgb('white', 'green')(normalize(d.value)))
+    .attr('width', d => xScale(d.value))
+    .attr('height', yScale.bandwidth)
+    .attr('y', d => yScale(d.name))
   </script>
 </body>
 </html>

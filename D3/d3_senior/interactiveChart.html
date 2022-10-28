@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2em 2em 0;
+      color: #34495e;
+      background: #f8f9fa;
+      font-family: sans-serif;
+    }
+
+    .wrapper {
+        position: relative;
+    }
+
+    .title {
+        font-size: 1.4em;
+        font-weight: 800;
+        max-width: 20em;
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    .bin {
+        fill: #686de0;
+        transition: all 0.2s ease-out;
+    }
+    .bin:hover {
+      fill: #22a6b3;
+    }
+
+
+    .bin text {
+        text-anchor: middle;
+        fill: darkgrey;
+        font-size: 12px;
+        font-family: sans-serif;
+    }
+
+    .mean {
+        stroke: #c7ecee;
+        stroke-dasharray: 2px 4px;
+    }
+
+    .mean-label {
+        fill: #7dacaf;
+        text-anchor: middle;
+        font-size: 0.76em;
+    }
+
+    .x-axis-label {
+        fill: #34495e;
+        font-size: 1.4em;
+        text-transform: capitalize;
+    }
+
+    .left-side-background {
+        fill: #fff;
+    }
+
+    .right-side-background {
+        fill: #f1f2f6;
+    }
+
+    .label {
+        fill: #34495e;
+        font-size: 0.8em;
+        font-weight: 600;
+        opacity: 0.8;
+        mix-blend-mode: hard-light;
+    }
+
+    .right-side-label {
+        text-anchor: end;
+    }
+
+    .tooltip {
+        position: absolute;
+        opacity: 0;
+        top: -12px;
+        left: 0;
+        padding: 0.6em 1em;
+        background: #fff;
+        /* text-align: center; */
+        /* border: 1px solid #ddd; */
+        box-shadow: 0 6px 8px rgba(52, 73, 94, .2), 0 1px 1px rgba(52, 73, 94, 0.1);
+        z-index: 10;
+        transition: all 0.2s ease-out;
+        pointer-events: none;
+    }
+
+    .tooltip:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 12px;
+        height: 12px;
+        background: white;
+        border: 1px solid #ddd;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        transform: translate(-50%, 50%) rotate(45deg);
+        transform-origin: center center;
+        z-index: 10;
+    }
+
+    .tooltip-range {
+        margin-bottom: 0.2em;
+        font-weight: 600;
+    }
+
+    .tooltip-examples {
+        margin-top: 0.6em;
+        margin-bottom: 0.2em;
+        max-width: 25em;
+        font-size: 0.7em;
+        line-height: 1.3;
+        font-weight: 300;
+        opacity: 0.6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .tooltip-value {
+        margin-bottom: 0.2em;
+        font-size: 0.7em;
+        line-height: 1.3;
+        font-weight: 550;
+    }
+
+    .tooltip-bar-value {
+        font-size: 0.7em;
+        margin-top: 1em;
+        margin-bottom: 0.3em;
+    }
+
+    .tooltip-bar {
+        margin-bottom: 0.5em;
+        position: relative;
+        width: 100%;
+        height: 0.6em;
+        background: #eaeaea;
+    }
+
+    .tooltip-bar-fill {
+        background: #30336b;
+        height: 100%;
+    }
+
+    .note {
+        color: #95afc0;
+        margin-top: 3em;
+        font-style: italic;
+        font-size: 0.7em;
+    }
+
+    .note a {
+        color: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper" class="wrapper">
+    <div id="tooltip" class="tooltip">
+        <div class="tooltip-range" id="range"></div>
+        <div class="tooltip-examples" id="examples"></div>
+        <div class="tooltip-value">
+            ...of <span id="count"></span> tasks
+        </div>
+        <div class="tooltip-bar-value">
+            <b><span id="tooltip-bar-value"></span>%</b>
+            of the work was done by developers
+        </div>
+        <div class="tooltip-bar">
+            <div class="tooltip-bar-fill" id="tooltip-bar-fill"></div>
+        </div>
+    </div>
+  </div>
+  <script>
+    async function drawBars() {
+
+      // 1. 获取处理数据 数据集涵盖了22位开发人员所做的10,100个独特的任务估计
+      let dataset = await d3.csv('./data.csv')
+      /**
+        AssignedToID
+        AuthorisedByID
+        Category
+        DeveloperHoursActual // 开发者实际工时
+        DeveloperID
+        DeveloperPerformance
+        HoursActual // 实际工时
+        HoursEstimate // 预计工时
+        Priority
+        ProjectBreakdownCode
+        ProjectCode
+        RaisedByID
+        StatusCode
+        SubCategory
+        Summary // 任务描述
+        TaskNumber
+        TaskPerformance
+       */
+
+      const summaryAccessor = d => d.Summary // 任务描述
+      const actualHoursAccessor = d => +d.HoursActual // 实际工时
+      const developerHoursAccessor = d => +d.DeveloperHoursActual // 开发工时
+
+      let usedTasks = {}
+      dataset = dataset.filter(d => {
+        const hours = actualHoursAccessor(d)
+        if(usedTasks[summaryAccessor(d)]) {
+          const hasHigherValue = hours > usedTasks[summaryAccessor(d)] // 有更高的工时
+          if (!hasHigherValue) return false
+        }
+        usedTasks[summaryAccessor(d)] = hours
+        return actualHoursAccessor(d) > 10 // 过滤掉工时小于10的任务
+      })
+
+      const diffAccessor = d => +d.HoursEstimate - actualHoursAccessor(d) // 工时差
+
+      dataset = dataset.filter(d => (
+        diffAccessor(d) >= -50
+        && diffAccessor(d) <= 50
+      )) // 过滤掉工时差大于50的任务
+
+
+      const yAccessor = d => d.length // 任务数量
+
+      // 2. 创建图表尺寸
+      const width = 600
+      let dimensions = { // 图表尺寸
+        width: width,
+        height: width * 0.5,
+        margin: {
+          top: 30,
+          right: 10,
+          bottom: 50,
+          left: 50,
+        },
+      }
+      dimensions.boundedWidth = dimensions.width // 图表宽度
+        - dimensions.margin.left
+        - dimensions.margin.right
+      dimensions.boundedHeight = dimensions.height // 图表高度
+        - dimensions.margin.top
+        - dimensions.margin.bottom
+
+      // 3. 绘制画布
+      const wrapper = d3.select('#wrapper')
+        .append('svg')
+          .attr('width', dimensions.width)
+          .attr('height', dimensions.height)
+
+      const bounds = wrapper.append('g')
+        .style('transform', `translate(${
+          dimensions.margin.left
+        }px, ${
+          dimensions.margin.top
+        }px)`) // 画布边界
+      
+      // 添加一个背景盒子
+      const background = bounds.append('g')
+      // 柱状图盒子
+      bounds.append("g")
+        .attr("class", "bins") 
+      // 平均线
+      bounds.append("line")
+        .attr("class", "mean") 
+      // x轴盒子
+      bounds.append("g") 
+        .attr("class", "x-axis")
+        .style("transform", `translateY(${dimensions.boundedHeight}px)`)
+        .append("text")
+        .attr("class", "x-axis-label")
+
+      // 4. 创建比例尺
+      const xScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, diffAccessor)) // 获取工时差的区间
+        .range([0, dimensions.boundedWidth])
+        .nice() // 完美输出 不超出
+      
+      // 直方图比例尺
+      /*
+      将离散样本分成连续的不间断的间隔
+      假设有数组 a = [10, 11, 11.5, 12.5, 13, 15, 19, 20 ]，现在把10~20的数值范围分为5段，即：
+      10~12, 12~14, 14~16, 16~18, 18~20
+      那么数组 a 的各数值都落在这几段区域的哪一部分呢？经过计算，可以知道，这5段分别具有的元素个数为：
+      3, 2, 1, 0 , 2
+      将这个用图形展示出来的，就是直方图。
+      */
+      const binsGenerator = d3.bin()
+        .domain(xScale.domain()) // 指定分组区域
+        .value(diffAccessor) // 指定分组用的值
+        .thresholds(30) // 指定分隔间
+      
+      const bins = binsGenerator(dataset)
+      console.log(bins) // {[xxxx] x0: 0, x1: 1.6, length: 0}
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(bins, yAccessor)]) // 获取任务数量的区间
+        .range([dimensions.boundedHeight, 0])
+        .nice()
+
+      // 5. 绘制数据
+
+      const barPadding = 1.5
+
+      let binGroups = bounds.select('.bins')
+        .selectAll('.bin')
+        .data(bins) // 生成只有数据没有图源的group
+      
+      console.log(binGroups)
+      // binGroups.exit()
+      //   .remove()
+      
+      const newBinGroups = binGroups.enter().append('g')
+        .attr('class', 'bin')
+
+      console.log(newBinGroups)
+      
+      // 如果直接在newBinGroups 上append rect，会导致newBinGroups 返回的是 rect
+      // 做合并的时候，会导致rect 无法合并
+      newBinGroups.append('rect')
+
+      binGroups = newBinGroups.merge(binGroups) // 合并 合并之前至少已经调用了append 添加了图源
+
+      const barRects = binGroups.select('rect')
+        .attr('x', d => xScale(d.x0) + barPadding)
+        .attr('y', d => yScale(yAccessor(d)))
+        .attr('width', d => d3.max([0,xScale(d.x1) - xScale(d.x0) - barPadding]))
+        .attr('height', d => dimensions.boundedHeight - yScale(yAccessor(d))) // 柱状图高度 = 图表高度 - 柱状图y轴坐标
+      
+      const mean = d3.mean(dataset, diffAccessor) // 获取平均值
+
+      const meanLine = bounds.select('.mean')
+        .attr('x1', xScale(mean))
+        .attr('x2', xScale(mean))
+        .attr('y1', -20)
+        .attr('y2', dimensions.boundedHeight)
+
+      const meanLabel = bounds.append('text')
+        .attr('class', 'mean-label')
+        .attr('x', xScale(mean))
+        .attr('y', -12)
+        .text('mean')
+      
+      // 6. 绘制坐标轴
+      const xAxisGenerator = d3.axisBottom()
+        .scale(xScale)
+      const xAxis = bounds.select(".x-axis")
+        .call(xAxisGenerator)
+      // 添加一个title
+      const xAxisLabel = xAxis.select(".x-axis-label")
+        .attr("x", dimensions.boundedWidth / 2)
+        .attr("y", dimensions.margin.bottom - 10)
+        .text("Hours over-estimated")
+      
+      // 设置一下左右背景颜色
+      const backgroundLeft = background.append("rect")
+        .attr("class", "background left-side-background")
+        .attr("y", -20)
+        .attr("width", dimensions.boundedWidth / 2)
+        .attr("height", dimensions.boundedHeight + 20)
+      const backgroundRight = background.append("rect")
+        .attr("class", "background right-side-background")
+        .attr("x", dimensions.boundedWidth / 2 + 1)
+        .attr("y", -20)
+        .attr("width", dimensions.boundedWidth / 2 - 1)
+        .attr("height", dimensions.boundedHeight + 20)
+      
+      // 左右各设置一个标题
+      const leftSideLabel = background.append("text")
+        .attr("class", "label left-side-label")
+        .attr("x", 10)
+        .attr("y", 0)
+        .text("Under-estimated")
+      const rightSideLabel = background.append("text")
+        .attr("class", "label right-side-label")
+        .attr("x", dimensions.boundedWidth - 10)
+        .attr("y", 0)
+        .text("Over-estimated")
+
+      // 7. 设置交互
+
+      binGroups.select('rect')
+        .on('mouseenter', onMouseEnter)
+        .on('mouseleave', onMouseLeave)
+      
+      const tooltip = d3.select('#tooltip')
+
+      function onMouseEnter(e, datum) {
+        tooltip.style('opacity', 1)
+        tooltip.select('#range')
+          .text([
+            datum.x0 < 0
+                ? `Under-estimated by`
+                : `Over-estimated by`,
+            Math.abs(datum.x0),
+            "to",
+            Math.abs(datum.x1),
+            "hours",
+          ]).join(" ")
+        
+          tooltip.select("#examples")
+            .html(
+              datum
+                .slice(0, 3)
+                .map(summaryAccessor)
+                .join("<br />")
+              )
+        tooltip.select("#count")
+          .text(Math.max(0, yAccessor(datum) - 2))
+        const percentDeveloperHoursValues = datum.map(d => (
+          (developerHoursAccessor(d) / actualHoursAccessor(d)) || 0
+        ))
+        const percentDeveloperHours = d3.mean(percentDeveloperHoursValues)
+        const formatHours = d => d3.format(",.2f")(Math.abs(d))
+        tooltip.select("#tooltip-bar-value")
+          .text(formatHours(percentDeveloperHours))
+        tooltip.select("#tooltip-bar-fill")
+          .style("width", `${percentDeveloperHours * 100}%`)
+
+        const x = xScale(datum.x0)
+          + (xScale(datum.x1) - xScale(datum.x0)) / 2
+          + dimensions.margin.left
+        const y = yScale(yAccessor(datum))
+          + dimensions.margin.top
+        
+        tooltip.style("transform", `translate(`
+          + `calc( -50% + ${x}px),`
+          + `calc(-100% + ${y}px)`
+          + `)`)
+        const hoveredBar = binGroups.select(`rect[key='${datum.x0}']`)
+        hoveredBar.classed("hovered", true)
+
+      }
+      function onMouseLeave(e, datum) {
+        tooltip.style('opacity', 0)
+      }
+    }
+
+    drawBars()
+  </script>
+</body>
+</html>

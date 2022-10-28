@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <script>
+    const dataset = [{
+      date: "2019-10-10",
+      temp: 10,
+    }, {
+      date: "2019-10-11",
+      temp: 12,
+    }]
+
+    const min = d3.min(dataset, d => d.temp) // 最小值
+    const max = d3.max(dataset, d => d.temp) // 最大值
+    const extent = d3.extent([3, 2, 1, 1, 6, 2, 4]) // 返回最大值与最小值的区间 [1,6]
+    // equal to [d3.min(dataset), d3.max(dataset)]
+    const variance = d3.variance(dataset, d => d.temp) // 方差 统计数据的均值， 然后对各个数据与均值的差的 平方和
+    const deviation = d3.deviation(dataset, d => d.temp) // 标准差 方差的平方根
+    const mean = d3.mean(dataset, d => d.temp) // 平均值
+    console.log(`最小值:${min}, 最大值:${max}, 方差:${variance}, 标准差:${deviation}, 平均值:${mean}`)
+  
+    // p = 0.5，p = 0.25的第一个四分位数和 p = 0.75的第三个四分位数来计算
+    var a = [0, 10, 30]; // 分位数
+    d3.quantile(a, 0); // 0 
+    d3.quantile(a, 0.5); // 10
+    d3.quantile(a, 1); // 30
+    d3.quantile(a, 0.25); // 5
+    d3.quantile(a, 0.75); // 20
+    d3.quantile(a, 0.1); // 2
+
+    const least = d3.least(dataset, (a, b) => a.temp - b.temp) // 最小值
+    const least1 = d3.least(dataset, (a, b) => b.temp - a.temp)
+    const least2 = d3.least(dataset, a => a.temp)
+    console.log(`least:${JSON.stringify(least)}, least1:${JSON.stringify(least1)}, least2:${JSON.stringify(least2)}`)
+  
+    const leastIndex = d3.leastIndex(dataset, (a, b) => a.temp - b.temp) // 最小值的索引
+    const leastIndex1 = d3.leastIndex(dataset, (a, b) => b.temp - a.temp)
+    const leastIndex2 = d3.leastIndex(dataset, a => a.temp)
+    console.log(`leastIndex:${leastIndex}, leastIndex1:${leastIndex1}, leastIndex2:${leastIndex2}`)
+  
+    const arr = [10, 20, 30, 40, 50]
+
+    const nearestValue = d3.bisect(arr, 12) // 二分查找，返回最接近的值的索引
+    console.log(`nearestValue:${nearestValue}`)
+  
+    console.log(d3.descending(1, 2)) // 1
+    console.log(d3.descending(...arr)) // 1
+    // function descending(a, b) {
+    //   return a == null || b == null ? NaN : b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+    // }
+
+    const data = [
+      {name: "jim",   amount: "34.0",   date: "11/12/2015"},
+      {name: "carl",  amount: "120.11", date: "11/12/2015"},
+      {name: "stacy", amount: "12.01",  date: "01/04/2016"},
+      {name: "stacy", amount: "34.05",  date: "01/04/2016"}
+    ]
+
+    const group = d3.group(data, d => d.name) // 根据name分组
+    console.log(group)
+
+    // d3.range([start, ]stop[, step]) 
+    const range = d3.range(0, 10) // 生成一个数组
+    const range1 = d3.range(0, 10, 2) // 生成一个数组
+    console.log(range) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    console.log(range1) // [0, 2, 4, 6, 8]
+
+    const shuffle = d3.shuffle(range) // 随机打乱数组
+    console.log(shuffle)
+
+    const random = d3.randomInt(0, 10) // 生成一个随机数
+    console.log(random())
+
+    const random1 = d3.randomUniform(0, 10) // 生成一个随机数
+    console.log(random1())
+
+    const random2 = d3.randomNormal(0, 10) // 生成一个随机数
+    console.log(random2())
+  </script>
+</body>
+
+</html>

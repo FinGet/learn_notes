@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <script>
+    /**
+     %f milliseconds 毫秒
+     %S seconds      秒 
+     %M minute       分钟
+     %H hour         (24h)
+     %I hour         (12h)
+     %p AM / PM
+     %d day          (01-31)
+     %a abbreviated  工作日缩写
+     %A              工作日
+     %b abbreviated  月份缩写
+     %B              月份
+     %m month        (01-12)
+     %Y year        (four digits)
+     %Z time zone offset 时区偏移百分比
+    */
+
+    const dateString = new Date()
+    const today = d3.timeFormat("%Y-%m-%d %H:%M:%S")(dateString)
+    console.log(d3.timeParse("%Y-%m-%d")('2021-09-01'))
+    console.log(today)
+
+    const start = new Date(2020, 0, 1)
+    const end = new Date(2022, 0, 2)
+    console.log(d3.timeDay.count(start, end)) // 计算两个日期之间的天数
+    // d3.timeDay ['floor', 'ceil', 'round', 'offset', 'range', 'filter', 'count', 'every']
+    console.log(d3.timeDay.every(2).range(start, end).map(d3.timeFormat("%Y-%m-%d"))) // 生成两个日期之间的每个第二天的日期数组
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeDay.floor(start))) // 向下取整
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeDay.ceil(start))) // 向上取整
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeDay.round(start))) // 四舍五入
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeDay.offset(start, 2))) // 日期偏移
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeDay.offset(start, -2))) // 日期偏移
+    console.log(d3.timeDay.filter(d => d.getDay() === 0).range(start, end).map(d3.timeFormat("%Y-%m-%d"))) // 过滤出周日的日期数组
+    console.log(d3.timeDays(start, end).map(d3.timeFormat("%Y-%m-%d"))) // 生成两个日期之间的所有日期
+  
+    // d3.timeWeek d3.timeMonth d3.timeYear d3.timeHour d3.timeMinute d3.timeSecond d3.timeMillisecond
+    console.log(d3.timeWeek.count(start, end)) // 计算两个日期之间的周数
+    console.log(d3.timeWeek.every(2).range(start, end).map(d3.timeFormat("%Y-%m-%d"))) // 生成两个日期之间的每个第二周的日期数组
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeWeek.floor(start))) // 向下取整
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeWeek.ceil(start))) // 向上取整
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeWeek.round(start))) // 四舍五入
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeWeek.offset(start, 2))) // 日期偏移
+    console.log(d3.timeFormat("%Y-%m-%d")(d3.timeWeek.offset(start, -2))) // 日期偏移
+    console.log(d3.timeWeek.filter(d => d.getDay() === 0).range(start, end).map(d3.timeFormat("%Y-%m-%d"))) // 过滤出周日的日期数组
+ 
+    // time.ticks()函数用于均匀间隔与刻度域相对应的日期。日期始终在比例尺范围内，但不一定在刻度域内。
+    console.log(d3.timeTicks(start, end, 2).map(d3.timeFormat("%Y-%m-%d"))) // 生成两个日期之间的5个日期数组
+ </script>
+</body>
+</html>

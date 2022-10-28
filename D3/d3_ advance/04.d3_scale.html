@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <script>
+
+
+  const xScale = d3.scaleLinear()
+  .domain([0, 1]) // possible chanceOfPrecipitation values
+  .range([0, 500]) // possible x values
+  .clamp(true)
+
+  const pixelsToTheRight = xScale(0.5)
+  console.log(pixelsToTheRight)
+
+  const ticks = xScale.ticks() // 返回输出范围内等间距值的数组。它默认为10个值，但是您可以传递一个不同的计数以使其达到目标。
+  console.log(ticks)
+
+  const output = xScale(2)
+  console.log(output)
+
+  const input = xScale.invert(300)
+  console.log(input)
+
+  const range = xScale.range()
+  console.log(range)
+
+  const domain = xScale.domain()
+  console.log(domain)
+
+
+  const xScale1 = d3.scaleLinear()
+  .domain([0, 1]) // possible chanceOfPrecipitation values
+  .range(["white", "green"]) // possible colors
+  
+
+  const halfwayPointRgb = xScale1(0.5)
+
+  xScale1.interpolate(d3.interpolateHcl)
+
+  const halfwayPointHcl = xScale1(0.5)
+
+  console.log(`rgb: ${halfwayPointRgb}, \nhcl: ${halfwayPointHcl}`)
+  </script>
+</body>
+</html>

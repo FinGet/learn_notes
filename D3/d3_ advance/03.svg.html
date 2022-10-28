@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  
+  <svg width="600" height="600">
+  </svg>
+  <script>
+    const arcPathGenerator = d3.arc()
+      .innerRadius(32) // 内径
+      .outerRadius(37) // 外径
+      .startAngle(0) // 开始角度
+      .endAngle(6.2) // 结束角度
+      .padAngle(1.4) // 间隙角度
+      .cornerRadius(21.6) // 圆角半径
+    const arcPath = arcPathGenerator()
+
+    const svg = d3.select("svg")
+    .append("path")
+    .attr("fill", "cornflowerblue")
+    .attr("d", arcPath)
+    .style("transform", "translate(30%, 30%)")
+
+
+    const points = [[100,100],[120,300],[200,212],[330,300],[300,100]]
+    const polygonG = d3.select("svg").append('g').style("transform", "translate(40%, 40%)")
+      
+    polygonG.append('polygon')
+      .attr('points', points)
+      .attr('fill', 'tomato')
+      
+
+    console.log(d3.polygonArea(points)) // 计算多边形面积
+    console.log(d3.polygonCentroid(points)) // 计算多边形重心
+    console.log(d3.polygonContains(points, [500, 200])) // 判断点是否在多边形内
+    console.log(d3.polygonLength(points)) // 计算多边形周长
+    console.log(d3.polygonHull(points)) // 计算多边形凸包
+    
+    // 画重心
+    // polygonG.append('circle')
+    //   .attr('cx', d3.polygonCentroid(points)[0])
+    //   .attr('cy', d3.polygonCentroid(points)[1])
+    //   .attr('r', 5)
+    //   .attr('fill', 'black')
+    
+    // 画凸包
+    polygonG.selectAll('circle')
+      .data(d3.polygonHull(points))
+      .enter()
+      .append('circle')
+      .attr('cx', d => d[0])
+      .attr('cy', d => d[1])
+      .attr('r', 5)
+      .attr('fill', 'blue')
+
+  </script>
+</body>
+</html>

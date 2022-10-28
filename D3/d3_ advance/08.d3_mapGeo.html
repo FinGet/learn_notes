@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <select name="pets" id="geo-select" onchange="handleChange()">
+    <option value="">--Please choose an option--</option>
+    <option value="geoAzimuthalEqualArea">geoAzimuthalEqualArea</option>
+    <option value="geoEqualEarth">geoEqualEarth</option>
+    <option value="geoOrthographic">geoOrthographic</option>
+    <option value="geoAzimuthalEquidistant">geoAzimuthalEquidistant</option>
+    <option value="geoGnomonic">geoGnomonic</option>
+    <option value="geoStereographic">geoStereographic</option>
+    <option value="geoAlbersUsa">geoAlbersUsa</option>
+    <option value="geoAlbers">geoAlbers</option>
+    <option value="geoConicEqualArea">geoConicEqualArea</option>
+    <option value="geoEquirectangular">geoEquirectangular</option>
+    <option value="geoMercator">geoMercator</option>
+    <option value="geoTransverseMercator">geoTransverseMercator</option>
+    <option value="geoNaturalEarth1">geoNaturalEarth1</option>
+    <option value="geoHealpix">geoHealpix</option>
+  </select>
+
+  <div id="root"></div>
+  
+  <script>
+    var svg = d3.select('#root')
+    .append('svg')
+    .attr('width', 1200)
+    .attr('height', 600)
+    .style("background-color","#fff");
+
+    const group = svg.append('g').attr('transform', 'translate(100, 100)')
+
+    // const color = d3.scaleOrdinal(d3.schemeCategory10)
+    // geoAzimuthalEqualArea geoEqualEarth
+    const handleDraw = (val = 'geoEqualEarth') => {
+      const projection = d3[val]() //圆柱平面投影 geoOrthographic
+      const pathGenerator = d3.geoPath(projection)
+
+      const graticulePath = pathGenerator(d3.geoGraticule10()) // 创建经纬线path
+      const earthPath = pathGenerator({type:'Sphere'}) // 创建地球轮廓path
+
+      d3.json("./countries.json").then(data => {
+        console.log(data)
+        group.selectAll('g')
+          .data(data.features)
+          .enter()
+          .append('g')
+          // .each(function (d) { // 内部有this引用，不能用箭头函数
+          //   const el = d3.select(this)
+          //   // d.properties中包含该区域的中心点和名字
+          //   // 通过projection将地理坐标转换成绘图的平面坐标
+          //   if(!d.geometry.coordinates[0]) {
+          //     console.log(d.geometry)
+          //   }
+          //   const [x, y] = projection(d3.polygonCentroid(d.geometry.coordinates[0]))
+          //   // 绘制圆点
+          //   el
+          //     .append('circle')
+          //     .attr('cx', x)
+          //     .attr('cy', y)
+          //     .attr('r', 2)
+          //     .attr('stroke', 'none')
+          //     .attr('fill', '#000')
+
+          //   // 添加地名文字
+          //   el
+          //     .append('text')
+          //     .attr('x', x + 5)
+          //     .attr('y', y)
+          //     .attr('dy', '0.35em')
+          //     .text(d.properties.name_long)
+          // })
+          .append('path')
+          .attr('d', pathGenerator)
+          .attr('stroke', 'white')
+          .attr('stroke-width', 1)
+          .attr('fill', '#9980fa')
+          .on('mouseover', function(d, i){
+            d3.select(this).attr('fill', 'red')
+          })
+          .on('mouseout', function(d, i){
+            d3.select(this).attr('fill', '#9980fa')
+          })
+      })
+      group.append('path')
+      .attr('d', earthPath)
+      .attr('stroke', '#bdbdcf')
+      .attr('stroke-width', 1)
+      .attr('fill', 'none')
+
+      group.append('path')
+      .attr('d', graticulePath)
+      .attr('stroke', '#bdbdcf')
+      .attr('stroke-width', 1)
+      .attr('fill', 'none')
+    }
+
+    handleDraw()
+    const handleChange = () => {
+      const val = document.getElementById("geo-select").value;
+      if(val) {
+        group.selectAll("*").remove();
+        handleDraw(val)
+      }
+    }
+  </script>
+</body>
+</html>

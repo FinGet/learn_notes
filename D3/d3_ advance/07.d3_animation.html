@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const interpolator = d3.interpolate(0, 100)
+    console.log(interpolator(0.5))
+    console.log(interpolator(0.25))
+    console.log(interpolator(0.75))
+
+    // 如果我们想列出一些步骤，我们可以将我们的插值器传递给 d3.Quantize () ，以及我们想要的步骤数:
+    const steps = d3.quantize(interpolator, 5)
+    console.log(steps) // [0, 25, 50, 75, 100]
+
+    const svg = d3.select('#root')
+      .append('svg')
+      .attr('width', 500)
+      .attr('height', 500)
+      .style('background', 'lightgray')
+
+    svg.append('circle')
+    .attr('id', 'circle1')
+    .attr('cx', 100)
+    .attr('cy', 100)
+    .attr('r', 30)
+    .attr('fill', 'tomato')
+
+    svg.append('circle')
+    .attr('id', 'circle2')
+    .attr('cx', 100)
+    .attr('cy', 200)
+    .attr('r', 30)
+    .attr('fill', 'tomato')
+
+    svg.append('circle')
+    .attr('id', 'circle3')
+    .attr('cx', 100)
+    .attr('cy', 300)
+    .attr('r', 30)
+    .attr('fill', 'tomato')
+  
+    svg.append('text').attr('id', 'elapsed').attr('x', 10).attr('y', 20).text('0')
+    const timer = d3.timer(elapsed => {
+      d3.select("#elapsed")
+        .html(Math.round(elapsed))
+      if (elapsed > 10000) timer.stop()
+    })
+
+    // 基于requestAnimationFrame的定时器,性能更好
+    d3.timeout(() => {
+      d3.select('#circle1')
+      .attr('cx', 100)
+      .transition()
+      .delay(500)
+      .duration(1000)
+      .attr('cx', 300)
+      .attr('fill', 'lavender')
+
+      d3.select('#circle2')
+      .attr('cx', 100)
+      .transition()
+      .delay(500)
+      .duration(1000)
+      .attr('cx', 300)
+      .attr('fill', 'lavender')
+      .transition()
+      .duration(1000)
+      .style("fill", "lavender")
+      .transition()
+      .duration(1000)
+      .attr("cx", 50)
+      .style("fill", "cornflowerblue")
+
+      d3.select('#circle3')
+      .attr('cx', 100)
+      .transition()
+      .delay(500)
+      .duration(1000)
+      .ease(d3.easeBounce)
+      .attr('cx', 300)
+      .attr('fill', 'lavender')
+      .transition()
+      .ease(d3.easeElasticInOut)
+      .duration(1000)
+      .style("fill", "lavender")
+      .transition()
+      .ease(d3.easeBounceOut)
+      .duration(1000)
+      .attr("cx", 50)
+      .style("fill", "cornflowerblue")
+    }, 1000)
+
+    d3.interval(() => {
+      console.log('interval')
+    }, 1000)
+
+  </script>
+</body>
+</html>

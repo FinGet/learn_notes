@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    let array = [1, 2, 3, 4, 5]
+    const paragraph = d3.select("#root")
+
+    paragraph.style("color", "cornflowerblue")
+      .style("font-style", "italic")
+      .style("font-weight", "bold")
+      .selectAll("div")
+      .data(array)
+      .enter().append("div")
+      .text(d => d)
+
+      setTimeout(() => {
+        array = ["this", "is", "new", "content"]
+        paragraph.style("color", "tomato")
+        paragraph.selectAll("div")
+          .data(array)
+          .text(d => d)
+          .exit().remove()
+        }, 2000)
+  </script>
+</body>
+</html>

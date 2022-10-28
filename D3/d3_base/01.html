@@ -55,7 +55,9 @@
 
     // enter, exit 用于处理数据绑定后的dom数量和数据数量不一致的情况
     // enter //选中只有数据没有dom的部分。其后面常跟随.append('div')，这里创建后数据是绑定了的
+    // enter 本质是生成指向父节点的指针
     // exit //选中只有dom没有数据的部分。其后面常跟随.remove()，这里删除后数据也会被删除
+    // merger(sections) //选中既有dom又有数据的部分。其后面常跟随.text(d => d)，这里更新后数据是绑定了的
 
     var root = d3.select('#a1');
    	var divs = root.selectAll('div').data([1,2,3,4,5,6]).text(d => d)

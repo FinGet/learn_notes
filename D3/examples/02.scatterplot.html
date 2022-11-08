@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2em;
+      letter-spacing: -0.011em;
+      font-family: 'Inter var', sans-serif;
+      font-size: 16px;
+      color: #34495e;
+      background: #f8f9fa;
+    }
+
+    svg {
+      fill: #34495e;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper"></div>
+  <script>
+    const drawScatter = async () => {
+      const dataset = await  d3.json('./data/seattle_wa_weather_data.json')
+
+      console.log(dataset)
+
+      const xAccessor = d => d.dewPoint
+      const yAccessor = d => d.humidity
+
+      const colorAccessor = d => d.cloudCover
+
+      const width = d3.min([window.innerWidth * 0.9, window.innerHeight * 0.9])
+
+      const dimensions = {
+        width: width,
+        height: width,
+        margin: {
+          top: 10,
+          right: 10,
+          bottom: 50,
+          left: 50
+        }
+      }
+      dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
+      dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+      const wrapper = d3.select("#wrapper")
+        .append("svg")
+          .attr("width", dimensions.width)
+          .attr("height", dimensions.height)
+
+      const bounds = wrapper.append('g')
+        .style("transform", `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`) 
+
+      const xScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, xAccessor))
+        .range([0, dimensions.boundedWidth])
+        .nice()
+
+      const yScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, yAccessor))
+        .range([dimensions.boundedHeight, 0])
+        .nice()
+
+      const colorScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, colorAccessor))
+        .range(["skyblue", "darkslategrey"])
+
+      function drawDots(dataset) {
+        const dots = bounds.selectAll('circle').data(dataset)
+        console.log(dots)
+        dots.join('circle')
+          .transition()
+          .duration(450)
+          .ease(d3.easeLinear)
+          .attr('cx', d => xScale(xAccessor(d)))
+          .attr('cy', d => yScale(yAccessor(d)))
+          .attr('r', 5)
+          .attr('fill', d => colorScale(colorAccessor(d)))
+      }
+
+      drawDots(dataset.slice(0, 200))
+
+      setTimeout(() => {
+        drawDots(dataset)
+      }, 1000)
+
+      const xAxisGenerator = d3.axisBottom(xScale)
+      const xAxis = bounds.append('g')
+        .attr('class', 'x-axis')
+        .call(xAxisGenerator)
+        .attr('transform', `translate(0, ${dimensions.boundedHeight})`)
+
+      xAxis.append('text')
+        // x y 是相对位置
+        .attr('x', dimensions.boundedWidth / 2)
+        .attr('y', dimensions.margin.bottom - 10) 
+        .attr("fill", "black")
+        .style("font-size", "1.4em")
+        .html("Dew point (&deg;F)")
+
+      const yAxisGenerator = d3.axisLeft(yScale)
+      const yAxis = bounds.append('g')
+        .attr('class', 'y-axis')
+        .call(yAxisGenerator)
+
+      const yAxisLabel = yAxis.append("text")
+        .attr("x", -dimensions.boundedHeight / 2)
+        .attr("y", -dimensions.margin.left + 10)
+        .attr("fill", "black")
+        .style("font-size", "1.4em")
+        .text("Relative humidity")
+        .style("transform", "rotate(-90deg)")
+        .style("text-anchor", "middle")
+    }
+    drawScatter()
+  </script>
+</body>
+</html>

@@ -22,6 +22,7 @@
   <p class="myid">Apple</p>
   <p>Pear</p>
   <p>Banana</p>
+  <div id="root"></div>
   <script>
     // select, selectAll
     const a1div = d3.select('#a1').select('div') // {_groups: Array(1), _parents: Array(1)}
@@ -37,6 +38,8 @@
     // append, insert
     // d3.select('#a1').append('div') // 在b3后面添加一个div
     d3.select('body').insert('div','.s1') // 在b1前面添加一个div
+    // insert(name[, before]) 在当前选择与指定before选择器匹配的每个元素之前插入具有指定名称的新元素，返回包含插入的元素的一个新的选择。
+    // 如果before选择器不匹配任何元素，那么新元素将用append追加为最后一个子元素。
     // d3.select('body').insert("p",".myid")
     //     .text("append p element");
 
@@ -78,6 +81,42 @@
     .node() 返回dom对象
     .nodes()返回dom对象集
     */
+
+    // selection.data 将一组数据与当前选择集中的每个元素一一对应起来，返回三个新的选择集
+    // selection.enter 选择集中有数据但没有对应的DOM元素
+    // selection.exit 选择集中有DOM元素但没有对应的数据
+    // selection.data 选择集中有对应数据的元素
+
+    const svg = d3.select("#root")
+    .append("svg")
+    .attr("width", 500)
+    .attr("height", 500)
+    .style("background", "pink");
+
+    const cirlcleData = [
+        {x: 16, y: 16},
+        {x: 48, y: 16},
+        {x: 80, y: 16},
+    ]
+
+    const circle = svg.selectAll("circle")
+      .data(cirlcleData)
+      .join("circle")
+      .attr("cx", d=>d.x)
+      .attr("cy", d=>d.y)
+      .attr("r", 16)
+      .attr("fill", "#F89301")
+
+    // join('circle') equal to enter().append('circle').merge(selection) 
+    svg.selectAll("circle")
+      .data(cirlcleData)
+      .enter()
+      .append("circle")
+      .merge(circle)
+      .attr("dx", d=>d.x)
+      .attr("dy", d=>d.y)
+      .attr("r", 16)
+
   </script>
 </body>
 </html>

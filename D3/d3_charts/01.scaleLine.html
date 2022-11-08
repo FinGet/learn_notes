@@ -41,26 +41,83 @@
     console.log(color(3)) // 50
     console.log(color(4)) // 75
 
-    // 无序序数比例尺
+    // 无序序数比例尺 具有离散输入和离散输出
     const scale = d3.scaleOrdinal()
-      .domain(['jack', 'rose', 'john'])
+      .domain(['jack', 'rose', 'john', 'lucy'])
       .range([10, 20, 30])
-    console.log(scale('jack'))
+      .unknown(23) // 指定未知输入域的输出值
+    console.log(scale('finget'))
+
+    scale.unknown('23')
+    console.log(scale("finget")) 
+
+    // console.log(scale('jack'))
+    // console.log(scale('lucy'))
 
     // 量化比例尺
     const scale2 = d3.scaleQuantize()
       .domain([0, 10])
-      .range(['small', 'medium', 'long'])
+      .range(['red', 'green', 'blue', 'pink'])
 
-    console.log(scale2(2)) // small
-    console.log(scale2(8)) // long
+    console.log(scale2(2)) // red
+    console.log(scale2(8)) // pink
+    console.log(scale2(20)) // pink
+    console.log(scale2.invertExtent('red')) // [0, 2.5]
+    console.log(scale2.invertExtent('green')) // [2.5, 5]
+    console.log(scale2.invertExtent('blue')) // [5, 7.5]
+    console.log(scale2.invertExtent('pink')) // [7.5, 10]
 
     // 时间比例尺
     const scale3 = d3.scaleTime()
       .domain([new Date(2021, 0, 1), new Date(2021, 0, 31)])
       .range([0, 30])
     
-    console.log(scale3(new Date(2021, 0, 15)))
+    console.log(scale3(new Date(2021, 0, 15))) // 14
+
+    // scalePoint 创建从一组离散值映射到指定范围内等距的点
+    const scale4 = d3.scalePoint() 
+      .domain(['jack', 'rose', 'john']) 
+      .range([0, 100])
+    console.log(scale4('jack')) // 0
+    console.log(scale4('rose')) // 50 
+    console.log(scale4('john')) // 100
+    console.log(scale4.step()) // 访问点之间的距离 50
+
+    // scaleThreshold 将连续数值输入映射到范围定义的离散值
+    // 如果输出域的值个数为 N + 1, 则输入域中值的个数必须为 N. 
+    // 如果比 N 少则对应的输出域中多余的值会被忽略。
+    // 如果多于 N 则会出现返回 undefined 的情况。
+    // 如果没指定 domain 则返回比例尺当前的输入域。                                              
+    let scaleThreshold = d3.scaleThreshold()
+      .domain([0, 10, 20]) // 数组必须是升序排序的。值通常是数值，也可以是能进行排序的其他类型
+      .range(['small', 'medium', 'large', 'xlarge'])
+    // console.log(scaleThreshold(-1)) // small
+    // console.log(scaleThreshold(0)) // medium
+    // console.log(scaleThreshold(1)) // medium
+    // console.log(scaleThreshold(2)) // medium
+    // console.log(scaleThreshold(3)) // medium
+    // console.log(scaleThreshold(4)) // medium
+    // console.log(scaleThreshold(5)) // medium
+    console.log(scaleThreshold(10)) // large
+    console.log(scaleThreshold(11)) // large
+    console.log(scaleThreshold(12)) // large
+    console.log(scaleThreshold(13)) // large
+    console.log(scaleThreshold(14)) // large
+    console.log(scaleThreshold(15)) // large
+    console.log(scaleThreshold(16)) // large
+    console.log(scaleThreshold(17)) // large
+    console.log(scaleThreshold(18)) // large
+    console.log(scaleThreshold(19)) // large
+    // console.log(scaleThreshold(20)) // xlarge
+    // console.log(scaleThreshold(25)) // xlarge
+    // console.log(scaleThreshold(35)) // xlarge
+    // console.log(scaleThreshold(45)) // xlarge
+
+    console.log(scaleThreshold.invertExtent('small')) // [Infinity, 0]
+    console.log(scaleThreshold.invertExtent('medium')) // [0, 10]
+    console.log(scaleThreshold.invertExtent('large')) // [10, 20]
+    console.log(scaleThreshold.invertExtent('xlarge')) // [20, Infinity]
+
   </script>
 </body>
 </html>

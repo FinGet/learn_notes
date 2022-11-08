@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2em;
+      letter-spacing: -0.011em;
+      font-family: 'Inter var', sans-serif;
+      font-size: 16px;
+      color: #34495e;
+      background: #f8f9fa;
+    }
+
+    svg {
+      fill: #34495e;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrapper"></div>
+  <script>
+    async function drawBars() {
+      const dataset = await d3.json('./data/seattle_wa_weather_data.json')
+
+      console.log(dataset)
+      const width = 600 // We will be generating many of these, so let's keep our chart small
+
+      let dimensions = {
+        // NOTE: Histograms are easier to read when they are wider than they are tall
+        width: width,
+        height: width * 0.9,
+        // Leave a larger margin on the top to account for the bar labels which will be positioned above each bar
+        margin: {
+          top: 30,
+          right: 10,
+          bottom: 50,
+          left: 50,
+        },
+      }
+      // Our wrapper encompasses the whole chart; we need to subtract our margins to determine our bounds
+      dimensions.boundedWidth =
+        dimensions.width - dimensions.margin.left - dimensions.margin.right
+      dimensions.boundedHeight =
+        dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+      const drawHistogram = metric => {
+        const metricAccessor = d => d[metric]
+        const yAccessor = d => d.length
+
+        const wrapper = d3
+          .select('#wrapper')
+          .append('svg')
+          .attr('width', dimensions.width)
+          .attr('height', dimensions.height)
+
+        const bounds = wrapper
+          .append('g')
+          .style(
+            'transform',
+            `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`
+          )
+
+        wrapper.attr('role', "figure")
+          .attr('tabindex', 0)
+          .append('title')
+          .text(`Histogram showing the distribution of ${metric} over time`)
+
+        const xScale = d3.scaleLinear()
+          .domain(d3.extent(dataset, metricAccessor))
+          .range([0, dimensions.boundedWidth])
+          .nice()
+
+        // 直方图 分组
+        const binsGenerator = d3.bin()
+          .domain(xScale.domain())
+          .value(metricAccessor)
+          .thresholds(12)
+
+        const bins = binsGenerator(dataset)
+        console.log(bins)
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(bins, yAccessor)])
+          .range([dimensions.boundedHeight, 0])
+          .nice()
+
+        const bindsGroup = bounds.append('g')
+          .attr('tabindex', "0")
+          .attr('role', "list")
+          .attr('aria-label', "histogram bars")
+
+        const bindGroups = bindsGroup.selectAll('g')
+          .data(bins)
+          .enter()
+          .append('g')
+          .attr('tabindex', "0")
+          .attr('role', "listitem")
+          .attr('aria-label', d => `There were ${yAccessor(d)} days between ${d.x0} and ${d.x1} ${metric}`)
+
+        const barPadding = 1
+
+        const barRects = bindGroups.append('rect')
+          .attr('x', d => xScale(d.x0) + barPadding / 2)
+          .attr('y', d => yScale(yAccessor(d)))
+          .attr('width', d => d3.max([
+            0,
+            xScale(d.x1) - xScale(d.x0) - barPadding
+          ]))
+          .attr('height', d => dimensions.boundedHeight - yScale(yAccessor(d)))
+          .attr('fill', 'cornflowerblue')
+
+        const barText = bindGroups.filter(yAccessor)
+          .append('text')
+          .attr('x', d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+          .attr('y', d => yScale(yAccessor(d)) - 5)
+          .text(yAccessor)
+          .style('text-anchor', 'middle')
+          .style('fill', 'darkgrey')
+          .style('font-size', '12px')
+          .style('font-family', 'sans-serif')
+
+        const mean = d3.mean(dataset, metricAccessor)
+        const meanLine = bounds.append('line')
+          .attr('x1', xScale(mean))
+          .attr('x2', xScale(mean))
+          .attr('y1', 25)
+          .attr('y2', dimensions.boundedHeight)
+          .attr('stroke', 'maroon')
+          .attr('stroke-dasharray', '2px 4px')
+        const meanLabel = bounds.append('text')
+          .attr('x', xScale(mean))
+          .attr('y', 15)
+          .text('mean')
+          .attr('fill', 'maroon')
+          .style('font-size', '12px')
+          .style('text-anchor', 'middle')
+
+        const xAxisGenerator = d3.axisBottom(xScale)
+        const xAxis = bounds.append('g')
+          .call(xAxisGenerator)
+          .style('transform', `translateY(${dimensions.boundedHeight}px)`)
+
+        const xAxisLabel = xAxis.append('text')
+          .attr('x', dimensions.boundedWidth / 2)
+          .attr('y', dimensions.margin.bottom - 10)
+          .attr('fill', 'black')
+          .style('font-size', '1.4em')
+          .text(metric)
+          .style('text-transform', 'capitalize')
+
+        wrapper.selectAll('text')
+          .attr('fill', 'black')
+          .style('font-size', '12px')
+      }
+
+      const metrics = [
+        "windSpeed",
+        "moonPhase",
+        "dewPoint",
+        "humidity",
+        "uvIndex",
+        "windBearing",
+        "temperatureMin",
+        "temperatureMax",
+      ]
+
+      // Draw a histogram for each metric
+      metrics.forEach(drawHistogram)
+    }
+    drawBars()
+  </script>
+</body>
+
+</html>

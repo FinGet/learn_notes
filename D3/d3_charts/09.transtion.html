@@ -40,29 +40,40 @@
 
     function updateBar(data) {
       // 1.绑定数据
-      const rect = barG.selectAll('rect')
-        .data(data)
-      rect.exit().remove()
+      const rect = barG.selectAll('rect').data(data)
       
-      // 2.创建矩形
-      const rectenter = rect.enter()
-        .append('rect')
-        .attr('y', 100)
+      // 可以通过join 来实现
+      rect.join('rect')
+        .transition()
+        .duration(450)
+        .ease(d3.easeLinear)
+        .attr('y', d => y(d))
         .attr('x', function (d, i) {
           return x(i)
         })
         .attr('width', x(1))
         .attr('height', function (d) {return 400 - y(d)})
         .attr('fill', function (d, i) {return color(i)}) //以上属性是为新标签创建
+
+      // // 2.创建矩形
+      // const rectenter = rect.enter()
+      //   .append('rect')
+      //   .attr('y', 100)
+      //   .attr('x', function (d, i) {
+      //     return x(i)
+      //   })
+      //   .attr('width', x(1))
+      //   .attr('height', function (d) {return 400 - y(d)})
+      //   .attr('fill', function (d, i) {return color(i)}) //以上属性是为新标签创建
       
-      // 3.更新矩形 
-      rectenter.merge(rect)
-        .transition()
-        .duration(450)
-        .ease(d3.easeLinear)
-        .attr('x', function (d, i) {return x(i)}) //以下属性是需要更新的属性
-        .attr('y', function (d) {return y(d)})
-        .attr('height', function (d) {return 400 - y(d)})
+      // // 3.更新矩形 
+      // rectenter.merge(rect)
+      //   .transition()
+      //   .duration(450)
+      //   .ease(d3.easeLinear)
+      //   .attr('x', function (d, i) {return x(i)}) //以下属性是需要更新的属性
+      //   .attr('y', function (d) {return y(d)})
+      //   .attr('height', function (d) {return 400 - y(d)})
     }
     d3.interval(function () {
       const data = createData(length);

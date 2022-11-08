@@ -9,24 +9,49 @@
 </head>
 <body>
   
-  <svg width="600" height="600">
-  </svg>
+  <svg width="1200" height="1200"></svg>
   <script>
-    const arcPathGenerator = d3.arc()
-      .innerRadius(32) // 内径
-      .outerRadius(37) // 外径
-      .startAngle(0) // 开始角度
-      .endAngle(6.2) // 结束角度
-      .padAngle(1.4) // 间隙角度
-      .cornerRadius(21.6) // 圆角半径
-    const arcPath = arcPathGenerator()
+    const svg = d3.select('svg')
+    // d3 path
+    const pathGenerator = d3.path()
+    
+    pathGenerator.moveTo(10, 10); // move current point to ⟨10,10⟩
+    pathGenerator.lineTo(100, 10); // draw straight line to ⟨100,10⟩
+    // path.arcTo(x1, y1, x2, y2, radius)
+    pathGenerator.arcTo(150, 150, 300, 10, 40); // draw an arc, the turtle ends up at ⟨194.4,108.5⟩
+    pathGenerator.lineTo(300, 10);
+  
+    d3.select('svg')
+      .append('path')
+        .attr('d', pathGenerator)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
 
-    const svg = d3.select("svg")
-    .append("path")
-    .attr("fill", "cornflowerblue")
-    .attr("d", arcPath)
-    .style("transform", "translate(30%, 30%)")
+    // d3.path().rect(x, y, width, height) // equivalent to moveTo(x, y) + rect(width, height)
+    // d3.path().arc(x, y, radius, startAngle, endAngle, anticlockwise) // equivalent to moveTo(x + radius * cos(startAngle), y + radius * sin(startAngle)) + arc(radius, radius, 0, endAngle - startAngle, anticlockwise)
+    // d3.path().toString() // returns the path data string
+    // d3.path().closePath() // closes the current subpath by drawing a straight line from the current point to the start point of the current subpath
+    
+    const bezierCurveTo = (x1, y1, x2, y2, x, y) => {
+      const pathGenerator = d3.path()
+      pathGenerator.moveTo(30, 100); // start point 
+      // draw a cubic Bézier curve from the current point ⟨30,100⟩ to ⟨x,y⟩ with control points ⟨x1,y1⟩ and ⟨x2,y2⟩
+      pathGenerator.bezierCurveTo(x1, y1, x2, y2, x, y); 
+      return pathGenerator
+    }
+    // (x1, y1) is the first control point
+    // (x2, y2) is the second control point
+    // (x, y) is the end point
+    const bezierPath = bezierCurveTo(95, 10, 50, 200, 102, 320)
+    d3.select('svg')
+      .append('path')
+        .attr('d', bezierPath)
+        .attr('fill', 'none')
+        .attr('stroke', 'pink')
 
+// ----------------------------------------------------------------//
+
+    // d3 polygons
 
     const points = [[100,100],[120,300],[200,212],[330,300],[300,100]]
     const polygonG = d3.select("svg").append('g').style("transform", "translate(40%, 40%)")
@@ -58,6 +83,78 @@
       .attr('cy', d => d[1])
       .attr('r', 5)
       .attr('fill', 'blue')
+
+
+  // ----------------------------------------------------------------//
+    // d3-shape
+
+    // d3 arc
+    const arcPathGenerator = d3.arc()
+    .innerRadius(0)
+    .outerRadius(100)
+    .startAngle(0)
+    .endAngle(Math.PI / 2);
+      // .innerRadius(35) // 内径
+      // .outerRadius(37) // 外径
+      // .startAngle(0) // 开始角度
+      // .endAngle(6.2) // 结束角度
+      // .padAngle(1) // 间隙角度 每一个弧形之间的间隙
+      // .cornerRadius(21.6) // 圆角半径
+    const arcPath = arcPathGenerator() // "M0,-100A100,100,0,0,1,100,0L0,0Z"
+
+    svg
+    .append("path")
+    .attr("fill", "cornflowerblue")
+    .attr("d", arcPath)
+    .style("transform", "translate(30%, 30%)")
+
+    // d3 pie
+    const pie = d3.pie()
+      .value(d => d.value)
+
+    const data = [
+      {name: 'a', value: 1},
+      {name: 'b', value: 2},
+      {name: 'c', value: 3},
+      {name: 'd', value: 4},
+      {name: 'e', value: 5},
+      {name: 'f', value: 6},
+      {name: 'g', value: 7}
+    ]
+
+    const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(100);
+
+    let g = svg.append("g")
+        .attr("transform", "translate(500,120)");
+    
+      var arcs = g.selectAll("arc")
+          .data(pie(data))
+          .enter()
+          .append("g");
+    
+    arcs.append("path")
+      .attr("fill", (data, i)=>{
+          return d3.schemeSet3[i+1];
+      })
+      .attr("d", arc);
+
+    // line generator
+    const lineGenerator = d3.line()
+      .x(d => d[0])
+      .y(d => d[1])
+      .curve(d3.curveBasis) // 插值方式 curveBasis, curveCardinal, curveCatmullRom, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore
+    
+    const lineData = [[100, 100], [200, 200], [300, 100], [400, 200], [500, 100]]
+    const linePath = lineGenerator(lineData)
+    svg.append('g')
+      .attr('class', 'line-path')
+      .append('path')
+      .attr('d', linePath)
+      .attr('fill', 'none')
+      .attr('stroke', 'blue')
+      .style("transform", "translate(30%, 30%)")
 
   </script>
 </body>

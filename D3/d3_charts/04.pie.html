@@ -17,10 +17,10 @@
       .style('background', 'pink')
 
     //模拟数据:
-    const data = [['制造',3120],['外包',2056],['金融',5754],['咨询',4632]]
+    const data = [ ['外包',2056], ['金融',5754], ['咨询',4632], ['制造',3120], ]
     //处理数据得到适合绘图数据
     const pie = d3.pie().value(function(d){return d[1]})(data)
-
+    console.log(pie)
     console.log(pie)
     //构建绘制器
     const arc = d3.arc()
@@ -41,19 +41,44 @@
     .data(pie)
     .enter() // 选中只有数据没有dom的部分
 
+    const allCount = data.reduce((pre,cur)=>pre+cur[1],0)
+    console.log(allCount)
+    const data1 = [
+        { name: "外包", value: 3000 },
+        { name: "金融", value: 4754 },
+        { name: "制造", value: 1120 },
+        { name: "咨询", value: 4032 }
+      ];
+
+    const allCount1 = data1.reduce((pre,cur)=>pre+cur.value,0)
+    const arcs = d3.arc()
+        .innerRadius(0)
+        .outerRadius(d => {
+          return d.data[1] / allCount * 100 + 100
+        })
+
+    // 玫瑰图
     arcGroup
       .append('path')
       .attr("fill", function (d, i) { return color(i) })
-      .attr("d", arc)
-      .on('mouseenter',function(d, i){
-        d3.select(this).attr('d',arc1(i))
-      })//鼠标移入增大其选中的半径
-      .on('mouseleave',function(d, i){
-        d3.select(this).attr('d',arc(i))
-      })//鼠标移出还原其选中的半径
+      .attr("d", arcs)
       .append('title').text(function(d){
         return d.data[0];
-      })//创建tooltip
+      })
+    
+    // arcGroup
+    //   .append('path')
+    //   .attr("fill", function (d, i) { return color(i) })
+    //   .attr("d", arc)
+    //   .on('mouseenter',function(d, i){
+    //     d3.select(this).attr('d',arc1(i))
+    //   })//鼠标移入增大其选中的半径
+    //   .on('mouseleave',function(d, i){
+    //     d3.select(this).attr('d',arc(i))
+    //   })//鼠标移出还原其选中的半径
+    //   .append('title').text(function(d){
+    //     return d.data[0];
+    //   })//创建tooltip
   </script>
 </body>
 </html>

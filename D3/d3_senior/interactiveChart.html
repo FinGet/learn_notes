@@ -293,8 +293,15 @@
       const xScale = d3.scaleLinear()
         .domain(d3.extent(dataset, diffAccessor)) // 获取工时差的区间
         .range([0, dimensions.boundedWidth])
-        .nice() // 完美输出 不超出
+        .nice() 
       
+      /*
+        如果域是根据实际数据自动计算的(例如,使用d3.extent)，则开始值和
+        结束值可能不是整数。这不一定是个问题，但它可能看起来有点不整洁，
+        因此，d3.nice() 提供一个刻度函数，它将域四舍五入到一个不错的值
+      */
+
+
       // 直方图比例尺
       /*
       将离散样本分成连续的不间断的间隔

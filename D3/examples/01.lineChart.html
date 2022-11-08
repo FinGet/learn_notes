@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <div id="wrapper"></div>
+  <script>
+    const drawLineChart = async () => {
+      const dataset = await d3.json('./data/seattle_wa_weather_data.json')
+
+      const dateFormatString = '%Y-%m-%d'
+      const dateFormat = d3.timeParse(dateFormatString)
+      const xAccessor = d => dateFormat(d.date)
+      const yAccessor = d => d.temperatureMax
+      
+      console.log(dataset[0])
+
+      let dimensions = {
+        width: window.innerWidth * 0.9,
+        height: 400,
+        margin: {
+          top: 15,
+          right: 15,
+          bottom: 40,
+          left: 60,
+        },
+      }
+      dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
+      dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+      // 添加画布
+      const wrapper = d3.select('#wrapper')
+        .append('svg')
+          .attr('width', dimensions.width)
+          .attr('height', dimensions.height)
+
+      const bounds = wrapper.append('g')
+        .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`)
+    
+      // 创建比例尺
+      const yScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, yAccessor))
+        .range([dimensions.boundedHeight, 0]) // 从下往上画
+        .nice()
+      
+      const freezingTemperaturePlacement = yScale(32) // 32度的位置
+      const freezingTemperatures = bounds.append('rect')
+        .attr('x', 0)
+        .attr('width', dimensions.boundedWidth)
+        .attr('y', freezingTemperaturePlacement)
+        .attr('height', dimensions.boundedHeight - freezingTemperaturePlacement)
+        .attr('fill', '#e0f3f3')
+
+      // 时间比例尺 不接受字符串 需要转换 用timeParse equal to [new Date('2018-01-01'), new Date('2018-12-31')]
+      const xScale = d3.scaleTime()
+        .domain(d3.extent(dataset, xAccessor))
+        .range([0, dimensions.boundedWidth])
+        .nice()
+
+
+      // 创建线条生成器
+      const lineGenerator = d3.line()
+        .x(d => xScale(xAccessor(d)))
+        .y(d => yScale(yAccessor(d)))
+        // .curve(d3.curveBundle.beta(1)) // 设置曲线的弯曲程度
+      
+      const line = bounds.append('path')
+        .attr('d', lineGenerator(dataset))
+        .attr('fill', 'none')
+        .attr('stroke', '#af9358')
+        .attr('stroke-width', 2)
+
+      
+      const yAxisGenerator = d3.axisLeft(yScale)
+      const yAxis = bounds.append('g')
+        .attr('class','y-axis')
+        .call(yAxisGenerator)
+
+      const xAxisGenerator = d3.axisBottom(xScale)
+      const xAxis = bounds.append('g')
+        .attr('class','x-axis')
+        .call(xAxisGenerator)
+        .style('transform', `translateY(${dimensions.boundedHeight}px)`) // x轴移动到底部
+    }
+
+    drawLineChart();
+  </script>
+</body>
+</html>

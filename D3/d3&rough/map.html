@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rough.js/3.0.0/rough.js" integrity="sha512-0rsKUYPwkgbfJmcs/UgFawyamHr1FrJKLFfdQv2w3GK1+sUbRpVm7uWgMW0liwjc9TsI7EHqtJm5iUbO6nCFBg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha512-4UKI/XKm3xrvJ6pZS5oTRvIQGIzZFoXR71rRBb1y2N+PbwAsKa5tPl2J6WvbEvwN3TxQCm8hMzsl/pO+82iRlg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <svg viewBox="0 0 800 500" style="display: block;" id="roughmap"></svg>
+  <script>
+    const selector = 'roughmap';
+    let svg = d3.select('#roughmap');
+    const rc = rough.svg(document.getElementById('roughmap'));
+
+    let feat = d3.json("https://gist.githubusercontent.com/rveciana/181f41663ae9cef7c00ad80cd085f413/raw/63a2b578f5d9536ca51c49e71f3d6a429ae93392/us.json")
+      .then(us => {
+        const projection = d3.geoAlbersUsa();
+        const mappath = d3.geoPath().projection(projection);
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        const features = topojson.feature(us, us.objects.states).features;
+        svg
+          .selectAll('.state')
+          .data(features)
+          .enter()
+          .append('g')
+          .attr('class', 'state');
+
+        d3.selectAll('.state').each(function(d, i) {
+          d3.select(this)
+            .node()
+            .appendChild(
+              rc.path(mappath(d), {
+                fill: colorScale(d.id),
+                fillStyle: 'cross-hatch',
+                roughness: 3,
+                simplification: 5,
+                fillWeight: 1.5
+              })
+            );
+        });
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .bins rect {
+      fill: cornflowerblue;
+      /* transition: height 1s ease-out, y 1s ease-out; */
+    }
+
+    .bins text {
+      text-anchor: middle;
+      fill: darkgrey;
+      font-size: 12px;
+      font-family: sans-serif;
+      /* transition: transform 1s ease-out; */
+    }
+
+    .mean {
+      stroke: maroon;
+      stroke-dasharray: 2px 4px;
+      transition: transform 1s ease-out;
+    }
+
+    .x-axis-label {
+      fill: black;
+      font-size: 1.4em;
+      text-transform: capitalize;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2em;
+    }
+
+    button {
+      font-size: 1.2em;
+      margin-left: 1em;
+      padding: 0.5em 1em;
+      appearance: none;
+      -webkit-appearance: none;
+      background: darkseagreen;
+      color: white;
+      border: none;
+      box-shadow: 0 5px 0 0 seagreen;
+      border-radius: 6px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.1s ease-out;
+    }
+
+    button:hover,
+    button:focus {
+      background: #73b173;
+      box-shadow: 0 4px 0 0 seagreen;
+      transform: translateY(1px);
+    }
+
+    button:hover:active,
+    button:focus:active,
+    button:active {
+      box-shadow: 0 1px 0 0 seagreen;
+      transform: translateY(4px);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    const updateBars = async () => {
+      const data = await d3.json('./data.json')
+      const width = 500
+      let dimensions = {
+        width: width,
+        height: width * 0.6,
+        margin: {
+          top: 30,
+          right: 10,
+          bottom: 50,
+          left: 50,
+        },
+      }
+      dimensions.boundedWidth =
+        dimensions.width - dimensions.margin.left - dimensions.margin.right
+      dimensions.boundedHeight =
+        dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+      const wrapper = d3
+        .select('#root')
+        .append('svg')
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+
+      const bounds = wrapper
+        .append('g')
+        .style(
+          'transform',
+          `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`
+        )
+
+      bounds.append('g').attr('class', 'bins')
+      bounds
+        .append('g')
+        .attr('class', 'x-axis')
+        .style('transform', `translateY(${dimensions.boundedHeight}px)`)
+        .append('text')
+        .attr('class', 'x-axis-label')
+      const exitTransition = d3.transition().duration(600)
+      // const updateTransition = exitTransition.transition().duration(600)
+      const drawBars = metric => {
+        const metricAccessor = d => d[metric]
+        const yAccessor = d => d.length
+
+        const xScale = d3
+          .scaleLinear()
+          .domain(d3.extent(data, metricAccessor))
+          .range([0, dimensions.boundedWidth])
+          .nice()
+        const binsGenerator = d3.bin()
+          .domain(xScale.domain())
+          .value(metricAccessor)
+          .thresholds(10)
+
+        const bins = binsGenerator(data)
+        console.log(bins)
+
+        const yScale = d3
+          .scaleLinear()
+          .domain([0, d3.max(bins, yAccessor)])
+          .range([dimensions.boundedHeight, 0])
+          .nice()
+
+        const barPadding = 1
+
+        const barRects = bounds
+          .select('.bins')
+          .selectAll('rect')
+          .data(bins)
+          .join('rect')
+          .transition()
+          .duration(1000)
+          .attr('x', d => xScale(d.x0) + barPadding / 2)
+          .attr('y', d => yScale(yAccessor(d)))
+          .attr('width', d => d3.max([
+            0,
+            xScale(d.x1) - xScale(d.x0) - barPadding
+          ]))
+          .attr('height', d => dimensions.boundedHeight - yScale(yAccessor(d)))
+          .attr('fill', 'cornflowerblue')
+
+        const xAxis = d3.axisBottom().scale(xScale)
+        const xAxisGroup = bounds.select('.x-axis')
+        .transition()
+      .duration(1000)
+        .call(xAxis)
+      }
+      const metrics = [
+        'chinese',
+        'math',
+        'english'
+      ]
+      let selectedMetricIndex = 0
+      drawBars(metrics[selectedMetricIndex])
+
+      const button = d3
+        .select('body')
+        .append('button')
+        .text('Change metric')
+
+      button.node().addEventListener('click', onClick)
+
+      function onClick() {
+        selectedMetricIndex = (selectedMetricIndex + 1) % metrics.length
+        drawBars(metrics[selectedMetricIndex])
+      }
+    }
+
+    updateBars()
+  </script>
+</body>
+
+</html>

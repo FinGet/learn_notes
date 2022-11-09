@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <pre>
+    - attributeName: 动画属性
+    - values: 动画属性的值
+    - dur: 动画持续时间
+    - repeatCount: 动画重复次数
+
+    https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/animate
+
+    https://www.zhangxinxu.com/wordpress/2014/08/so-powerful-svg-smil-animation/
+  </pre>
+  <svg width="120" height="120">
+    <rect x="10" y="10" width="100" height="100" fill="cornflowerblue">
+      <!-- NOTE: animate can only be used with static start and end values -->
+      <animate attributeName="x" values="0;20;0" dur="2s" repeatCount="indefinite"/>
+      <animate
+        attributeName="fill"
+        values="cornflowerBlue;maroon;cornflowerBlue"
+        dur="6s"
+        repeatCount="indefinite"
+      />
+    </rect>
+  </svg>
+  <svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+          <path fill="#333" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
+            <animateTransform 
+              attributeName="transform" 
+              attributeType="XML" 
+              type="rotate"
+              dur="1s" 
+              from="0 50 50"
+              to="360 50 50" 
+              repeatCount="indefinite" />
+        </path>
+      </svg>
+
+      <pre>
+        set意思设置，此元素没有动画效果。你可能会疑问了，既然这个元素没有动画效果，怎么会是animation五大天团成员之一呢？
+
+OK, 这样的，虽然set虽然不能触发连续的动画，但是，其还是可以实现基本的延迟功能。就是指：可以在特定时间之后修改某个属性值（也可以是CSS属性值）。
+      </pre>
+      <svg width="320" height="320" xmlns="http://www.w3.org/2000/svg">
+        <g> 
+          <text font-family="microsoft yahei" font-size="120" y="160" x="160">
+            马
+            <set attributeName="x" attributeType="XML" to="60" begin="3s" />
+          </text>
+        </g>
+      </svg>
+
+      <pre>
+        animate
+        基础动画元素。实现单属性的动画过渡效果。
+      </pre>
+      <svg width="320" height="320" xmlns="http://www.w3.org/2000/svg">
+        <g> 
+          <text font-family="microsoft yahei" font-size="120" y="160" x="160">
+          马
+            <animate attributeName="x" from="160" to="60" begin="0s" dur="3s" repeatCount="indefinite" />
+          </text>
+        </g>
+      </svg>
+      <pre>
+        animateTransform
+此元素就是一开始给大家开眼界用到的那个元素。
+一看就知道实现transform变换动画效果的。
+知识是一脉相承的，这里的transform变换与CSS3的transform变换，
+以及Snap.svg.js中的transform()方法都是一个路数。
+      </pre>
+      <svg width="320" height="320" xmlns="http://www.w3.org/2000/svg">
+        <g> 
+          <text font-family="microsoft yahei" font-size="80" y="100" x="100">马</text>
+          <animateTransform attributeName="transform" begin="0s" dur="3s"  type="scale" from="1" to="1.5" repeatCount="indefinite"/>
+        </g>
+      </svg>
+
+      <pre>
+        animateMotion元素可以让SVG各种图形沿着特定的path路径运动~
+      </pre>
+
+      <svg width="360" height="200" xmlns="http://www.w3.org/2000/svg">
+        <text font-family="microsoft yahei" font-size="40" x="0" y="0" fill="#cd0000">马
+          <animateMotion path="M10,80 q100,120 120,20 q140,-50 160,0" begin="0s" dur="3s" repeatCount="indefinite"/>
+        </text>
+        <path d="M10,80 q100,120 120,20 q140,-50 160,0" stroke="#cd0000" stroke-width="2" fill="none" />
+      </svg>
+
+      <svg width="360" height="200" xmlns="http://www.w3.org/2000/svg">
+        <text font-family="microsoft yahei" font-size="40" x="0" y="0" fill="#cd0000">马
+          <animateMotion path="M10,80 q100,120 120,20 q140,-50 160,0" begin="0s" dur="3s" rotate="auto" repeatCount="indefinite"/>
+        </text>
+        <path d="M10,80 q100,120 120,20 q140,-50 160,0" stroke="#cd0000" stroke-width="2" fill="none" />
+      </svg>
+</body>
+</html>

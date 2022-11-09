@@ -8,18 +8,23 @@
   <title>Document</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    .bin rect {
+    .bins rect {
       fill: cornflowerblue;
+      transition: height 1s ease-out, y 1s ease-out;
     }
-    .bin text {
+
+    .bins text {
       text-anchor: middle;
       fill: darkgrey;
       font-size: 12px;
       font-family: sans-serif;
+      transition: transform 1s ease-out;
     }
+
     .mean {
       stroke: maroon;
       stroke-dasharray: 2px 4px;
+      transition: transform 1s ease-out;
     }
 
     .x-axis-label {
@@ -69,9 +74,6 @@
 </head>
 
 <body>
-  <p>
-    https://github.com/xswei/d3-ease
-  </p>
   <div id="root"></div>
   <script>
     const updateBars = async () => {
@@ -138,53 +140,26 @@
           .range([dimensions.boundedHeight, 0])
           .nice()
 
-        const exitTransition = d3.transition().duration(600)
-        // 等待退出动画完成后，再执行更新动画
-        const updateTransition = exitTransition.transition().duration(600).ease(d3.easePolyIn)
-
         const barPadding = 1
 
+        /**
         // 返回update selection
         let binGroups = bounds.select('.bins').selectAll('.bin').data(bins)
 
         // 返回exit selection 并删除
-        const oldBinGroups = binGroups.exit()
-
-        // 动画分析 变红，高度变为0，y轴变大，向下缩减消失
-        oldBinGroups
-          .selectAll('rect')
-          .transition(exitTransition)
-          .style('fill', 'red')
-          .attr("y", dimensions.boundedHeight)
-          .attr("height", 0)
-          
-        oldBinGroups.selectAll("text")
-          .transition(exitTransition)
-          .attr("y", dimensions.boundedHeight)
-
-        // 先删除柱子和文字 再删除整个g
-        oldBinGroups.transition(exitTransition).remove()
+        binGroups.exit().remove()
 
         // 找到enter selection  并添加 g
         const newBinGroups = binGroups.enter().append('g').attr('class', 'bin')
 
-        // 添加rect text 给定占位，并没有实际的宽高
+        // 添加rect text
         newBinGroups.append('rect')
-          .attr('height', 0)
-          .attr('x', d => xScale(d.x0) + barPadding)
-          .attr('y', dimensions.boundedHeight)
-          .attr('width', d => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
-          // IMPROVEMENT: We need fill to be an inline style so that we can override it in our CSS file; otherwise this would just be an SVG attribute
-          .style('fill', 'yellowgreen')
-          
         newBinGroups.append('text')
-          .attr("x", d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
-          .attr("y", dimensions.boundedHeight)
 
         // 合并update selection 和 enter selection
         binGroups = newBinGroups.merge(binGroups)
+        **/
 
-        /**
         const binGroups = bounds
           .select('.bins')
           .selectAll('.bin')
@@ -194,35 +169,32 @@
 
         binGroups.append('rect')
         binGroups.append('text')
-        **/
+
         // 设置属性
         const barRects = binGroups
           .select('rect')
-          .transition(updateTransition)
           .attr('x', d => xScale(d.x0) + barPadding / 2)
           .attr('y', d => yScale(yAccessor(d)))
           .attr('width', d => d3.max([0,xScale(d.x1) - xScale(d.x0) - barPadding]))
           .attr('height', d => dimensions.boundedHeight - yScale(yAccessor(d)))
           .attr('fill', 'cornflowerblue')
 
-        const barText = binGroups
-          .select('text')
-          .transition(updateTransition)
-          .attr('x', d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
-          .attr("y", 0)
-          .style("transform", d => `translateY(${yScale(yAccessor(d)) - 5}px)`)
-          .text(d => yAccessor(d) || "")
+          const barText = binGroups
+            .select('text')
+            .attr('x', d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+            .attr("y", 0)
+            .style("transform", d => `translateY(${yScale(yAccessor(d)) - 5}px)`)
+            .text(d => yAccessor(d) || "")
         
 
         const mean = d3.mean(data, metricAccessor)
         const meanLine = bounds.selectAll('.mean')
-          .transition(updateTransition)
-          .attr("y1", -20)
-          .attr("y2", dimensions.boundedHeight)
-          .style("transform", `translateX(${xScale(mean)}px)`)
+            .attr("y1", -20)
+            .attr("y2", dimensions.boundedHeight)
+            .style("transform", `translateX(${xScale(mean)}px)`)
 
         const xAxis = d3.axisBottom().scale(xScale)
-        const xAxisGroup = bounds.select('.x-axis').transition(updateTransition).call(xAxis)
+        const xAxisGroup = bounds.select('.x-axis').call(xAxis)
       }
 
       const metrics = [

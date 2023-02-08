@@ -175,15 +175,15 @@
   // });
   // //调用observer对象的observe()方法
   // observer.observe({ entryTypes: ["resource"] });
-  const observer = new PerformanceObserver((entryList) => {
-    const entries = entryList.getEntries();
-    const lastEntry = entries[entries.length - 1];
-    const lcp = lastEntry.renderTime || lastEntry.loadTime;
-    console.log('LCP:', lcp);
-  });
-  observer.observe({ entryTypes: ['largest-contentful-paint'] });
+  // const observer = new PerformanceObserver((entryList) => {
+  //   const entries = entryList.getEntries();
+  //   const lastEntry = entries[entries.length - 1];
+  //   const lcp = lastEntry.renderTime || lastEntry.loadTime;
+  //   console.log('LCP:', lcp);
+  // });
+  // observer.observe({ entryTypes: ['largest-contentful-paint'] });
 
-  console.log(performance.getEntriesByType('paint'))
+  // console.log(performance.getEntriesByType('paint'))
   </script>
   <script>
   (function() {
@@ -373,7 +373,29 @@
   // TODO:
   // 增加node服务端的performance监控=》需自动检测环境
   // 转换为类写法
-  perfor.onloadPerformance()
+  // perfor.onloadPerformance()
+  </script>
+
+
+
+  <script type="text/javascript">
+
+    // TTFB 首字节到达
+    
+    const { responseStart, requestStart } = performance.timing
+    const TTFB = responseStart - requestStart
+    console.log(`TTFB:${TTFB}`)
+    new PerformanceObserver((entryList) => {  
+        const entries = entryList.getEntries();  
+        for (const entry of entries) {  
+            if (entry.responseStart > 0) {  
+                console.log(`TTFB: ${entry.responseStart}`, entry.name);  
+            }  
+        }  
+    }).observe({  
+        entryTypes: ['source'],
+        buffered: true  
+    });
   </script>
 </body>
 

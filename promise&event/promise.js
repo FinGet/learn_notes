@@ -200,6 +200,40 @@ class Promise {
     });
   }
 
+  static allSettled(values) {
+    return new Promise(function (resolve, reject) {
+      if (!values.length) {
+        resolve([]);
+        return;
+      }
+      let res = [],
+        count = 0;
+      function setData(key, value) {
+        res[key] = value;
+        // 计数，当长度相同的时候，则表明数组全部循环结束
+        if (++count === values.length) {
+          resolve(res);
+        }
+      }
+      for (let i = 0; i < values.length; i++) {
+        let current = values[i];
+        if (current && typeof current.then === 'function') {
+          // 是promise
+          current.then((data) => {
+              // 成功 失败 都计数
+              setData(i, data);
+            },(err) => {
+              setData(i, err);
+            } // 如果异常了就直接调reject
+          );
+        } else {
+          // 普通值
+          setData(i, current);
+        }
+      }
+    });
+  }
+
   static race(values) {
     return new Promise(function (resolve, reject) {
       for (let i = 0; i < values.length; i++) {

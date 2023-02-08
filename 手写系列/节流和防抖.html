@@ -21,6 +21,20 @@
 		    fn.apply(this, args)
 		  }
 		}
+
+		function throttle(fn, ms = 100) {
+		  let throttleTimer = null;
+		  return function (...args) {
+		    if(!throttleTimer) {
+		      const ret = fn.apply(this, args);
+		      throttleTimer = setTimeout(() => {
+		        throttleTimer = null;
+		      }, ms);
+		      return ret;
+		    }
+		  };
+		}
+
 		// 防抖核心思想: 
 		// 每次事件触发则删除原来的定时器，建立新的定时器。跟王者荣耀的回城功能类似，你反复触发回城功能，那么只认最后一次，从最后一次触发开始计时。
 		function debounce(fn, delay) {

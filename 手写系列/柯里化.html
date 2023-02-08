@@ -148,11 +148,13 @@
 			console.log( a + b + c + d);
 		}
 		let _add = createCurry(add)
+		let _add1 = createCurry(add, [1])
 		_add(1,2,3,4);
 		_add(1,2)(3,4);
 		_add(1,2,3)(4);
 		_add(1)(2)(3)(4);
 		_add(1)(2,3,4);
+		_add1(2,3,4)
 
 
 

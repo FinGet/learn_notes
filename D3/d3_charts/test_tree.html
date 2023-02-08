@@ -13,17 +13,30 @@
   </style>
 </head>
 <body>
+  <svg  class="rect" width="120px" height="200px">
+    <polygon points="10,0 20,0 5,20 5,10 " fill="red"/>
+  </svg>
   <div id="root"></div>
   <script>
     const svg = d3.select('#root').append('svg')
-      .attr('width', 600)
+      .attr('width', 1000)
       .attr('height', 600)
       .style('background', 'white')
 
     const data = {
       "name": "运营必备",
       "children": [
-        {"name": "线下商城（代金券）"},
+        {"name": "线下商城（代金券）",
+          children: [
+            {name: '线下商城'},
+            {name: '代金券', 
+              children: [
+                {name: '代金券分支'},
+                {name: '代金券分支'},
+              ]
+            }
+          ]
+        },
         {"name": "国内分发",
           "children": [
             {"name": "国内分包"},
@@ -40,36 +53,43 @@
       ]
     }
 
-    let ddd = [
-      {"name": "Eve",   "parent": ""},
-      {"name": "Cain",  "parent": "Eve"},
-      {"name": "Seth",  "parent": "Eve"},
-      {"name": "Enos",  "parent": "Seth"},
-      {"name": "Noam",  "parent": "Seth"},
-      {"name": "Abel",  "parent": "Eve"},
-      {"name": "Awan",  "parent": "Eve"},
-      {"name": "Enoch", "parent": "Awan"},
-      {"name": "Azura", "parent": "Eve"}
-    ]
-
-    d3.stratify()
-      .id(function(d) { return d.name; })
-      .parentId(function(d) { return d.parent; })
-      (ddd)
-
     // 随机生成颜色
     const color = d3.scaleOrdinal(d3.schemeCategory10)
     //将数据进行层次化
     const dataSet = d3.hierarchy(data)
-    console.log(dataSet)
+    // console.log(dataSet)
     //创建树布局
-    const tree = d3.tree().size([300, 300])
-    console.log(tree)
+    const tree = d3.tree().size([500, 700])
+    // console.log(tree)
     //所有的节点
     const nodes = tree(dataSet)
+    const links = nodes.links()
+
+    // console.log(nodes)
+    // console.log(nodes)
+    // console.log(nodes.links())
+    // console.log(nodes.descendants())
+
+
+    // nodes.children.forEach(l => {
+    //   const len = l.data.name.length
+    //   l.y = l.y + ((len - 2)/2) * 20
+    // })
+    // console.log(nodes)
+
+    const mNodes = (nodes, p) => {
+      nodes.forEach(n => {
+        if(p) {
+          let len = p.name.length
+          n.y = n.y + ((len - 2)/2) * 20
+        }
+        if(n.children) {
+          mNodes(n.children, n.data)
+        }
+      })
+    }
+    mNodes(nodes.children)
     console.log(nodes)
-    console.log(nodes.links())
-    console.log(nodes.descendants())
 
     const group = svg.append('g')
       .attr('transform', 'translate(50, 10)')
@@ -121,16 +141,18 @@
         return 50 + ((len - 2)/2) * 20
       })
       .attr('height', 30)
-      .attr('x', d => {
-        const len = d.data.name.length
-        return -(50 + ((len - 2)/2) * 20)/2
-      })
+      .attr('x', -30)
       .attr('y', -15)
       .attr('rx', 10)
       .attr('ry', 10)
       .attr('fill', function(d, i) {
         return i === 0 ? color(i) : '#f2f2f2'
       })
+    
+    node.append('polygon')
+      .attr('points', '20,0 30,0 10,20 10,10')
+      .attr('fill', '#333')
+      .style('transform', 'translate(-40px, -14px)')
 
     node.append('text')
       // .attr('dx', function(d) {
@@ -141,14 +163,16 @@
       //   return d.children ? 'end' : 'start';
       // })
       .attr("dy", ".33em")
+      .attr('x', -20)
       .attr("font-size","12px")
-      .attr("text-anchor", "middle")
+      // .attr("text-anchor", "middle")
       .attr('fill', (d, i) => {
         return i === 0 ? '#fff' : '#333'
       })
       .text(function(d) {
         return d.data.name;
       })
+
   </script>
 </body>
 </html>

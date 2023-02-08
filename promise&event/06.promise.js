@@ -19,7 +19,7 @@
       失败的时候调用reject()，传递一个失败的原因，状态就会变成 rejected
       状态一旦改变（变成成功态或失败态），是不可逆
     4. 每个promise实例都有一个then，接收两个参数（onfulfilled, onrejected），成功的回调和失败的回调
-    5. 如果发生异常，也会走 reject
+    5. 如果 executor 发生异常，也会走 reject
     6. 同一个promise实例可以then多个（发布订阅模式）
     7. then可以链式调用，每次返回的新的返回promise（状态不可逆，因为要保证状态能修改，所以每次要返回一个新的promise）
       1). 如果then方法中（成功或失败）返回的不是一个promise，会将这个值传递到外层下一次的then的成功结果

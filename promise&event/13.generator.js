@@ -108,8 +108,30 @@ async function readFile1() {
 }
 
 
+async function foo() {
+    console.log(1)
+    let a = await 100
+    console.log(a)
+    console.log(2)
+}
+console.log(0)
+foo()
+console.log(3)
 
 
+// const a = await 100: 
 
+// let _promise = yield new Promise(resolve(100)) // yield 后面的内容作为返回值
+
+// // 切换协程 到 主协程，把_promise 传个主协程
+
+// // 主协程 执行 .then 获取返回值
+// let num = ''
+// _promise.then(res => num = res)
+
+// // 切换协程到 子协程，把num传递进来
+
+// foo().next(num)
+// a = num
 
 

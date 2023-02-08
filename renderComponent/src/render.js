@@ -87,7 +87,7 @@ function mountElement(vnode, container, isSVG, refNode) {
           }
           break
         default:
-          if (key[0] === 'o' && key[1] === 'n') {
+          if (/^on/.test(key)) {
             // 事件
             el.addEventListener(key.slice(2), data[key])
           } else if (domPropsRE.test(key)) {
@@ -678,6 +678,7 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
 
           outer: {  // 标记语句可以和 break 或 continue 语句一起使用
             // while 循环向后遍历，直到遇到拥有不同 key 值的节点为止
+            // 更新相同的前置节点
             while (prevVNode.key === nextVNode.key) {
               patch(prevVNode, nextVNode, container)
               j++
@@ -692,6 +693,7 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
             prevVNode = prevChildren[prevEnd]
             nextVNode = nextChildren[nextEnd]
 
+            // 更新相同的后置节点
             // while 循环向前遍历，直到遇到拥有不同 key 值的节点为止
             while (prevVNode.key === nextVNode.key) {
               // 调用 patch 函数更新
@@ -705,7 +707,11 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
               nextVNode = nextChildren[nextEnd]
             }
           }
-
+          // 条件一 prevEnd < j 成立：说明在预处理过程中，所有旧子节点都处理完毕了。
+          // 条件二 nextEnd >= j 成立：说明在预处理过后，在新的一组子节点中，
+          // 仍然有未被处理的节点，而这些遗留的节点将被视作新增节点。
+          // 如果条件一和条件二同时成立，说明在新的一组子节点中，存在遗留节点，
+          // 且这些节点都是新增节点。因此我们需要将它们挂载到正确的位置
           if (j > prevEnd && j <= nextEnd) {
             // 说明 从 j -> nextEnd 之间的节点应作为新节点插入
             const nextPos = nextEnd + 1
@@ -724,15 +730,15 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
             // li-a   li-c   li-d   li-b   li-g   li-e
             // sources [2       3      1      -1 ]
             const nextLeft = nextEnd - j + 1 // 新 children 中剩余未处理节点的数量
-            const sources = []
-            for (let i = 0; i < nextLeft; i++) {
-              sources.push(-1)
-            }
+            const sources = new Array(nextLeft).fill(-1)
+            // for (let i = 0; i < nextLeft; i++) {
+            //   sources.push(-1)
+            // }
 
             const prevStart = j
             const nextStart = j
-            let moved = false
-            let pos = 0
+            let moved = false // 是否需要移动节点
+            let pos = 0 // 代表遍历旧的一组子节点的过程中遇到的最大索引值 
 
             // 双层循环时间复杂度 O(n^2)
             // for (let i = prevStart; i<=prevEnd; i++) {
@@ -753,12 +759,13 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
             //   }
             // }
 
-            // 用空间换时间
+            // 优化：用空间换时间
             // 构建索引表
             const keyIndex = {} // {c: 1, d: 2, b: 3, g: 4}
             for (let i = nextStart; i <= nextEnd; i++) {
               keyIndex[nextChildren[i].key] = i
             }
+
             // 遍历旧 children 的剩余未处理节点
             let patched = 0
             for (let i = prevStart; i <= prevEnd; i++) {
@@ -788,8 +795,9 @@ function patchChildren(prevChildFlags, nextChildFlags, prevChildren, nextChildre
                 // 多余的节点，应该移除
                 container.removeChild(prevVNode.el)
               }
-              
             }
+
+
             if(moved) {
               // 如果 moved 为真，则需要移动dom
               // 计算最长递增子序列

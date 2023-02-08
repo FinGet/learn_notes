@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <style>
+    .point:hover {
+      cursor: pointer;
+    }
+    #tooltip {
+      position:absolute;
+      background-color:lightgray;
+      padding:5px
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="tooltip">
+
+  </div>
+  <script>
+
+    const data = [
+      {
+        name: '张三',
+        scores: [
+          { date: '周一', value: 50 },
+          { date: '周二', value: 180 },
+          { date: '周三', value: 150 },
+          { date: '周四', value: 220 },
+          { date: '周五', value: 210 },
+          { date: '周六', value: 300 },
+          { date: '周日', value: 280 },
+        ]
+      },
+      {
+        name: '李四',
+        scores: [
+          { date: '周一', value: 200 },
+          { date: '周二', value: 120 },
+          { date: '周三', value: 140 },
+          { date: '周四', value: 200 },
+          { date: '周五', value: 100 },
+          { date: '周六', value: 320 },
+          { date: '周日', value: 240 },
+        ]
+      }
+    ]
+
+    const width = 500
+    const height = 600
+    const dimensions = {
+      width: width,
+      height: height,
+      margin: {
+        top: 100,
+        right: 10,
+        bottom: 50,
+        left: 50,
+      }
+    }
+    dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
+    dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+    const wrapper = d3.select('#root')
+      .append('svg')
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+    
+    const bounds = wrapper.append('g')
+      .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`)
+  
+    const tooltip = d3.select('#tooltip');
+    const tooltipLine = bounds.append('line');
+
+    const xScale = d3.scalePoint()
+      .domain(data[0].scores.map(d => d.date))
+      .range([0, dimensions.boundedWidth])
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d3.max(d.scores, d1 => d1.value))])
+      .range([dimensions.boundedHeight, 0])
+      .nice()
+
+    const color = d3.scaleOrdinal()
+      .domain(data.map(d => d.name))
+      .range(d3.schemeTableau10)
+
+    const lineGenerator = d3.line()
+      .x(d => xScale(d.date))
+      .y(d => yScale(d.value))
+
+    // const dPath = lineGenerator(data)
+
+    const line = bounds.selectAll('path')
+      .data(data)
+      .join('path')
+      .attr('d', d => lineGenerator(d.scores))
+      .attr('fill', 'none')
+      .attr('stroke', (d) => color(d.name))
+      .attr('stroke-width', 2)
+    
+    const matrix = (d, r) => {
+      return `matrix(${r}, 0, 0, ${r}, ${xScale(d.date)}, ${yScale(d.value)})`
+    }
+
+    bounds.selectAll('.point')
+      .data(data)
+      .join('g')
+      .selectAll('path')
+      .data(d => d.scores)
+      .join('path')
+      .attr('d', 'M1 0A1 1 0 1 1 1 -0.0001')
+      // 实际上transform: matrix(1, 0, 0, 1, 30, 30);就等同于transform: translate(30px, 30px);
+      .attr('transform', d => matrix(d, 2))
+      .attr('fill', '#fff')
+      .attr('stroke', (d,i, nodes) => {
+        const name = d3.select(nodes[i].parentNode).datum().name
+        return color(name)
+      })
+      .on('mouseenter', function() {
+        d3.select(this)
+          .attr('transform', d => matrix(d, 3))
+      })
+      .on('mouseleave', function() {
+        d3.select(this)
+          .attr('transform', d => matrix(d, 2))
+      })
+    
+    const tipBox = bounds.append('rect')
+      .attr('width', dimensions.boundedWidth)
+      .attr('height', dimensions.boundedHeight)
+      .attr('opacity', 0)
+      .on('mousemove', drawTooltip)
+      .on('mouseout', removeTooltip);
+
+    function drawTooltip (event) {
+      const [x, y] = d3.pointer(event, tipBox.node());
+
+      // scalePoint 没有invert方法，所以需要使用bisect 
+      const domain = xScale.domain();
+      const range = xScale.range();
+      const rangeStep = xScale.step();
+      const rangePoints = d3.range(range[0], range[1], rangeStep);
+      const leftX = domain[d3.bisect(rangePoints, x) - 1]
+      const rightX = domain[d3.bisect(rangePoints, x)]
+      const x0 = xScale(leftX);
+      const x1 = xScale(rightX);
+      const xValue = x1 - x > x - x0 ? leftX : rightX;
+      const xPos = xScale(xValue)
+      // console.log(xPos)
+
+      const values = data.map(d => {
+        const score = d.scores.find(d => d.date === xValue)
+        return score
+      })
+
+      tooltipLine.attr('stroke', 'red')
+        .attr('x1', xPos)
+        .attr('x2', xPos)
+        .attr('y1', 0)
+        .attr('y2', dimensions.boundedHeight);
+      
+      tooltip.html(xValue)
+        .style('opacity', 1)
+        .style('left', event.pageX + 20 + 'px')
+        .style('top', event.pageY - 20 + 'px')
+        .selectAll()
+        .data(values)
+        .enter()
+        .append('div')
+        .style('color', (d, i) => color(data[i].name))
+        .html((d,i) => `${data[i].name}:${d.value}`);
+    }
+
+    function removeTooltip () {
+      tooltip.style('opacity', 0);
+      tooltipLine.attr('stroke', 'none');
+    }
+
+    const yAxisGenerator = d3.axisLeft()
+      .scale(yScale)
+    
+    const yAxis = bounds.append('g')
+      .call(yAxisGenerator)
+
+    const xAxisGenerator = d3.axisBottom()
+      .scale(xScale)
+    
+    const xAxis = bounds.append('g')
+      .call(xAxisGenerator)
+        .style('transform', `translateY(${dimensions.boundedHeight}px)`)
+  </script>
+</body>
+</html>

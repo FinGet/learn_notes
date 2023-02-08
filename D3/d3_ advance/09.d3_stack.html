@@ -6,6 +6,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="./d3-tip.js"></script>
+  <style>
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* Northward tooltips */
+    .d3-tip.n:after {
+      content: "\25BC";
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+      text-align: center;
+    }
+
+    /* Eastward tooltips */
+    .d3-tip.e:after {
+      content: "\25C0";
+      margin: -4px 0 0 0;
+      top: 50%;
+      left: -8px;
+    }
+
+    /* Southward tooltips */
+    .d3-tip.s:after {
+      content: "\25B2";
+      margin: 0 0 1px 0;
+      top: -8px;
+      left: 0;
+      text-align: center;
+    }
+
+    /* Westward tooltips */
+    .d3-tip.w:after {
+      content: "\25B6";
+      margin: -4px 0 0 -1px;
+      top: 50%;
+      left: 100%;
+    }
+  </style>
 </head>
 <body>
   <pre>
@@ -77,6 +135,7 @@
           .domain(["apples", "bananas", "cherries", "dates"])
           .range(["#c51b7d", "#e9a3c9", "#fde0ef", "#f1e4f1"]);
 
+
     // 层叠柱状图
     // svgGroup.selectAll('g')
     // .data(series)
@@ -93,8 +152,19 @@
     // .attr('fill', (d, i, nodes) => {
     //   return color(nodes[i].parentNode.__data__.key);
     // })
+
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(event, d) {
+        return "<strong>Frequency:</strong> <span style='color:red'>" + d + "</span>";
+      })
+
+    svgGroup.call(tip);
+
+    
     // 多系列柱状图
-    svgGroup.selectAll('g')
+    const rects = svgGroup.selectAll('g')
       .data(series)
       .join('g')
       .selectAll('rect')
@@ -109,6 +179,8 @@
       .attr('fill', (d, i, nodes) => {
         return color(nodes[i].parentNode.__data__.key);
       })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
 
     const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b"));;
     const yAxis = d3.axisLeft(yScale);

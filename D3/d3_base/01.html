@@ -118,5 +118,43 @@
       .attr("r", 16)
 
   </script>
+
+  v6.0.0
+  Adopt ES2015, including support for iterables and collections (Map and Set).
+  Remove d3.event; selection.on now passes events directly to listeners.
+  Remove d3.mouse, d3.touch, d3.touches, d3.clientPoint; add d3.pointer and d3.pointers.
+  Remove d3.nest; add d3.group and d3.rollup.
+  Remove d3-collection; see d3-array.
+  Remove d3-voronoi; add d3-delaunay.
+  Remove support for Bower.
+ 
+  v7.0.0
+  Adopt type: module. #3501
+Adopt InternMap for ordinal scale domains.
+d3.ascending and d3.descending no longer consider null comparable.
+d3.bin now ignores nulls.
+Convert array-likes (e.g., live NodeList) to arrays in d3.selectAll and selection.selectAll.
+Non-breaking changes:
+
+Add d3.mode.
+Add d3.flatGroup and d3.flatRollup.
+Add transition.selectChild.
+Add transition.selectChildren.
+Adopt robust predicates for Delaunay triangulation.
+Fix delaunay.voronoi’s computed circumcenters for collinear points on the hull.
+Allow brush.move and brush.clear to take an optional event.
+Allow selection.merge to take a transition.
+Allow selection.join to take transitions.
+Apply linear binning for d3.contourDensity.
+Generate contours.thresholds at nicer round tick values.
+Fix axis.tickArguments to accept an iterable.
+Fix axis.tickValues to accept an iterable.
+Fix undefined event during brush.move.
+Fix drag event listeners to be explicitly non-passive where necessary (#78).
+Fix zoom event listeners to be explicitly non-passive where necessary.
+Fix variable initialization error in d3-zoom.
+Expose d3.ZoomTransform constructor.
+Update dependencies.
+Make build reproducible.
 </body>
 </html>

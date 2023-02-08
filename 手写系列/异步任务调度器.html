@@ -72,10 +72,19 @@
 
     async addTask(fn) {
       if (this.count >= this.limit) {
+        console.log(this.count)
         // 超出限制的任务会一直 await，直到进行中的任务resolve
+        // 之前这里卡着，其实await 会阻断，if语句块外面的代码执行
+        // 所以当添加进超过limit的方法时，
+        // 1.在list中添加一个resolve
+        // 2.阻断后面的执行
+        // 当前面有一个任务完成(无论是第几个),那么调用list的第一个resolve
+        // 然后就会让出线程，执行后面的代码const result = await fn();,后面
+        // 的任务依次内推就可以执行了
         await new Promise((resolve) => {
           this.list.push(resolve); // 把resolve 放进去
         });
+        // this.list.push(fn)
       }
       this.count++;
 
@@ -83,17 +92,23 @@
 
       this.count--;
       // 进行中的任务执行完成，resolve() 的是在此任务之后添加的待执行任务，先进先出
-      if (this.list.length > 0) this.list.shift()(); // resolve 执行之后 下一个任务就进来了
+      if (this.list.length > 0) {
+        // resolve 执行之后 下一个任务就进来了(走到this.count++)
+        const resolve = this.list.shift();
+        resolve(); 
+      }
 
       return result;
     }
   }
   const scheduler2times2 = new Scheduler2(2);
-  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
-  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务2执行完成'); });
-  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务3执行完成'); });
-  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务4执行完成'); });
-  scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务5执行完成'); });
+  const result1 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
+  const result2 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务2执行完成'); });
+  const result3 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务3执行完成'); });
+  const result4 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务4执行完成'); });
+  const result5 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务5执行完成'); });
+
+  console.log(result1, result2, result3, result4, result5)
   </script>
 
 </body>

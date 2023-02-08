@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,54 +8,85 @@
   <title>Document</title>
   <script src="http://d3js.org/d3.v7.min.js" charset="utf-8"></script>
 </head>
+
 <body>
+  <!-- https://geojson.cn/ -->
   <div id="root"></div>
+  <svg width="1000" height="1000"></svg>
   <script>
-    var svg = d3.select('#root')
-    .append('svg')
-    .attr('width', 1200)
-    .attr('height', 600)
-    .style("background-color","rgb(142, 137, 137)");
-
-    const color = d3.scaleOrdinal(d3.schemeCategory10)
-    var projection = d3.geoEquirectangular() //圆柱平面投影 geoOrthographic
-    var path = d3.geoPath(projection)
-    var Graticule = d3.geoGraticule()//创建经纬线
-    d3.json("https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json").then(data => {
+    const marge = {
+      top: 60,
+      bottom: 60,
+      left: 60,
+      right: 60
+    }
+    const svg = d3.select("svg")
+    const width = svg.attr("width")
+    const height = svg.attr("height")
+    const g = svg.append("g").attr("transform", "translate(" + marge.top + "," + marge.left + ")");
+    //投影函数
+    const projection = d3.geoMercator()
+      .center([107, 31])
+      .scale(800)
+      .translate([width / 2, height / 2]);
+    //路径
+    const pathGenerator = d3.geoPath(projection);
+    const color = d3.schemeCategory10;
+    const graticulePath = pathGenerator(d3.geoGraticule10()) // 创建经纬线path
+    const earthPath = pathGenerator({type:'Sphere'}) // 创建地球轮廓path
+    d3.json("https://geojson.cn/api/data/china.json").then(function (data) {
       console.log(data)
-      svg.selectAll('g')
-      .data(data.features)
-      .enter()
-      .append('g')
-      .append('path')
-      .attr('d', path)
-      .attr('stroke', 'black')
-      .attr('stroke-width', 1)
-      .attr('fill', (d,i) => color(i))
-      .on('mouseover', function(d, i){
-        d3.select(this).attr('fill', 'red')
-      })
-      .on('mouseout', function(d, i){
-        d3.select(this).attr('fill', color(i))
-      })
+      svg.selectAll("g")
+        .data(data.features)
+        .enter()
+        .append("g")
+        .append("path")
+        .attr('d', pathGenerator) //使用地理路径生成器
+        .attr("stroke", "#000")
+        .attr("stroke-width", 1)
+        .attr("fill", function (d, i) {
+          return color[i % 10];
+        })
+        .on("mouseover", function (d, i) {
+          d3.select(this).attr('opacity', 0.7);
+        })
+        .on("mouseout", function (d, i) {
+          d3.select(this).attr('opacity', 1);
+        });
 
-      // svg.selectAll('g')
-      // .append('text')
-      // .attr('font-size', 12)
-      // .attr('text-anchor', 'middle')
-      // .attr('x', d => {
-      //   const position = projection(d.properties.centroid || [0, 0])
-      //   return position[0]
-      // })
-      // .attr('y', d => {
-      //   const position = projection(d.properties.centroid || [0, 0])
-      //   return position[1]
-      // })
-      // .attr('dy', d => {
-      //   if(d.properties.name === 'Antarctica') return 0
-      // })
-      // .text(d => d.properties.featurecla)
-    });
+      //添加坐标
+      svg.selectAll("g")
+        .append('text')
+        .attr('font-size', 12)
+        .attr('text-anchor', 'middle')
+        .attr('x', d => {
+          var position = projection(d.properties.centroid || [0, 0]);
+          return position[0];
+        })
+        .attr('y', d => {
+          var position = projection(d.properties.centroid || [0, 0]);
+          return position[1];
+        })
+        .attr('dy', d => {
+          //这里为什么这么写呢，因为澳门和香港重合了，挤到一起了。
+          if (d.properties.name === '澳门') {
+            return 15;
+          }
+        })
+        .text(d => d.properties.name);
+    })
+    svg.append('path')
+      .attr('d', earthPath)
+      .attr('stroke', '#bdbdcf')
+      .attr('stroke-width', 1)
+      .attr('fill', 'none')
+
+    svg.append('path')
+      .attr('d', graticulePath)
+      .attr('stroke', '#bdbdcf')
+      .attr('stroke-width', 1)
+      .attr('fill', 'none')
   </script>
 </body>
+
 </html>

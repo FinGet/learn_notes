@@ -10,6 +10,7 @@
 </head>
 
 <body>
+  https://vis.zone/graph/chord-diagram/
   <div id="root"></div>
   <script>
     const svg = d3.select('#root')
@@ -27,7 +28,13 @@
       [2146, 1034, 6745, 4764, 5000]
     ];
     //处理数据得到适合绘图数据
-    const chords = d3.chord()(population)
+    const chord = d3.chord()
+      .padAngle(0.1) // 设置或获取相邻分组之间的间隔，默认为 0
+      .sortGroups(d3.descending) // 设置或获取分组的排序规则
+      .sortSubgroups(d3.descending) // 设置或获取子分组的排序规则
+      .sortChords(d3.descending) // 设置或获取弦的排序规则
+    
+    const chords =chord(population)  
     console.log(chords)
 
     //构建颜色比例尺  
@@ -45,7 +52,7 @@
 
     const ribbon = d3.ribbon().radius(100) //创建弦绘制器
 
-    //绘制
+    //绘制 分组数据传递给d3.arc来绘制。
     groupG.selectAll("path")
       .data(chords.groups)
       .enter()
@@ -73,6 +80,7 @@
       })
       .text(function (d) { return d.name; });
     
+    // 弦数据通常传递给 d3.ribbon 来显示相互之间的流量关系。
     chordG.selectAll('path')
       .data(chords)
       .enter()

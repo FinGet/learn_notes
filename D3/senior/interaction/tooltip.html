@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    #tooltip {
+        opacity: 0;
+        position: absolute;
+        top: -12px;
+        left: 0;
+        padding: 0.6em 1em;
+        background: #fff;
+        text-align: center;
+        border: 1px solid #ddd;
+        z-index: 10;
+        transition: all 0.2s ease-out;
+        /* Prevent tooltip from receiving the mouse events we will be implementing */
+        pointer-events: none;
+    }
+
+    /* Adds an arrow pointing down at the hovered bar */
+    #tooltip:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 12px;
+        height: 12px;
+        background: white;
+        border: 1px solid #ddd;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        transform: translate(-50%, 50%) rotate(45deg);
+        transform-origin: center center;
+        z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="tooltip">
+    <div id="name"></div>
+    <div id="value"></div>
+  </div>
+  <script>
+    const data = [
+      { name: 'A1', value: 10 },
+      { name: 'B231', value: 20 },
+      { name: 'Cad', value: 30 },
+      { name: 'Dsdd', value: 40 },
+      { name: 'Eafad', value: 50 },
+      { name: 'Fasdf', value: 60 },
+      { name: 'Gqqq', value: 70 },
+      { name: 'Hvvv', value: 80 },
+      { name: 'Isss', value: 90 },
+      { name: 'Jgwess', value: 100 },
+    ]
+    const xValue = d => d.name
+    const yValue = d => d.value
+
+    const width = 500
+    const height = 800
+    const dimensions = {
+      width: width,
+      height: height,
+      margin: {
+        top: 100,
+        right: 10,
+        bottom: 50,
+        left: 50,
+      }
+    }
+    dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
+    dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+    const wrapper = d3.select('#root')
+      .append('svg')
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+    
+    const bounds = wrapper.append('g')
+      .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`)
+
+    const xScale = d3.scaleBand()
+      .domain(data.map(xValue))
+      .range([0, dimensions.boundedWidth])
+      .padding(0.1)
+    
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data, yValue)])
+      .range([dimensions.boundedHeight, 0])
+      .nice()
+
+
+
+    bounds.selectAll('rect')
+      .data(data)
+      .enter()
+      .append('rect')
+        .attr('x', d => xScale(xValue(d)))
+        .attr('y', d => yScale(yValue(d)))
+        .attr('width', xScale.bandwidth())
+        .attr('height', d => dimensions.boundedHeight - yScale(yValue(d)))
+        .attr('fill', 'cornflowerblue')
+        .on('mouseenter', onMouseEnter)
+        .on('mouseleave', () => d3.select('#tooltip').style('opacity', 0))
+
+    const xAxisGenerator = d3.axisBottom()
+      .scale(xScale)
+
+    const xAxis = bounds.append('g')
+      .call(xAxisGenerator)
+        .style('transform', `translateY(${dimensions.boundedHeight}px)`)
+    
+    const yAxisGenerator = d3.axisLeft()
+      .scale(yScale)
+      .ticks(5)
+    
+    const yAxis = bounds.append('g')
+      .call(yAxisGenerator)
+    
+
+    function onMouseEnter(event, datum){
+      const tooltip = d3.select('#tooltip')
+      tooltip.select('#name').text(xValue(datum))
+      tooltip.select('#value').text(yValue(datum))
+      const x = xScale(xValue(datum)) + (xScale.bandwidth() / 2) + dimensions.margin.left
+      const y = yScale(yValue(datum)) + dimensions.margin.top
+      tooltip.style('transform', `translate(calc(-50% + ${x}px), calc(-100% + ${y}px))`)
+      tooltip.style('opacity', 1)
+    }
+
+  </script>
+</body>
+</html>

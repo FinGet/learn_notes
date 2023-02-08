@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <div class="chartContainer"></div>
+  <script>
+    // 資料
+    const data = [{
+        name: 'A',
+        x: 200,
+        y: 340
+      },
+      {
+        name: 'B',
+        x: 220,
+        y: 300
+      },
+      {
+        name: 'C',
+        x: 250,
+        y: 198
+      },
+      {
+        name: 'D',
+        x: 360,
+        y: 296
+      },
+      {
+        name: 'E',
+        x: 160,
+        y: 150
+      },
+      {
+        name: 'F',
+        x: 370,
+        y: 360
+      },
+      {
+        name: 'G',
+        x: 187,
+        y: 250
+      }
+    ]
+
+    const svg = d3.select('.chartContainer')
+      .append('svg')
+      .attr('width', 500)
+      .attr('height', 500);
+
+    // 建立圓點
+    const dots = svg.append('g')
+      .selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('r', 25)
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .style("fill", "#19d3a2")
+      .style("fill-opacity", 0.3)
+      .attr("stroke", "#b3a2c8")
+      .style("stroke-width", 4)
+      .style('cursor', 'pointer')
+
+    const drag = d3.drag()
+      .on('start', function(event) {
+        console.log(event)
+        d3.select(this).style('stroke', 'blue')
+      })
+      .on('drag', function() {
+        let pt = d3.pointer(event, this)
+        d3.select(this)
+          .attr('cx', pt[0])
+          .attr('cy', pt[1])
+      })
+      .on('end', function() {
+        d3.select(this).style('stroke', '#b3a2c8')
+      })
+
+      dots.call(drag)
+  </script>
+</body>
+
+</html>

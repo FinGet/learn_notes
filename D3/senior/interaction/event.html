@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <svg height="200" width="500" id="svg"></svg>
+  <button id="btn">取消事件</button>
+  <script>
+    const rectColors = ['yellowgreen', 'cornflowerblue', 'seagreen', 'slateblue']
+
+    // create and bind data to our rects
+    const rects = d3
+      .select('#svg')
+      .selectAll('.rect')
+      .data(rectColors)
+      // For all new data points, append a rect
+      .enter()
+      .append('rect')
+      .attr('height', 100)
+      .attr('width', 100)
+      .attr('x', (d, i) => i * 110)
+      .attr('fill', 'lightgrey')
+      
+    rects.on('mouseenter', function(event, datum){
+      console.log(datum)
+      d3.select(this).style('fill', datum)
+    })
+    .on('mouseleave', function(event, datum){
+      d3.select(this).style('fill', 'lightgrey')
+    })
+
+    setTimeout(() => {
+      // 通过定时器取消事件，需要先触发一下事件 还原状态
+      rects.dispatch('mouseleave').on('mouseenter', null).on('mouseleave', null)
+    }, 2000)
+
+    d3.select('#btn')
+    .on('click', function(event){
+      console.log('clicked')
+      // rects.dispatch('mouseout').on('mouseenter', null).on('mouseleave', null)
+      rects.on('mouseenter', null).on('mouseleave', null)
+    })
+  </script>
+</body>
+</html>

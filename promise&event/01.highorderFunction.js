@@ -17,7 +17,7 @@ Function.prototype.before = function (beforeFn) {
     beforeFn();
     that();
   }; */
-  return (...args) => { // 箭头函数没有this 也没有 arguments
+  return (...args) => { // 箭头函数没有this 也没有 arguments，没有原型
     beforeFn();
     this(...args);
   };

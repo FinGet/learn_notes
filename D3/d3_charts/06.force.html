@@ -159,6 +159,7 @@
           return d.target.y
         })
 
+      
       nodesCircle.attr("transform", function (d) {
         // d.fx=d.x;d.fy=d.y; 固定位置
         return "translate(" + d.x + ", " + d.y + ")";
@@ -167,6 +168,7 @@
 
     // 拖拽
     function started(event) {
+      console.log(event)
       if (!event.active) simulation.alphaTarget(0.3).restart();
       event.subject.fx = event.subject.x;
       event.subject.fy = event.subject.y;

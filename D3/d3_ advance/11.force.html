@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <script type="module">
+      const width = 1000,
+        height = 500;
+      const svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      // 选取颜色色系
+      const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+      async function load() {
+        // 加载数据
+        const nodes = [];
+        for (let i = 0; i < 200; i++) {
+          nodes.push({
+            x: Math.random() * 1000,
+            y: Math.random() * 500,
+            r: Math.random() * 10 + 1
+          });
+        }
+        const edges = [];
+        for (let i = 0; i < 200; i++) {
+          edges.push({
+            source: Math.floor(Math.random() * 200),
+            target: Math.floor(Math.random() * 200)
+          });
+        }
+        // 绑定数据并形成圆
+        const node = svg
+          .selectAll("circle")
+          .data(nodes)
+          .enter()
+          .append("circle")
+          .attr("cx", (d) => d.x)
+          .attr("cy", (d) => d.y)
+          .attr("r", (d) => d.r)
+          .attr("fill", (d, i) => color(i));
+
+        let sim = null;
+        // 径向力
+        const radial = () => {
+          // 力的模拟
+          sim = d3.forceSimulation(nodes).force(
+            "radial",
+            d3.forceRadial((d) => d.r + 200, width / 2, height / 2).strength(0.06)
+          );
+        };
+
+        // 碰撞力
+        const collide = () => {
+          sim = d3
+            .forceSimulation(nodes)
+            // 指定位置的拉力
+            .force("x", d3.forceX(width / 2).strength(0.06))
+            .force("y", d3.forceY(height / 2).strength(0.06))
+            // 碰撞力, radius(碰撞半径)
+            .force(
+              "collide",
+              d3.forceCollide().radius((d) => d.r + 1)
+            );
+        };
+
+        // 电荷力
+        const manyBody = () => {
+          // 1.原子力，正数吸引力
+          // sim = d3
+          //   .forceSimulation(nodes)
+          //   .force("charge", d3.forceManyBody().strength(7));
+
+          // 2.原子力，负数排斥力
+          // sim = d3
+          //   .forceSimulation(nodes)
+          //   .force("charge", d3.forceManyBody().strength(-7));
+
+          // 3.原子力 + 碰撞力, radius(碰撞半径)
+          sim = d3
+            .forceSimulation(nodes)
+            .force(
+              "collide",
+              d3.forceCollide().radius((d) => d.r + 1)
+            )
+            .force("charge", d3.forceManyBody().strength(7));
+        };
+
+        const centerForce = () => {
+          const centerForce = {
+            x: 700,
+            y: 250
+          };
+
+          // 创建中心力的圆
+          svg
+            .append("circle")
+            .attr("cx", centerForce.x)
+            .attr("cy", centerForce.y)
+            .attr("r", 100)
+            .attr("stroke", "#6b6f80")
+            .attr("stroke-width", 3)
+            .attr("fill", "#00000000");
+          // 力的模拟
+          sim = d3
+            .forceSimulation(nodes)
+            // 碰撞力
+            .force(
+              "collide",
+              d3.forceCollide().radius((d) => d.r + 1)
+            )
+            // 原子力
+            .force("charge", d3.forceManyBody().strength(7))
+            // 中心力，规划
+            .force("center", d3.forceCenter(centerForce.x, centerForce.y));
+        };
+
+        // 连接力
+        let lines = null
+        const linkForce = () => {
+          // 绑定数据并形成线
+          lines = svg
+            .selectAll("lines")
+            .data(edges)
+            .enter()
+            .append("line")
+            .attr("x1", (d) => nodes[d.source].x)
+            .attr("x2", (d) => nodes[d.target].x)
+            .attr("y1", (d) => nodes[d.source].y)
+            .attr("y2", (d) => nodes[d.target].y)
+            .attr("stroke", "#5d5d66")
+            .attr("stroke-width", 2);
+
+          // 力的模拟
+          sim = d3
+            .forceSimulation(nodes)
+            .force(
+              "collide",
+              d3.forceCollide().radius((d) => d.r + 1)
+            )
+            // 原子力
+            .force("charge", d3.forceManyBody().strength(-7))
+            // 链接力
+            .force("link", d3.forceLink(edges))
+        };
+        // radial();
+        // linkForce();
+        // collide();
+        manyBody();
+        // centerForce();
+
+        console.log(sim);
+        sim.on("tick", () => {
+          // sim 直接改变了
+          node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+          lines
+            .attr("x1", (d) => d.source.x)
+            .attr("y1", (d) => d.source.y)
+            .attr("x2", (d) => d.target.x)
+            .attr("y2", (d) => d.target.y);
+        });
+      }
+      load();
+    </script>
+  </body>
+</html>

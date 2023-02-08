@@ -35,7 +35,7 @@ let utils = {};
 // 3.延迟执行 - 避免重复的去执行程序，等真正需要结果的时候，再执行，思路把所有参数都存起来，不传参数才执行
 
 const curry = (fn,args=[]) => {
-  let len = fn.length;
+  let len = fn.length; // 函数参数的长度
   return (..._) => {
     let arg = args.concat(_);
     console.log(arg, args)
@@ -56,6 +56,8 @@ console.log(currySum(1,2)(3)(4,5));
 ['String','Number','Boolean'].forEach(type=>{
   utils[`is${type}`] = curry(isType)(type);
 })
+console.log(utils.isString)
 console.log(utils.isString(111));
 console.log(utils.isNumber(22));
 console.log(utils.isBoolean(false));
+

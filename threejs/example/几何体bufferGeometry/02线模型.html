@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>几何体</title>
+	</head>
+	<body>
+    <div id="webgl" style="margin-top: 200px;margin-left: 100px;"></div>
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../../build/three.module.js",
+          "three/addons/": "../../jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+      import * as THREE from 'three';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+      
+      function main () {
+
+        // ------  虚拟场景 ----------- //
+
+        // 1.创建3D场景对象Scene(创建一个3维世界)
+        const scene = new THREE.Scene();
+
+        // 2.创建一个模型
+        // a.创建一个几何图形
+        const geometry = new THREE.BufferGeometry(); 
+        //类型化数组创建顶点数据
+        const vertices = new Float32Array([
+            0, 0, 0, //顶点1坐标
+            50, 0, 0, //顶点2坐标
+            0, 100, 0, //顶点3坐标
+            0, 0, 10, //顶点4坐标
+            0, 0, 100, //顶点5坐标
+            50, 0, 10, //顶点6坐标
+        ]);
+        const attribue = new THREE.BufferAttribute(vertices, 3); 
+        geometry.attributes.position = attribue;
+        // b.创建一个材质,设置颜色
+        const material = new THREE.LineBasicMaterial({
+          color: 0xff0000,
+          size: 10.0, // 点对象像素尺寸
+          wireframe: true // 线条模式渲染
+        });
+
+        // c.创建一个网格模型(几何图形+材质=网格模型)
+        const mesh = new THREE.Line(geometry, material); // LineLoop:闭合线条 LineSegments:非连续的线条
+        // d.设置网格模型的位置
+        mesh.position.set(0, 10, 0);
+
+        // 3.将网格模型添加到场景中
+        scene.add(mesh);
+
+
+
+
+        // ------  相机 ----------- //
+
+        // 4.创建相机对象
+        // a.定义相机渲染输出的画布大小
+        const width = 800;
+        const height = 600;
+        // 30:视场角度, width / height:Canvas画布宽高比, 1:近裁截面, 3000：远裁截面
+        const camera = new THREE.PerspectiveCamera(50, width / height, 1, 600);
+        camera.position.set(200, 200, 200);
+
+        // 5.相机镜头对准的位置
+        // camera.lookAt(0, 10, 0);
+        camera.lookAt(mesh.position);
+
+
+
+
+
+        // ------  渲染器 ----------- //
+        
+        // 6.创建渲染器对象
+        const renderer = new THREE.WebGLRenderer()
+        renderer.setSize(width, height);
+
+        // 7.执行渲染操作
+        renderer.render(scene, camera);
+       
+        // 8.将渲染器的输出（此处是Canvas元素）插入到body
+        document.getElementById('webgl').appendChild(renderer.domElement);
+
+
+        // 设置相机控件轨道控制器OrbitControls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        // 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景
+        controls.addEventListener('change', function () {
+          renderer.render(scene, camera); //执行渲染操作
+        });//监听鼠标、键盘事件
+      }
+
+      main()
+    </script>
+  </body>
+</html>

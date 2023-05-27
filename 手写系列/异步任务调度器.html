@@ -51,8 +51,8 @@
     });
   }
 
-  // const scheduler2times = new Scheduler(2);
-  // scheduler2times.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
+  const scheduler2times = new Scheduler(2);
+  scheduler2times.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
   // scheduler2times.addTask(() => createAsyncTask(3)).then(() => { console.log('任务2执行完成'); });
   // scheduler2times.addTask(() => createAsyncTask(1)).then(() => { console.log('任务3执行完成'); });
   // scheduler2times.addTask(() => createAsyncTask(5)).then(() => { console.log('任务4执行完成'); });
@@ -101,14 +101,14 @@
       return result;
     }
   }
-  const scheduler2times2 = new Scheduler2(2);
-  const result1 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
-  const result2 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务2执行完成'); });
-  const result3 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务3执行完成'); });
-  const result4 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务4执行完成'); });
-  const result5 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务5执行完成'); });
+  // const scheduler2times2 = new Scheduler2(2);
+  // const result1 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务1执行完成'); });
+  // const result2 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务2执行完成'); });
+  // const result3 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务3执行完成'); });
+  // const result4 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务4执行完成'); });
+  // const result5 = scheduler2times2.addTask(() => createAsyncTask(2)).then(() => { console.log('任务5执行完成'); });
 
-  console.log(result1, result2, result3, result4, result5)
+  // console.log(result1, result2, result3, result4, result5)
   </script>
 
 </body>

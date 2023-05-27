@@ -46,6 +46,31 @@
 			return cur
 		}
 		console.log(climbStairs2(6))
+
+		const climbStairs3 = (n, f = 1, s = 1) => {
+			// 与斐波那契的区别，斐波从0开始加，爬楼梯从1开始
+			if (n <= 1) {
+		    return s;
+		  }
+		  return climbStairs3(n - 1, s, s + f)
+		} 
+		console.log(climbStairs3(6))
+
+		// 动态规划
+		const climbStairs4 = (n) => {
+			if(n <= 1) {
+				return 1
+			}
+			// dp[i]表示爬到第i阶台阶的方法数
+			let dp = new Array(n + 1)
+			dp[0] = 1
+			dp[1] = 1
+			for(let i = 2; i <= n; i++) {
+				dp[i] = dp[i - 1] + dp[i - 2] // 所以到第n阶台阶可以从第n-2或n-1上来
+			}
+			return dp[n]
+		}
+		console.log(climbStairs4(6))
 	</script>
 </body>
 </html>

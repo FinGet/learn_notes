@@ -14,22 +14,24 @@
 <body>
 	<div id="app"></div>
 	<script>
-		var start = null;
+		// var start = null;
 		var element = document.getElementById('app');
-		element.style.position = 'absolute';
+		// element.style.position = 'absolute';
 
-		function step(timestamp) {
-			// console.log(timestamp)
-		 //  if (!start) start = timestamp;
-		 //  var progress = timestamp - start;
-		 //  element.style.left = Math.min(progress / 10, 200) + 'px';
-		 console.log(app.clientHeight)
-		  // if (progress < 2000) {
-		    window.requestAnimationFrame(step);
-		  // }
+		let curwidth = 100
+		function step() {
+			curwidth += 10
+		  element.style.width = curwidth + 'px';
+		
+		  if (curwidth < 2000) {
+				// 他们俩都是异步任务 也是宏任务
+		    window.requestAnimationFrame(step); // 回调函数会被传入一个timestamp参数，表示当前时间
+				// window.requestIdleCallback(step) // 会在浏览器的空闲时段内调用回调函数
+		  }
 		}
+		step()
 
-		window.requestAnimationFrame(step);
+		// window.requestAnimationFrame(step);
 	</script>
 </body>
 </html>

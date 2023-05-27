@@ -57,7 +57,7 @@
   }
   /*
   function waitResult(arr) {
-    return Promise.allSettled(arr)
+    return Promise.allSettled(arr) // /ˈsetld/
   }
   */
 
@@ -100,6 +100,36 @@
       console.log('fn3')
     }
     fn3()
+
+    let fn5 = function() {
+      return new Promise((reslove, reject) => {
+        setTimeout(() => {
+            reject('error')
+        }, 1000)
+      })
+    }
+
+    try {
+      fn5().then(() => {
+        console.log('success')
+      }, (err) => {
+          console.log(err)
+          // return err // success then
+          throw Error('sss') // catch
+          // return Promise.reject() // catch
+          // return Promise.resolve() // success then
+          // 
+      }).then(() => {
+          console.log('success then')
+      }, () => {
+        console.log('fail then')
+      }).catch(() => {
+          console.log('catch')
+      })
+    } catch(err) {
+      console.log('try catch')
+    }
+
   </script>
 </body>
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /**
+     *  输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+        输出：11
+        解释：如下面简图所示：
+           2
+          3 4
+         6 5 7
+        4 1 8 3
+        自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+     */
+    function minimumTotal(nums) {
+      let len = nums.length;
+      // 自底向上 dp
+      for(let i = len - 2; i >= 0; i --) { // 从倒数第二行开始
+        for(let j = 0; j < nums[i].length; j ++) {
+          nums[i][j] += Math.min(nums[i+1][j], nums[i+1][j+1])
+        }
+      }
+      return nums[0][0]
+    }
+  </script>
+</body>
+</html>

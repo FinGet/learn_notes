@@ -7,46 +7,49 @@
 	<link rel="stylesheet" href="">
 </head>
 <body>
+	<button id="btn">点击</button>
 	<script type="text/javascript">
 		// 节流的核心思想: 如果在定时器的时间范围内再次触发，则不予理睬，等当前定时器完成，才能启动下一个定时器任务。这就好比公交车，10 分钟一趟，10 分钟内有多少人在公交站等我不管，10 分钟一到我就要发车走人！
 		
-		const throttle = function(fn, interval) {
-		  let last = 0;
-		  return function (...args) {
-		    let context = this;
-		    let now = +new Date();
-		    // 还没到时间
-		    if(now - last < interval) return;
-		    last = now;
-		    fn.apply(this, args)
-		  }
-		}
+		// const throttle = function(fn, interval) {
+		//   let last = 0;
+		//   return function (...args) {
+		//     let context = this;
+		//     let now = +new Date();
+		//     // 还没到时间
+		//     if(now - last < interval) return;
+		//     last = now;
+		//     fn.apply(context, args)
+		//   }
+		// }
 
-		function throttle(fn, ms = 100) {
-		  let throttleTimer = null;
-		  return function (...args) {
-		    if(!throttleTimer) {
-		      const ret = fn.apply(this, args);
-		      throttleTimer = setTimeout(() => {
-		        throttleTimer = null;
-		      }, ms);
-		      return ret;
-		    }
-		  };
-		}
+		// function throttle(fn, ms = 100) {
+		//   let throttleTimer = null;
+		//   return function (...args) {
+		//     if(!throttleTimer) {
+		//       const ret = fn.apply(this, args);
+		//       throttleTimer = setTimeout(() => {
+		//         throttleTimer = null;
+		//       }, ms);
+		//       return ret;
+		//     }
+		//   };
+		// }
 
 		// 防抖核心思想: 
 		// 每次事件触发则删除原来的定时器，建立新的定时器。跟王者荣耀的回城功能类似，你反复触发回城功能，那么只认最后一次，从最后一次触发开始计时。
-		function debounce(fn, delay) {
-		  let timer = null;
-		  return function (...args) {
-		    let context = this;
-		    if(timer) clearTimeout(timer);
-		    timer = setTimeout(function() {
-		      fn.apply(context, args);
-		    }, delay);
-		  }
-		}
+		// function debounce(fn, delay) {
+		// 	console.log(fn)
+		//   let timer = null;
+		//   return function (...args) {
+		//     let context = this;
+		//     if(timer) clearTimeout(timer);
+		//     timer = setTimeout(function() {
+		//     	console.log('进来了。。。。')
+		//       fn.apply(context, args);
+		//     }, delay);
+		//   }
+		// }
 
 		function debounce (func, wait = 50, immediate = false) {
 			let timer, context, args;
@@ -56,10 +59,10 @@
 				timer = null;
 				// 延迟执行的情况下，函数会在延迟函数中执行
 				// 使用到之前缓存的参数和上下文
-				if (!immediate) {
-					func.apply(context, args);
-					context = args = null;
-				}
+				// if (!immediate) {
+				func.apply(context, args);
+				context = args = null;
+				// }
 			}, wait);
 
 			// 这里返回的函数是每次实际调用的函数
@@ -83,6 +86,11 @@
 				}
 			};
 		}
+		const clickfn = debounce(() => {
+			console.log('click')
+		}, 1000, true)
+		console.log(clickfn)
+		btn.addEventListener('click', clickfn)
 	</script>
 </body>
 </html>

@@ -38,8 +38,13 @@
 		var maxProfit = function(prices) {
 		  const len = prices.length;
 		  let dp0 = 0, dp1 = -prices[0];
+			// dp0: 没有股票的最大利润 dp1: 有股票的最大利润
 		  for(let i = 1; i < prices.length; i++) {
+				// 说明今天没有股票，那么可能是昨天就没有股票，今天也没有买，也可能是昨天有股票，今天卖了
+				// 所以利润要加上今天卖出的价格
 		    dp0 = Math.max(dp0, dp1 + prices[i]);
+				// 说明今天有股票，那么可能是昨天就有股票，今天也没有卖，也可能是昨天没有股票，今天买了
+				// 所以利润要减去今天买入的价格
 		    dp1 = Math.max(dp1, dp0 - prices[i]);
 		  }
 		  return dp0;
@@ -53,7 +58,7 @@
     let index = 1;
     let len = prices.length
     while (index < len) {
-      if (prices[index] > prices[index - 1]) {
+      if (prices[index] > prices[index - 1]) { // 把所有的上坡都加起来，就是最大利润
         num += prices[index] - prices[index - 1]
       }
       index++
@@ -65,7 +70,7 @@
   	let sum = 0
   	for(let i = 1; i < prices.length; i ++) {
   		if(prices[i] > prices[i-1]) {
-  			num + = prices[i] > prices[i-1]
+  			num += prices[i] > prices[i-1]
   		}
   	}
   	return sum

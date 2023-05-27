@@ -52,6 +52,40 @@
     ]
   }
 
+  const treeToArr = (root) => {
+    let arr = [];
+    const tree = JSON.parse(JSON.stringify(root));
+    const dfs = (root) => {
+      let children = root.children;
+      delete root.children;
+      arr.push(root);
+      children.forEach(dfs)
+    }
+    dfs(tree);
+    return arr
+  }
+  console.log(treeToArr(tree));
+
+  const treeToArr1 = (root) => {
+    const tree = JSON.parse(JSON.stringify(root));
+    let static = [tree] // 新建一个队列
+    let arr = [];
+    while (static.length) {
+      let temp = static.shift();
+      let children = JSON.parse(JSON.stringify(temp.children));
+      delete temp.children;
+      arr.push(temp)
+      if (children) {
+        children.forEach(item => {
+          static.push(item)
+        })
+      }
+    }
+    return arr
+  }
+  console.log(treeToArr1(tree));
+
+
   // 深度优先遍历
   const dfs = (root) => {
     console.log(root.val)
@@ -131,6 +165,70 @@
   }
   let result = findPath(data, '9')
   console.log(result)
+
+  // Please complete the getDataPathByKey method, to find a node in the tree and output the id path
+function getDataPathByKey(key, value, arr){
+  const loop = (arr, id, path) => {
+    if (typeof path == 'undefined') {
+      path = []
+    }
+    for (let i = 0; i < arr.length; i++) {
+     let tempPath = [...path]; // 保证path不会被修改
+     tempPath.push(arr[i].id);
+     if (arr[i][key] == value) {
+       return tempPath;
+     }
+     if (arr[i].children) {
+       let reuslt = loop(arr[i].children, value, tempPath);
+       if (reuslt) {
+        return reuslt;
+       }
+     }
+   }
+  }
+  
+  return loop(arr, value)
+
+  
+}
+const data1 = [
+  {
+    id: 1,
+    name: 'A',
+    pid: 0,
+    children: [
+      {
+        id: 2,
+        name: 'A1',
+        pid: 1,
+        children: [{ id: 4, name: 'A11', pid: 2, children: [] }]
+      },
+      { id: 3, name: 'A2', pid: 1, children: [] }
+    ]
+  },
+  {
+    id: 5,
+    name: 'B',
+    pid: 0,
+    children: [
+      {
+        id: 6,
+        name: 'B1',
+        pid: 5,
+        children: [
+          { id: 7, name: 'B11', pid: 6, children: [] },
+          {
+            id: 8,
+            name: 'B12',
+            pid: 6,
+            children: []
+          }
+        ]
+      }
+    ]
+  }
+];
+console.log(getDataPathByKey('id', 8, data1))
   </script>
 </body>
 

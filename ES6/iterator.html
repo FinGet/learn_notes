@@ -20,9 +20,28 @@
     var nextIndex = 0;
     return {
       next: function() {
-        return nextIndex < array.length ? { value: array[nextIndex++], done: false } : { value: undefined, done: true };
+        return nextIndex < array.length ? 
+        { value: array[nextIndex++], done: false } 
+        : { value: undefined, done: true };
       }
     };
+  }
+
+  // 对于循环语句来说，他并不关心被循环的对象到底是什么，他只负责调用 data[Symbol.iterator] 函数，然后根据返回值来进行循环。所以任何对象只要提供了标准的 Iterator 接口即可被循环
+  
+  let students = {}
+  students[Symbol.iterator] = function() {
+    let index = 1;
+    return {
+      next() {
+        return {
+          done: index>100, value:index++
+        }
+      }
+    }
+  }
+  for(let i of students) {
+    console.log(i)
   }
   </script>
 </body>

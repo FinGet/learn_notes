@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>中间页</h1>
+  <button id="btn">跳转</button>
+
+  <script>
+    const url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx614b25510b041c74&redirect_uri=http%3A%2F%2Fother.yingxiong.com%2Fcd%2Fmainland%2Fsdksrv%2Fsubpay%2Fwxorder.pay%3Ft%3D37cc67184453b1c96cf931e9b97a9c38%26pt%3D86&response_type=code&scope=snsapi_base&state=STATE&connect_redirect=1#wechat_redirect'
+    const btn = document.getElementById('btn')
+    btn.addEventListener('click', () => {
+      window.open(url)
+    })
+  </script>
+</body>
+</html>

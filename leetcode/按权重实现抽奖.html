@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const peoples = [
+      { n: 'p1', w: 200 },
+      { n: 'p2', w: 100 },
+      { n: 'p3', w: 1 },
+    ]
+
+    const rand = function (peoples) {
+      // 总权重
+      const weight = peoples.reduce((value, item) => value + item.w, 0)
+
+      // 随机值
+      let random = Math.floor(Math.random() * weight)
+      for (const { w, n } of peoples) {
+        if (random < w) return n
+        random -= w
+      }
+    }
+
+    // 测试结果
+    const result = { p1: 0, p2: 0, p3: 0 }
+    // for (let i = 0; i < 1000; i++) {
+    //   result[rand(peoples)]++
+    // }
+    // console.log(result)
+
+    let rand1 = function (p) {
+      const totalWeight = p.reduce((pre, cur) => {
+        cur.startW = pre;
+        return cur.endW = pre + cur.w
+      }, 0)
+      console.log(totalWeight)
+      console.log(p)
+      let random = Math.ceil(Math.random() * totalWeight)
+      let selectPeople = p.find(people => people.startW < random && people.endW > random)
+      return selectPeople.n
+    };
+
+    console.log(rand1(peoples))
+    console.log(result)
+  </script>
+</body>
+</html>

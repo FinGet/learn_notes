@@ -24,8 +24,8 @@
 			}
 		</style>
 		<p>1</p>
-		<!-- 在增加一个BFC父级就可以消除边距重叠 -->
-		<div style="overflow: hidden;">
+		<!-- 在增加一个BFC(float:left, display:grid/flex/table/table-cell, overflow:hidden)父级就可以消除边距重叠 -->
+		<div style="display:table-cell"> 
 			<p>2</p>
 		</div>
 		<p>3</p>

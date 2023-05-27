@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const transform = (p) => {
+      const result = {};
+      for (let key in p) {
+        const item = p[key];
+        const department = item.department.split('-');
+        let temp = result;
+        // 因为department 是一个层级结构
+        // tmp = tmp[d] 会把tmp的值改变，所以要用一个临时变量
+        // tmp 要指向下一层的父级
+        // 比如 A-B-C，A是父级，B是A的子级，C是B的子级
+        // tmp 在这个过程中 会依次指向 A，B，C
+        // 也就可以得到这样的结果 A { B { C { username: '0' } } }
+        department.forEach((d) => {
+          if (!temp[d]) {
+            temp[d] = {};
+          }
+          temp = temp[d];
+        });
+        temp.username = item.username;
+      }
+      return result;
+    }
+
+
+    const r = transform({
+      0: {
+        username: '0',
+        department: 'A-B-C',
+      },
+      1: {
+        username: '1',
+        department: 'A-B-D',
+      },
+      2: {
+        username: '2',
+        department: 'A-X-Y',
+      },
+    })
+    console.log(r)
+
+    const data = [{
+        id: 1,
+        name: 'A',
+        pid: 0,
+      },
+      {
+        id: 2,
+        name: 'B',
+        pid: 1,
+      },
+      {
+        id: 3,
+        name: 'C',
+        pid: 2,
+      },
+      {
+        id: 4,
+        name: 'D',
+        pid: 2,
+      },
+      {
+        id: 5,
+        name: 'X',
+        pid: 1,
+      },
+      {
+        id: 6,
+        name: 'Y',
+        pid: 5,
+      },
+      {
+        id: 7,
+        name: 'Z',
+        pid: 0,
+      },
+      {id: 8, name: 'E', pid: 3},
+    ]
+
+    function arrToTree(data) {
+      const result = [];
+      const map = {};
+      // 先遍历一遍，把所有的数据都放到map中, 以id为key，这样id就会作为父级的pid
+      data.forEach((item) => {
+        map[item.id] = item;
+      });
+      console.log(map)
+      data.forEach((item) => {
+        const parent = map[item.pid];
+        // 因为是引用类型，比如已经把B放到A的children中，再循环到C的时候，
+        // B的children就会有C，那么A的B的children就会有C
+        // 之前一直卡在这里，因为我一直在想怎么把C放到A的B的children中，
+        // 其实不用，只要把C放到B的children中，A的B的children就会有C
+        if (parent) {
+          (parent.children || (parent.children = [])).push(item);
+        } else {
+          result.push(item);
+        }
+      });
+      return result;
+    }
+    // console.log(arrToTree(data))
+
+    function arrToTree1(data, root) {
+      return data.filter((item) => {
+        return item.pid === root;
+      }).map((item) => {
+        return {
+          ...item,
+          children: arrToTree1(data, item.id),
+        }
+      })
+    }
+    // console.log(arrToTree1(data, 0))
+
+    const arrToTree2 = function (arr) {
+      //避免找子孙节点时重复查找数组，优先开辟空间
+      const obj = {};
+      arr.forEach((item) => {
+        if (!obj[item.pid]) {
+          obj[item.pid] = [item];
+        } else {
+          obj[item.pid].push(item);
+        }
+      });
+      //找根节点
+      const rootNode = {
+        id: 0,
+        children: obj[0]
+      };
+      //递归完成树的构建
+      const deepFn = function (rootNode) {
+        if (!obj[rootNode.id])
+          return {
+            ...rootNode,
+            children: []
+          };
+        return {
+          ...rootNode,
+          children: obj[rootNode.id].map((node) => deepFn(node))
+        };
+      };
+      return deepFn(rootNode);
+    };
+
+    // console.log(arrToTree2(data))
+
+    function treeToArr(data) {
+      const result = [];
+      function deep(data) {
+        data.forEach((item) => {
+          let children = item.children && [...item.children] || [];
+          delete item.children;
+          result.push(item);
+          if (children.length > 0) {
+            deep(children);
+          }
+        })
+      }
+      deep(data);
+
+      return result;
+    }
+    // console.log(treeToArr(arrToTree(data)))
+
+    function treeToArr1(data) {
+      // 广度遍历
+      const result = [];
+      const static = [...data];
+      while (static.length > 0) {
+        // 出栈
+        const item = static.shift();
+        let children = item.children && [...item.children] || [];
+        delete item.children;
+        result.push(item);
+        // 把子节点放进去
+        if (children.length > 0) {
+          // static.push(...children);
+          static.unshift(...children);
+        }
+      }
+      return result;
+    }
+    // console.log(treeToArr1(arrToTree(data)))
+  </script>
+</body>
+
+</html>

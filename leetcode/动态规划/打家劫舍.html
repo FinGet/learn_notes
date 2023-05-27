@@ -30,17 +30,17 @@
 	<script type="text/javascript">
 		// 由于不可以在相邻的房屋闯入，所以在当前位置 n 房屋可盗窃的最大值，要么就是 n-1 房屋可盗窃的最大值，要么就是 n-2 房屋可盗窃的最大值加上当前房屋的值，二者之间取最大值 动态规划方程：dp[n] = MAX( dp[n-1], dp[n-2] + num ) 总体的思路是一样的，方法一中，数组长度为 0，1，2 中单独处理，切换设计的求和变量过多，6 个可以利用数组变量优化。
 		
-		const rob = function (nums) {
-		  const len = nums.length;
-		  if (len === 0) return 0;
-		  const dp = new Array(len + 1);
-		  dp[0] = 0;
-		  dp[1] = nums[0];
-		  for (let i = 2; i <= len; i++) {
-		    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i - 1]);
-		  }
-		  return dp[len];
-		};
+		// const rob = function (nums) {
+		//   const len = nums.length;
+		//   if (len === 0) return 0;
+		//   const dp = new Array(len + 1);
+		//   dp[0] = 0;
+		//   dp[1] = nums[0];
+		//   for (let i = 2; i <= len; i++) {
+		//     dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i - 1]);
+		//   }
+		//   return dp[len];
+		// };
 
 		/*如果数组长度为1，那么直接返回数组唯一项。
 			如果数组长度为2，那么返回“第1项”和“第2项”的较大者。
@@ -52,7 +52,7 @@
 
 			f(0) = array[0]
 			f(1) = max(array[0], array[1])
-			f(n) = max( f(n-2) + array[n], f(n-1) )
+			f(n) = max( f(n-2) + array[n], f(n-1) ) // 偷第n-1家，或者偷第n家 + 偷第n-2家 绕过中间这家
 			*/
 		var rob = function (nums) {
 			// last => 数组长度为n-2的结果

@@ -156,6 +156,7 @@
         left -= 1;
         right += 1;
       }
+      // console.log(left, right)
       return right - left - 1;
     };
     for (let i = 0; i < s.length; i += 1) {
@@ -172,6 +173,8 @@
     }
     return s.substring(start, end + 1);
   };
+
+  console.log(longestPalindrome1('babad'));
 
 
   </script>

@@ -16,7 +16,7 @@
 			// 快指针 先走n步，那么此时快慢指针之间相差n-1
 		  // 所以接着快慢指针一起走，当快指针走到头了（!first.next），
 		  // 那么此时 慢指针所对应的就是倒数第n个结点的前一个
-			if(!fast) return head.next;
+			if(!fast) return head.next; // 如果快指针 走到头了，那么就是删除头节点
 			while(fast.next) {
 				fast = fast.next;
 				slow = slow.next;

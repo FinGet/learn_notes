@@ -9,7 +9,12 @@
 <body>
 	<script>
 		let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
-		function bubbleSort(arr) {
+    /**
+      找到数组中的最小值，将它放在第一位
+      接着找到第二小的值，将它放在第二位
+      依次类推，执行n-1轮
+     */
+		function bubbleSort(arr) { // O(n^2)
       let len = arr.length;
       // 1. 选择排序，选出最小的数，假设第一个数就是最小的
       for (let i = 0 ; i < len-1 ; i++) {
@@ -18,9 +23,9 @@
           // 2. 内层循环，每个数与min比较，如果比min小，那么就重新给min赋值，注意这里不交换位置
           min = arr[min] > arr[j] ? j : min
         }
-        // 3. 内层循环之后，我们就能得到整个数组中真正的最小数，然后把它与arr[i]做交换，外层循环第二次的时候，就假设第二个数是最小的，依此类推
+        // 3. 内层循环之后，我们就能得到整个数组中真正的最小数，
+        // 然后把它与arr[i]做交换，外层循环第二次的时候，就假设第二个数是最小的，依此类推
         [arr[i], arr[min]] = [arr[min], arr[i]]
-        console.log(`i=${i}; min=${min}; arr=${arr}`)
       }
       return arr;
     }

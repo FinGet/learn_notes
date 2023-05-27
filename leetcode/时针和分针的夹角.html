@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		function calcul(h, m) {
+			if(h < 24 && m < 60) {
+				// 时针 一小时 30度，一分钟 0.5度
+				const hc = h % 12 * 30 + m * 0.5
+
+				const mc = m * 6
+				console.log(hc , mc)
+
+				return Math.abs(hc - mc)
+			}
+		}
+
+		console.log(calcul(13, 30))
+	</script>
+</body>
+</html>

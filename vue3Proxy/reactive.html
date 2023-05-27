@@ -1,0 +1,178 @@
+<script type="text/javascript">
+ // 如果属性改变，副作用重新执行，这就变成了响应式数据
+	const obj = {name: 'finget'}
+
+	const bucket = new Set() // 副作用桶
+
+	const data = new Proxy(obj, {
+		get: (target, key) => {
+			bucket.add(effect) // 当读取操作发生时，将副作用函数收集到“桶”中
+			return target[key] 
+		},
+		set: (target, key, newVal) => {
+			target[key] = newVal;
+			bucket.forEach(fn => fn()) // 当设置操作发生时，将副作用从“桶”中取出，并执行
+			return true
+		}
+	})
+
+	function effect() {
+		console.log(data.name)
+	}
+
+	effect()
+
+	setTimeout(() => {
+		data.name = 'hhhw'
+	}, 1000)
+</script>
+
+<script type="text/javascript">
+	// 拒绝硬编码，effect 可能是不叫effect，所以定义一个activeEffect 来存储当前副作用
+	let activeEffect = null
+	function effect(fn) {
+		activeEffect = fn;
+		fn()
+	}
+
+	const reactiveData = (target) => {
+		return new Proxy(target, {
+			get: (target, key) => {
+				if(activeEffect) {
+					bucket.add(activeEffect)
+				}
+				return target[key]
+			},
+			set: (target, key, newVal) => {
+				target[key] = newVal;
+				bucket.forEach(fn => fn())
+				return true
+			}
+		})
+	}
+
+</script>
+
+<script type="text/javascript">
+/**
+桶合理的树形结构
+
+WeakMap (target - map)
+	- Map (key - set)
+		- Set
+
+target1
+	└── text1
+		└── effectFn1
+target2
+	└── text2
+		└── effectFn2
+ */
+
+ 	const reactiveData = (target) => {
+		return new Proxy(target, {
+			get: (target, key) => {
+				if(activeEffect) {
+					let depsMap = bucket.get(target)
+					if(!depsMap) {
+						bucket.set(target, (depsMap = new Map()))
+					}
+					let deps = depsMap.get(key)
+					if(!deps) {
+						depsMap.set(key, (deps = new Set()))
+					}
+					deps.add(activeEffect)
+				}
+				return target[key]
+			},
+			set: (target, key, newVal) => {
+				target[key] = newVal;
+				const depsMap = bucket.get(target)
+				if(depsMap) {
+					const deps = depsMap.get(key)
+					deps && deps.forEach(fn => fn())
+				}
+				return true
+			}
+		})
+	}
+
+	function effect (fn, options) {
+		const effectFn = () => {
+			cleanup(effectFn)
+			activeEffect = effectFn;
+			effectStack.push(effectFn)
+			const res = fn()
+			effectStack.pop()
+			activeEffect = effectStack[effectStack.length - 1]
+
+			return res
+		}
+		effectFn.options = options
+		effectFn.deps = []
+		if(!options.lazy) {
+			effectFn()
+		}
+
+		return effectFn
+	}
+
+	function computed (fn) {
+		let value // 缓存值
+		let dirty = true
+		// dirty 标志，用来标识是否需要重新计算值，为 true 则意味着“脏”，需要计算
+		const effectFn = effect(() => {
+			value = fn()
+		}, {
+			lazy: true, 
+			scheduler() { // 关联的值改变后，会调用对应effect 的 scheduler
+				dirty = true
+				// 当计算属性依赖的响应式数据变化时，手动调用 trigger 函数触发响应
+				trigger(obj, 'value') 
+			}
+		}) // lazy effect 不会立即执行，而是返回effect 本身
+
+		const obj = {
+			get value() {
+				if(dirty) {
+					value = effectFn()
+					dirty = false
+				}
+				// 当读取 value 时，手动调用 track 函数进行追踪
+				track(obj, 'value')
+				return value
+			}
+		}
+		return obj
+	}
+
+
+	function watch (source, cb, options = {}) {
+		// 调用 traverse 递归地读取
+		let oldValue, newValue;
+
+		const job = () => {
+			newValue = traverse(source)
+			cb(newValue, oldValue)
+			oldValue = newValue
+		}
+
+		const effectFn = effect(() => traverse(source), {
+			lazy: true,
+			scheduler() {
+				if(options.flush === 'post') { // post 时，将 job 推入微任务队列
+					const p = Promise.resolve()
+					p.then(job)
+				} else {
+					job()
+				}
+			}
+		})
+		// 立即执行
+		if(options.immediate) {
+			job()
+		} else {
+			oldValue = effectFn()
+		}
+	}
+</script>

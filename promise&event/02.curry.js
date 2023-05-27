@@ -52,12 +52,13 @@ function sum(a,b,c,d,e) {
 
 const currySum = curry(sum);
 console.log(currySum(1,2)(3)(4,5));
+console.log(currySum(1,2)(3,4,5));
 
-['String','Number','Boolean'].forEach(type=>{
-  utils[`is${type}`] = curry(isType)(type);
-})
-console.log(utils.isString)
-console.log(utils.isString(111));
-console.log(utils.isNumber(22));
-console.log(utils.isBoolean(false));
+// ['String','Number','Boolean'].forEach(type=>{
+//   utils[`is${type}`] = curry(isType)(type);
+// })
+// console.log(utils.isString)
+// console.log(utils.isString(111));
+// console.log(utils.isNumber(22));
+// console.log(utils.isBoolean(false));
 

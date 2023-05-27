@@ -18,6 +18,7 @@
       .fill()
       .map((item) => Array(n).fill(0)); //初始dp数组 先全部填0
 
+    // 因为 有障碍物，所以不能直接用1填充，要判断一下
     // 没有 障碍的 填1
     for (let i = 0; i < m && obstacleGrid[i][0] === 0; ++i) {
       //初始列

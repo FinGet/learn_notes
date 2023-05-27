@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let arr = [1,2,3,[1,5,6,[7,9,[11,32,[22,221]]]],10];
+
+    function sumLength(arr) {
+      let sum = 1;
+      for(let i = 0; i< arr.length; i++) {
+        if(Array.isArray(arr[i])) {
+          sum += sumLength(arr[i])
+        }
+      }
+      return sum
+    }
+
+    console.log(sumLength(arr))
+
+    function sumLength2(arr) {
+      let sum = 0;
+      let str = JSON.stringify(arr);
+      for(let i = 0; i< str.length; i++) {
+        if(str[i] === '[') {
+          sum++
+        }
+      }
+      return sum;
+    }
+    console.log(sumLength2(arr))
+  </script>
+</body>
+</html>

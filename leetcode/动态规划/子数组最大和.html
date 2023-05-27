@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var maxSubArray = function(nums) {
+        let dp =[]
+        dp[0] = nums[0] ; // dp[i] 表示以 nums[i] 结尾的连续子数组的最大和
+        let max = nums[0];
+        for(let i = 1; i < nums.length; i ++) {
+            dp[i] = Math.max(nums[i] + dp[i-1], nums[i])
+            max = Math.max(max, dp[i])
+        }
+        return max;
+    };
+
+    console.log(maxSubArray([-2,1,-3,4,-1,2,1,-5,4]))
+
+    var maxSubArray2 = function(nums) {
+      let pre = 0; let maxAns = nums[0];
+      nums.forEach((x) => {
+          pre = Math.max(pre + x, x);
+          maxAns = Math.max(maxAns, pre);
+      });
+      return maxAns;
+    }
+    console.log(maxSubArray2([-2,1,-3,4,-1,2,1,-5,4]))
+  </script>
+</body>
+</html>

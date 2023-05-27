@@ -8,8 +8,8 @@
 
 <body>
   <script>
-  // 0 1 1 2 3 5 8 13 21 34 ...
-
+  // 0 1 1 2 3 5 8 13 21 34 55...
+  // F(0) = 0 F(1) = 1
   //暴力递归复杂度O(2^n)
   const fib = function(n) {
     if(n <= 1) {
@@ -38,7 +38,7 @@
   	if(n <= 1) {
   		return n
   	}
-  	const dp = [0, 1]
+  	const dp = [0, 1] // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
   	for(let i = 2; i <= n; i++) {
   		dp[i] = dp[i-1] + dp[i-2]
   	}
@@ -69,19 +69,33 @@
   		return n
   	}
   	let pre1 = 0, pre2 = 1;
-  	let sum = null;
+  	// let sum = null;
   	for(let i = 2; i <= n; i++) {
-  		sum = pre1 + pre2;
-  		pre1 = pre2;
-  		pre2 = sum;
+  		// sum = pre1 + pre2;
+  		// pre1 = pre2;
+  		// pre2 = sum;
+      [pre1, pre2] = [pre2, pre1 + pre2]
   	}
-  	return sum;
+  	return pre2;
   }
+
+
+  const fib5 = (n, f = 0, s = 1) => {
+    if(n === 0) {
+      return 0
+    }
+    if(n === 1) {
+      return s
+    }
+    return fib5(n - 1, s , s +f)
+  }
+
   console.log(fib(10))
   console.log(fib1(10))
   console.log(fib2(10))
   console.log(fib3(10))
   console.log(fib4(10))
+  console.log(fib5(10))
   </script>
 </body>
 

@@ -7,6 +7,11 @@
 </head>
 
 <body>
+    <pre>
+        给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。
+        返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致
+        （如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+    </pre>
     <script>
     var intersect = function(nums1, nums2) {
         let res = []
@@ -28,6 +33,49 @@
 
     };
     console.log(intersect([1,2,2,1],[2,2]))
+
+    const intersect1 = (nums1, nums2) => {
+        let ln1 = nums1.length;
+        let ln2 = nums2.length;
+        let res = [];
+        nums1.sort((a, b) => a - b);
+        nums2.sort((a, b) => a - b);
+        let i = 0;
+        let j = 0;
+        while (i < ln1 && j < ln2) {
+            if (nums1[i] === nums2[j]) {
+                res.push(nums1[i]);
+                i++;
+                j++;
+            } else if (nums1[i] < nums2[j]) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return res;
+    }
+    console.log(intersect1([4,9,5],[9,4,9,8,4]))
+
+    function intersect2(nums1, nums2) {
+        let map = new Map();
+        let res = [];
+        for (let i = 0; i < nums1.length; i++) {
+            if (map.has(nums1[i])) {
+                map.set(nums1[i], map.get(nums1[i]) + 1);
+            } else {
+                map.set(nums1[i], 1);
+            }
+        }
+        for (let i = 0; i < nums2.length; i++) {
+            if (map.has(nums2[i]) && map.get(nums2[i]) > 0) {
+                res.push(nums2[i]);
+                map.set(nums2[i], map.get(nums2[i]) - 1);
+            }
+        }
+        return res;
+    }
+    console.log(intersect2([4,9,5],[9,4,9,8,4]))
     </script>
 </body>
 

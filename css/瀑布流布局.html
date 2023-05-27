@@ -7,20 +7,21 @@
 	<link rel="stylesheet" href="">
 	<style type="text/css" media="screen">
 		.container {
-  display: flex;
-  flex-flow: column wrap;
-  align-content: space-between;
-  /* 容器必须有固定高度
-   * 且高度大于最高的列高 */
-  height: 660px;
-  
-  /* 非必须 */
-  background-color: #f7f7f7;
-  border-radius: 3px;
-  padding: 20px;
-  width: 60%;
-  margin: 40px auto;
-  counter-reset: items;
+    display: flex;
+    /* flex-direction: column; */
+    flex-flow: column wrap;
+    align-content: space-between;
+    /* 容器必须有固定高度
+    * 且高度大于最高的列高 */
+    height: 660px;
+    
+    /* 非必须 */
+    background-color: #f7f7f7;
+    border-radius: 3px;
+    padding: 20px;
+    width: 60%;
+    margin: 40px auto;
+    counter-reset: items;
 }
 
 .item {
@@ -57,7 +58,7 @@
   content: "";
   flex-basis: 100%;
   width: 0;
-  order: 2;
+  /* order: 2; */
 }
 	</style>
 </head>

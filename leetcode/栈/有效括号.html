@@ -8,25 +8,39 @@
 <body>
 	<script type="text/javascript">
 		const isValid = function(s) {
-			const dict = {
-				'(':')',
-				'{':'}',
-				'[':']'
-			}
-			const result = []
-			for(let i = 0; i < s.length; i++) {
-				let c = s[i]
-				if(c === '{' || c === '[' || c === '(') {
-					// 存右括号就行了
-					result.push(dict[c])
-				} else if(c !== result.pop()) {
+			// const dict = {
+			// 	'(':')',
+			// 	'{':'}',
+			// 	'[':']'
+			// }
+			// const result = []
+			// for(let i = 0; i < s.length; i++) {
+			// 	let c = s[i]
+			// 	if(c === '{' || c === '[' || c === '(') {
+			// 		// 存右括号就行了
+			// 		result.push(dict[c])
+			// 	} else if(c !== result.pop()) {
+			// 		return false
+			// 	}	
+			// }
+			// return !result.length
+			const dict = new Map()
+			dict.set('{','}')
+			dict.set('(',')')
+			dict.set('[',']')
+			let result = []
+			for(let i = 0; i<s.length; i++) {
+        const c = s[i];
+        if(dict.has(c)) {
+          result.push(c)
+        } else if(c !== dict.get(result.pop())) {
 					return false
-				}	
-			}
+        }
+      }
 			return !result.length
 		}
 
-		console.log(isValid('({[]})}'))
+		console.log(isValid('({[]})'))
 	</script>
 </body>
 </html>

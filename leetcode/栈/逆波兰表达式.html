@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="">
 </head>
+
 <body>
-		<pre>
+	<pre>
 		输入: ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
 		输出: 22
 		解释: 
@@ -18,7 +20,7 @@
 		= (0 + 17) + 5
 		= 17 + 5
 		= 22
-		</pre>	
+		</pre>
 	<script type="text/javascript">
 		const ACTIONS = {
 			'+': (a, b) => Number(b) + Number(a),
@@ -26,11 +28,12 @@
 			'*': (a, b) => Number(b) * Number(a),
 			'/': (a, b) => parseInt(Number(b) / Number(a)),
 		}
+
 		function evalRPN(tokens) {
 			const stack = []
-			for(let i = 0; i < tokens.length; i++) {
+			for (let i = 0; i < tokens.length; i++) {
 				let action = tokens[i]
-				if(ACTIONS[action]) {
+				if (ACTIONS[action]) {
 					stack.push(ACTIONS[action](stack.pop(), stack.pop()))
 				} else {
 					stack.push(tokens[i])
@@ -39,6 +42,43 @@
 			return stack[0]
 		}
 		console.log(evalRPN(["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]))
+
+
+		function addParentheses(str) {
+			const operators = ['*', '/', '+', '-'];
+			const priority = {
+				'*': 2,
+				'/': 2,
+				'+': 1,
+				'-': 1
+			};
+			const stack = [];
+			let result = '';
+
+			for (let i = 0; i < str.length; i++) {
+				const char = str[i];
+
+				if (/\d/.test(char)) {
+					result += char;
+				} else if (operators.includes(char)) {
+					// while (stack.length > 0 && priority[stack[stack.length - 1]] >= priority[char]) {
+					// 	result += `)${stack.pop()}`;
+					// }
+					// result += `(${char}`;
+					// stack.push(')');
+				}
+			}
+
+			while (stack.length > 0) {
+				result += stack.pop();
+			}
+
+			return result;
+		}
+
+		const str = '11+2-3*4+5/2*4+10/5';
+		console.log(addParentheses(str)); // 输出：11+2-(3*4)+(5/2*4)+(10/5)
 	</script>
 </body>
+
 </html>

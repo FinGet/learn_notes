@@ -46,5 +46,38 @@
 	  });
 	  console.log(_data)
 	</script>
+	<script>
+		let list =[
+			{start: 12, end: 33, result: 1},
+			{start: 10, end: 53, result: 2},
+			{start: 22, end: 50, result: 3},
+			{start: 1, end: 10, result: 4},
+			{start: 9, end: 60, result: 5},
+		]
+		// 取出没有区间重叠的数组, 有重叠的取start最小的
+		const getNoOverlap = (list) => {
+			let res = []
+			list.forEach(item => {
+				let flag = true
+				for (let i = 0; i < res.length; i++) {
+					let r = res[i]
+					if (item.start >= r.start && item.end <= r.end) {
+						flag = false
+						break
+					} else if (item.start <= r.start && item.end >= r.end) {
+						res[i] = item
+						flag = false
+						break
+					}
+				}
+				if (flag) {
+					res.push(item)
+				}
+			})
+			return res
+		}
+		
+		console.log(getNoOverlap(list))
+	</script>
 </body>
 </html>

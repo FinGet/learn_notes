@@ -28,11 +28,12 @@
 	    for (let i = 0; i < prices.length; i++) {
         // 注意，这里的j从i+1开始
         for (j = i + 1; j < prices.length; j++) {
-          let profit = prices[j] - prices[i];
-          // 不断用当前利润和历史最大利润比较，如果更大就替换maxProfit
-          if (profit > maxProfit) {
-            maxProfit = profit;
-          };
+          // let profit = prices[j] - prices[i];
+          // // 不断用当前利润和历史最大利润比较，如果更大就替换maxProfit
+          // if (profit > maxProfit) {
+          //   maxProfit = profit;
+          // };
+					maxProfit = Math.max(maxProfit, prices[j] - prices[i])
         };
 	    };
 	    return maxProfit;
@@ -57,7 +58,8 @@
 	    for(let i = 1; i < prices.length; i ++) {
 	    	// 如果后续价格比历史更低，更新最低价
 	    	minprice = Math.min(minprice, prices[i] )
-	    	// 计算利润，找出最大利润
+	    	// 计算利润，找出最大利润 我想到一个问题就是 不能当天买当天卖，这个怎么处理呢？
+				// 也就是说，如果当天的价格比历史最低还低，那就不用计算利润了，因为利润为0
 	    	max = Math.max(max, prices[i] - minprice)
 	      // let d = prices[i] - minprice
 	      // if(d > 0) {

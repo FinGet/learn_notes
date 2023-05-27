@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const cnNums = {
+      零: 0,
+      一: 1,
+      二: 2,
+      三: 3,
+      四: 4,
+      五: 5,
+      六: 6,
+      七: 7,
+      八: 8,
+      九: 9,
+      十: 10,
+      百: 100,
+      千: 1000,
+      万: 10000,
+      亿: 100000000,
+    };
+
+    const cnUnits = {
+      十: 10,
+      百: 100,
+      千: 1000,
+      万: 10000,
+      亿: 100000000,
+    };
+    function chineseToNumber(str) {
+      let temp = 0
+      let sum = 0
+      for (let i = 0; i < str.length; i++) {
+        let char = str[i]
+        if (char === '零') continue
+        if (char === '亿' || char === '万') {
+          sum += temp * cnUnits[char]
+          temp = 0
+        } else {
+          let next = str[i + 1]
+          if (next && next !== '亿' && next !== '万') {
+            temp += cnNums[char] * cnUnits[next]
+            i++
+          } else {
+            temp += cnNums[char]
+          }
+        }
+        console.log(sum, temp)
+      }
+      return sum + temp
+    }
+
+    console.log(chineseToNumber('一千零四')); // 1004
+    console.log(chineseToNumber('十四')); // 14
+    // console.log(chineseToNumber('一百二十三万四千五百六十七')) // 1234567
+    // console.log(chineseToNumber('九千八百七十六万五千四百三十二')); // 98765432
+    // console.log(chineseToNumber('一亿二千三百四十五万六千七百八十九')); // 123456789
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <pre>
+    给定一棵树，每个节点包含一个数字 value 和若干个子节点 children，请编写一个函数，求出所有节点的 value 之和。
+
+    具体要求：
+
+    节点对象的数据结构如下： {value: number, children: TreeNode[]}，其中 value 为节点的值， children 为子节点的数组。
+    树的根节点作为函数的输入参数，类型为 TreeNode。
+    所有节点的 value 之和为函数的返回值。
+    请实现函数 sumOfNodeValues(root: TreeNode): number
+  </pre>
+  <script>
+    const tree = {
+      value: 1,
+      children: [{
+          value: 2,
+          children: [{
+              value: 4,
+              children: []
+            },
+            {
+              value: 5,
+              children: []
+            },
+          ],
+        },
+        {
+          value: 3,
+          children: [{
+              value: 6,
+              children: []
+            },
+            {
+              value: 7,
+              children: []
+            },
+          ],
+        },
+      ],
+    };
+
+    const sum = (tree) => {
+      let result = 0;
+      result += tree.value;
+      if (tree.children) {
+        tree.children.forEach((item) => {
+          result += sum(item);
+        });
+      }
+      return result;
+    }
+
+    console.time()
+    console.log(sum(tree));
+    console.timeEnd()
+
+    // 尾递归优化
+    const sum2 = (tree, total = 0) => {
+      total += tree.value
+      if (tree.children) {
+        tree.children.forEach(item => {
+          sum2(item, total)
+        })
+      }
+      return total
+    }
+    console.time()
+    console.log(sum2(tree));
+    console.timeEnd()
+
+    const data = [{
+      id: 1,
+      label: '一级 1',
+      children: [{
+        id: 4,
+        label: '二级 1-1',
+        children: [{
+          id: 10,
+          label: '三级 1-1-2',
+          children: [{
+            id: 11,
+            label: '四级 1-1-2-1',
+            children: [{
+              id: 12,
+              label: '五级 1-1-2-1',
+              children: [{
+                id: 13,
+                label: '六级 1-1-2-1',
+                children: [{
+                  id: 14,
+                  label: '七级 1-1-2-1'
+                }]
+              }]
+            }]
+          }]
+        }]
+      }]
+    }, {
+      id: 2,
+      label: '一级 2',
+      children: [{
+        id: 5,
+        label: '二级 2-1'
+      }, {
+        id: 6,
+        label: '二级 2-2'
+      }]
+    }]
+
+    const findMaxId = (data) => {
+      let maxId = 0;
+      data.forEach(item => {
+        if (item.id > maxId) {
+          maxId = item.id
+        }
+        if (item.children) {
+          const childMaxId = findMaxId(item.children)
+          if (childMaxId > maxId) {
+            maxId = childMaxId
+          }
+        }
+      })
+      return maxId
+    }
+    console.time()
+    console.log(findMaxId(data))
+    console.timeEnd()
+
+    const findMaxId1 = (data, maxId = 0) => {
+      data.forEach(item => {
+        if (item.id > maxId) {
+          maxId = item.id
+        }
+        if (item.children) {
+          maxId = findMaxId1(item.children, maxId)
+        }
+      })
+      return maxId
+    }
+    console.time()
+    console.log(findMaxId1(data))
+    console.timeEnd()
+  </script>
+</body>
+
+</html>

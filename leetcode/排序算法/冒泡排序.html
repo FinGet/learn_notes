@@ -11,8 +11,12 @@
 <body>
   <script>
   let arr = [89, 19, 90, 9, 3, 21, 5, 77, 10, 22]
-
-  function bubbleSort(arr) {
+    /**
+     *比较相邻元素，如果第一个比第二个大，则交换他们
+      一轮下来，可以保证最后一个数是最大的
+      执行n-1轮，就可以完成排序
+     */
+  function bubbleSort(arr) { // O(n^2)
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - 1 - i; j++) {
         console.log(`len:${arr.length},j:${j}`)
@@ -24,7 +28,7 @@
     }
     return arr;
   }
-  // bubbleSort(arr)
+  bubbleSort(arr)
 
   Array.prototype.bubbleSort = function() {
     if (this.length == 1) {

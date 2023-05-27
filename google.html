@@ -31,6 +31,8 @@
 		auth2.attachClickHandler(element, {},
 	    function(googleUser) {
 	      document.getElementById('name').innerText = "Signed in: " + googleUser.getBasicProfile().getName();
+	      console.log(googleUser)
+        console.log(googleUser.getAuthResponse().id_token);
         var profile = auth2.currentUser.get().getBasicProfile();
         console.log('ID: ' + profile.getId());
         console.log('Full Name: ' + profile.getName());
@@ -51,6 +53,9 @@
 			alert('用户注销成功');
 		});
 	}
+
+	// 如果报错： idpiframe_initialization_failed in Google Sign In from Localhost，
+	// 清理缓存就好了
 </script>
 </html>
 

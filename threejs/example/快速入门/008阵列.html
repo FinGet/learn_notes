@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>阵列</title>
+	</head>
+	<body>
+    <div id="webgl" style="margin-top: 200px;margin-left: 100px;"></div>
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../../build/three.module.js",
+          "three/addons/": "../../jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+      import * as THREE from 'three';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+      
+      function main () {
+        // 1.创建3D场景对象Scene(创建一个3维世界)
+        const scene = new THREE.Scene();
+
+        //创建一个长方体几何对象Geometry
+        const geometry = new THREE.BoxGeometry(100, 100, 100);
+        //材质对象Material
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ffff, //设置材质颜色
+            transparent: true,//开启透明
+            opacity: 0.5,//设置透明度
+        });
+        for (let i = 0; i < 10; i++) {
+          for (let j = 0; j < 10; j++) {
+            const mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+            // 在XOZ平面上分布
+            mesh.position.set(i * 200, 0, j * 200);
+            scene.add(mesh); //网格模型添加到场景中  
+          }
+        }
+
+
+        // 4.创建相机对象
+        // a.定义相机渲染输出的画布大小
+        const width = 800;
+        const height = 600;
+        // 30:视场角度, width / height:Canvas画布宽高比, 1:近裁截面, 3000：远裁截面
+        const camera = new THREE.PerspectiveCamera(500, width / height, 1, 3000);
+        camera.position.set(0, 500, 300);
+
+        // 5.相机镜头对准的位置
+        camera.lookAt(0, 0, 0);
+        // camera.lookAt(mesh.position);
+
+        // 6.创建渲染器对象
+        const renderer = new THREE.WebGLRenderer()
+        renderer.setSize(width, height);
+
+        // 7.执行渲染操作
+        renderer.render(scene, camera);
+       
+        // 8.将渲染器的输出（此处是Canvas元素）插入到body
+        document.getElementById('webgl').appendChild(renderer.domElement);
+
+         // 设置相机控件轨道控制器OrbitControls
+         const controls = new OrbitControls(camera, renderer.domElement);
+        // 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera); //执行渲染操作
+        });//监听鼠标、键盘事件
+      }
+
+      main()
+    </script>
+  </body>
+</html>

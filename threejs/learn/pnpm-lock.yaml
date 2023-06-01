@@ -1,10 +1,12 @@
 lockfileVersion: 5.4
 
 specifiers:
+  gsap: ^3.11.5
   parcel: ^2.9.1
   three: ^0.152.2
 
 dependencies:
+  gsap: 3.11.5
   parcel: 2.9.1
   three: 0.152.2
 
@@ -1207,6 +1209,10 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       type-fest: 0.20.2
+    dev: false
+
+  /gsap/3.11.5:
+    resolution: {integrity: sha512-Q89nKCLgoX5xUjznh9LcaIUkz54k1voNucT1Rpf9SJNFIQznBwFqt5qUUQbeVInFyN/n18OUJkpeI6CNEDt74w==}
     dev: false
 
   /has-flag/3.0.0:

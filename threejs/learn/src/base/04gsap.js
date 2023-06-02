@@ -67,6 +67,16 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+window.addEventListener('dblclick', () => {
+  // 进入/退出全屏
+  const fullScreenElement = document.fullscreenElement
+  if(fullScreenElement) {
+    document.exitFullscreen()
+  } else {
+    renderer.domElement.requestFullscreen()
+  }
+})
+
 // 渲染
 function animate() {
   controls.update(); // 更新控制器, 阻尼更真实

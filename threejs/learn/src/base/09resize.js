@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-
 // 创建场景
 const scene = new THREE.Scene();
 
@@ -27,25 +26,32 @@ document.body.appendChild(renderer.domElement);
 
 // 控制器
 const controls = new OrbitControls(camera, renderer.domElement);
-// controls.addEventListener('change', function() {
-//   renderer.render(scene, camera)
-// });
+controls.enableDamping = true; // 阻尼
 
-const clock = new THREE.Clock();
-
-// 如果不控制时间的话，不同的帧率的机器上的动画速度会不一样
 // 渲染
 function animate() {
-  const elapsedTime = clock.getElapsedTime(); // 从开始到现在的时间
-  console.log(elapsedTime);
-  const delta = clock.getDelta(); // 间隔时间
-  console.log('delta time', delta);
-
-  const t = elapsedTime % 5;
-  cube.position.x = Math.cos(t) * 2;
+  controls.update(); // 更新控制器, 阻尼更真实
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
 animate();
 
+window.addEventListener('dblclick', () =>{
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+})
+
+window.addEventListener('resize', () => {
+  // 更新相机宽高比
+  camera.aspect = window.innerWidth / window.innerHeight;
+  // 更新相机投影矩阵
+  camera.updateProjectionMatrix();
+  // 更新渲染器宽高
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  // 防止高分屏模糊
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+})
 

@@ -32,11 +32,14 @@ const controls = new OrbitControls(camera, renderer.domElement);
 //   renderer.render(scene, camera)
 // });
 
+
 // 渲染
 function animate(time) {
   // // 旋转
   // cube.rotation.x += 0.01;
-  // cube.rotation.y += 0.01;
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
 
   // // cube.position.set(0, 0, 0);
   // // 移动
@@ -57,8 +60,13 @@ function animate(time) {
   const t = time * 0.001; // 秒
   const radius = 1;
   const speed = 2;
-  cube.position.x = Math.cos(t * speed) * radius;
+  // cube.position.x = Math.cos(t * speed) * radius;
   
+  // console.log('mesh', cube.position.length()); // 获取向量长度
+
+  // console.log(cube.position.distanceTo(camera.position)); // 获取两个向量之间的距离
+
+  // console.log(cube.position.normalize()); // 归一化 向量长度为1
 
   requestAnimationFrame(animate);
   renderer.render(scene, camera);

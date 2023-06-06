@@ -4,21 +4,22 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 // 创建场景
 const scene = new THREE.Scene();
 
-// 创建图形
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
 
-// 添加图形到场景
 scene.add(cube);
 
 // 坐标轴
-const axesHelper = new THREE.AxesHelper(2);
+const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
 // 创建相机
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
+camera.lookAt(cube.position);
+
+
 
 // 渲染器
 const renderer = new THREE.WebGLRenderer();
@@ -27,22 +28,28 @@ document.body.appendChild(renderer.domElement);
 
 // 控制器
 const controls = new OrbitControls(camera, renderer.domElement);
-// controls.addEventListener('change', function() {
-//   renderer.render(scene, camera)
-// });
 
-const clock = new THREE.Clock();
+const cursor = {
+  x: 0,
+  y: 0
+}
 
-// 如果不控制时间的话，不同的帧率的机器上的动画速度会不一样
+window.addEventListener('mousemove', (event) =>
+{
+  cursor.x = event.clientX / window.innerWidth - 0.5
+  cursor.y = - (event.clientY / window.innerHeight - 0.5)
+
+  console.log(cursor.x, cursor.y)
+})
 // 渲染
-function animate() {
-  const elapsedTime = clock.getElapsedTime(); // 从开始到现在的时间
-  console.log(elapsedTime);
-  const delta = clock.getDelta(); // 间隔时间
-  console.log('delta time', delta);
+function animate(time) {
+  // camera.position.x = cursor.x
+  // camera.position.y = cursor.y
 
-  const t = elapsedTime % 5;
-  cube.position.x = Math.cos(t) * 2;
+  camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 2
+  camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 2
+  camera.position.y = cursor.y * 3
+  camera.lookAt(cube.position)
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }

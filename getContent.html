@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div>asjdfjkasdjk
+      <a href="a">asdfasd阿斯顿发送到</a>
+    </div>
+    <div>
+      <p>就阿斯顿就克服恐惧阿斯顿</p>
+      <span><a href="">nasdfkasdww机卡上的</a></span>
+      <ul>
+        <li>阿斯顿发</li>
+        <li>阿斯顿发</li>
+        <li>阿斯顿发</li>
+        <li>阿斯顿发</li>
+      </ul>
+    </div>
+    <img src="adfadss" alt="">
+  </div>
+  <script>
+    // 创建高亮插件
+    class Highlighter {
+      constructor() {
+        this.highlightElement = null;
+        this.handleClick = this.handleClick.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.removeHighlight = this.removeHighlight.bind(this);
+        this.selectionCallback = null; // 回调函数
+      }
+
+      createHighlightElement() {
+        const highlightElement = document.createElement('div');
+        highlightElement.style.position = 'fixed';
+        highlightElement.style.pointerEvents = 'none';
+        highlightElement.style.backgroundColor = 'rgba(56, 127, 242, 0.3)';
+        highlightElement.style.zIndex = '9999';
+        return highlightElement;
+      }
+
+      updateHighlightPositionAndSize(rect) {
+        this.highlightElement.style.top = `${rect.top}px`;
+        this.highlightElement.style.left = `${rect.left}px`;
+        this.highlightElement.style.width = `${rect.width}px`;
+        this.highlightElement.style.height = `${rect.height}px`;
+      }
+
+      handleMouseMove(event) {
+        const x = event.clientX;
+        const y = event.clientY;
+        const targetElement = document.elementFromPoint(x, y);
+
+        if (this.highlightElement) {
+          const rect = targetElement.getBoundingClientRect();
+          this.updateHighlightPositionAndSize(rect);
+        } else {
+          this.highlightElement = this.createHighlightElement();
+          const rect = targetElement.getBoundingClientRect();
+          this.updateHighlightPositionAndSize(rect);
+          document.body.appendChild(this.highlightElement);
+        }
+      }
+
+      handleClick(event) {
+        const x = event.clientX;
+        const y = event.clientY;
+        const targetElement = document.elementFromPoint(x, y);
+        const selectedText = targetElement.innerText;
+        if (this.selectionCallback) {
+          this.selectionCallback(selectedText);
+        }
+      }
+
+      removeHighlight() {
+        if (this.highlightElement && this.highlightElement.parentNode) {
+          this.highlightElement.parentNode.removeChild(this.highlightElement);
+          this.highlightElement = null;
+        }
+      }
+
+      enable() {
+        document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('click', this.handleClick);
+        document.addEventListener('mouseout', this.removeHighlight);
+        document.addEventListener('scroll', this.removeHighlight);
+      }
+
+      disable() {
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('click', this.handleClick);
+        document.removeEventListener('mouseout', this.removeHighlight);
+        document.removeEventListener('scroll', this.removeHighlight);
+        this.removeHighlight();
+      }
+
+      setSelectionCallback(callback) {
+        this.selectionCallback = callback;
+      }
+    }
+
+    // 使用示例
+    const highlighter = new Highlighter();
+    highlighter.enable();
+
+    highlighter.setSelectionCallback((selectedText) => {
+      // 在回调函数中处理选中的文本内容
+      console.log('Selected Text in Business Logic:', selectedText);
+    });
+  </script>
+</body>
+</html>

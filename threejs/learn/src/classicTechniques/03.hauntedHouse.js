@@ -274,12 +274,21 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 let cameraRotation = 0;
 
+const smallBallGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+const smallBallMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const smallBall = new THREE.Mesh(smallBallGeometry, smallBallMaterial);
+smallBall.position.set(3, 3, 3)
+scene.add(smallBall);
 // 渲染
 function animate() {
   ghostTick();
   
   let speed = 0.01; //旋转速度
   cameraRotation += speed;
+
+  // 模拟相机围绕场景旋转
+  smallBall.position.set(Math.sin(cameraRotation) * 5, 3, Math.cos(cameraRotation) * 5)
+
   // 要旋转其实就是改变相机的位置，会根据相机的位置计算向量，
   // 围绕y轴旋转，所以只需要改变相机的x和z坐标即可  
   // 如果都用sin或者cos的话，会发现相机会在一个方向上改变(镜头拉远和推近)，所以需要用sin和cos组合

@@ -1,1 +1,1 @@
-import './classicTechniques/03.hauntedHouse'
+import './classicTechniques/05.galaxy'

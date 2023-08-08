@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		const loadData = async () => {
+		try {
+			const token = useUserStore().token;
+			const response = await fetch('/api/chip/conversation', {
+				method: 'post',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+					accept: 'text/event-stream'
+				},
+				body: JSON.stringify({
+					conversation: [
+						{
+							content: '数数1-50',
+							role: 'user',
+							chat_id: ''
+						}
+					],
+					chat_id: ''
+				})
+			});
+			// .then(function (response) {
+			// 	// 创建一个 ReadableStream 对象，用于读取从服务器返回的流数据
+			// 	let stream = response.body;
+			// 	// 创建一个新的 TextDecoder 对象，用于将流数据转换成字符串
+			// 	let decoder = new TextDecoder();
+			// 	// 获取文本框对象
+			// 	// let output = document.getElementById('output');
+			// 	// 初始化流数据读取操作
+			// 	let reader = stream!.getReader();
+			// 	reader.read().then(function processResult (result) {
+			// 		// console.log(result);
+			// 		if (result.done) {
+			// 			// 如果最后一个数据块已经读取完成，则处理最后一个缓冲区中的数据
+			// 			// output.value += buffer;
+			// 			return;
+			// 		}
+			// 		// 将当前数据块的内容添加到缓冲区中，并更新文本框的内容
+			// 		let buffer = decoder.decode(result.value, { stream: true });
+			// 		console.log(buffer);
+			// 		// output.value += buffer;
+			// 		// 继续读取下一个数据块
+			// 		return reader.read().then(processResult);
+			// 	});
+			// });
+			// const reader = (response as any).body.getReader();
+			// while (true) {
+			// 	const { done, value } = await reader.read();
+			// 	if (done) {
+			// 		// alert('done');
+			// 		break;
+			// 	}
+
+			// 	const coder = new TextDecoder().decode(value);
+			// 	console.log(coder);
+			// 	try {
+			// 		const content = JSON.parse(coder).data.content;
+			// 		console.log(content);
+			// 		msg.value += content;
+			// 		// console.log(msg.value);
+			// 	} catch (error) {
+
+			// 	}
+			// 	// console.log(msg.value);
+			// }
+		} catch {
+			console.error('请求失败');
+		}
+	};
+
+	const createEventSource = () => {
+		if (window.EventSource) {
+			const source = new EventSource('/api/chip/conversation');
+			source.addEventListener('message', (event) => {
+				console.log(event.data);
+				msg.value += event.data;
+			});
+			source.addEventListener('error', (event) => {
+				console.log(event);
+			});
+			source.addEventListener('open', (event) => {
+				console.log(event);
+			});
+			setTimeout(() => {
+				source.close();
+			}, 3000);
+		} else {
+			alert('不支持 EventSource');
+		}
+	};
+
+	const axiosProcess = () => {
+		post({
+			url: '/api/test',
+			onDownloadProgress: ({ event }) => {
+				const xhr = event.target;
+				const { responseText } = xhr;
+				// Always process the final line
+				const lastIndex = responseText.lastIndexOf('\n');
+				let chunk = responseText;
+
+				if (lastIndex !== -1) { chunk = responseText.substring(lastIndex); }
+				// console.log(chunk);
+				msg.value = chunk;
+				// try {
+				// 	const data = JSON.parse(chunk);
+				// 	console.log(data);
+				// } catch (error) {
+				// 	console.log(error);
+				// }
+			}
+		});
+	};
+
+	</script>
+</body>
+</html>

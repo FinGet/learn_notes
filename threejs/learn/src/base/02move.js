@@ -5,10 +5,16 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 const scene = new THREE.Scene();
 
 // 创建图形
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
+const geometry = new THREE.BoxGeometry(1, 1, 1); // 立方体
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 材质
+const cube = new THREE.Mesh(geometry, material); // 网格
 
+const chid = new THREE.Mesh(
+  new THREE.BoxGeometry(0.5, 0.5, 0.5),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
+chid.position.set(2, 0, 0);
+cube.add(chid); // child 会跟随父级的变化而变化(相对运动)
 
 // 添加图形到场景
 scene.add(cube);
@@ -33,12 +39,34 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // });
 
 
+// 实现一个物体围绕一个中心点旋转
+const container = new THREE.Object3D();
+
+const centerPosition = new THREE.Vector3(3, 2, 2);
+
+const object = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+)
+
+// 将物体的位置设置为相对于容器的位置
+object.position.copy(centerPosition);
+container.add(object);
+
+scene.add(container);
+
+
+
+
+
 // 渲染
 function animate(time) {
   // // 旋转
   // cube.rotation.x += 0.01;
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
+
+  container.rotation.x += 0.01;
 
 
   // // cube.position.set(0, 0, 0);

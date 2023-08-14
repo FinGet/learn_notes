@@ -6,6 +6,7 @@ export default {
 	base: './',
 	server:{
 		host: true,
+		port: 4000,
 		open: !isCodeSandbox // Open if it's not a CodeSandbox
 	},
 	build:{

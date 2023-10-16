@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		.img-wrapper {
+			position: relative;
+			width: 400px;
+			height: 400px;
+		}
+		.img-wrapper img {
+			width: 100%;
+			height: 100%;
+		}
+		#maskCanvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="img-wrapper">
+		<img src="https://prompts-static.dev.eks-089.atcloudbox.com/arvin_server/img_ai_painter/UUDPHTKURKCHX/s3_TTPUwRHeeTggijTYdY4HBF.png" alt="">
+		<canvas id="maskCanvas" width="400" height="400"></canvas>
+		
+	</div>
+	<!-- <canvas id="imageCanvas" width="400" height="400"></canvas> -->
+	<button id="clearButton">清除蒙层</button>
+	<button id="saveButton">保存蒙层</button>
+
+	<script>
+
+
+const maskCanvas = document.getElementById("maskCanvas");
+const maskContext = maskCanvas.getContext("2d");
+
+const drawButton = document.getElementById("drawButton");
+const clearButton = document.getElementById("clearButton");
+const saveButton = document.getElementById("saveButton");
+
+
+let isDrawing = false;
+
+maskContext.strokeStyle = "rgba(255,0,0, 0.1)"; // 黑色带有透明度
+maskContext.globalAlpha = 0.1;
+maskContext.lineWidth = 20; // 画笔宽度
+maskContext.lineCap = "round"; // 设置线条末端为圆滑
+maskContext.lineJoin = "round"; // 设置线条拐角为圆滑
+
+maskCanvas.addEventListener('mousedown', () => {
+	isDrawing = true;
+  maskContext.beginPath();
+  maskContext.moveTo(event.clientX - maskCanvas.offsetLeft, event.clientY - maskCanvas.offsetTop);
+})
+
+maskCanvas.addEventListener("mousemove", () => {
+  if (isDrawing) {
+    maskContext.lineTo(event.clientX - maskCanvas.offsetLeft, event.clientY - maskCanvas.offsetTop);
+    maskContext.stroke();
+  }
+});
+
+maskCanvas.addEventListener("mouseup", () => {
+  isDrawing = false;
+});
+
+clearButton.addEventListener("click", () => {
+  // 清除蒙层Canvas内容，但不影响原图Canvas
+  maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+});
+
+saveButton.addEventListener("click", () => {
+  // 保存蒙层Canvas为一张图片
+  const maskDataURL = maskCanvas.toDataURL("image/png");
+  const maskImage = new Image();
+  maskImage.src = maskDataURL;
+  document.body.appendChild(maskImage)
+  // 现在，maskImage 包含了蒙层图片
+  // 你可以将 maskImage 下载到本地或上传到服务器
+});
+
+	</script>	
+</body>
+</html>

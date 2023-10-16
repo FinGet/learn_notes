@@ -6,6 +6,13 @@
 	<title></title>
 	<link rel="stylesheet" href="">
 	<style type="text/css">
+		@font-face {
+            font-family: "jxp";
+            src: url("./jxp.ttf");
+        }
+        html {
+        	font-family: 'jxp';
+        }
 		div {
 			width: 100px;
 			height: 100px;
@@ -14,6 +21,7 @@
 	</style>
 </head>
 <body>
+	<p>给岁月以文明， 加班，交通</p>
 	<div id="outer">
 		<div id="inner"></div>
 	</div>
@@ -78,6 +86,31 @@
 		}
 		
 		console.log(getNoOverlap(list))
+
+		let isDevToolsOpened = false
+		function isDevToolsOpen() {
+		  const threshold = 160;
+		  const element = new Image();
+		  element.__defineGetter__('id', function() {
+		    isDevToolsOpened = true;
+		  });
+
+		  console.dir(element);
+
+		  return isDevToolsOpened || window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold;
+		}
+
+
+		// setInterval(() => {
+
+		// 	if (isDevToolsOpen()) {
+		// 	  console.log('调试面板已打开');
+		// 	  inner.innerText="调试面板已打开"
+		// 	} else {
+		// 	  console.log('调试面板未打开');
+		// 	  inner.innerText="调试面板未打开"
+		// 	}
+		// }, 1000)
 	</script>
 </body>
 </html>

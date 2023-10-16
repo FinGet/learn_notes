@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+        <title>PyScript Hello World</title>
+
+        <link rel="icon" type="image/png" href="favicon.png" />
+        <link
+            rel="stylesheet"
+            href="https://pyscript.net/latest/pyscript.css"
+        />
+        <link rel="stylesheet" href="./assets/css/examples.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    </head>
+
+    <body>
+        <script>
+            let result = ''
+        </script>
+        <p id="date"></p>
+        <py-tutor>
+            <!-- <py-config>
+                plugins = [
+                  "https://pyscript.net/latest/plugins/python/py_tutor.py"
+                ]
+                // 加载外部插件py
+            </py-config> -->
+
+            <section class="pyscript">
+                Hello world! <br />
+                This is the current date and time, as computed by Python:
+                <!-- <py-script>
+                    from datetime import datetime
+                    now = datetime.now()
+                    display(now.strftime("%m/%d/%Y, %H:%M:%S"))
+                </py-script> -->
+            </section>
+        </py-tutor>
+        <script>
+            setTimeout(() => {
+                const pyTutor = document.querySelector("py-tutor");
+                console.log('模拟接口返回代码')
+                pyTutor.appendChild(
+                    document.createElement("py-script")
+                ).textContent = `
+                    from datetime import datetime
+                    from js import document, console
+                    now = datetime.now()
+                    display(now.strftime("%m/%d/%Y, %H:%M:%S"))
+                    result = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    console.log('result', result)
+                    document.querySelector('#date').textContent = result
+                    `;
+            }, 1000);
+        </script>
+    </body>
+</html>

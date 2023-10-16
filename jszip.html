@@ -14,6 +14,7 @@
   <h3>Choose the local(s) zip file(s)</h3>
   <p class="note">Note : your browser will process the zip file, don't choose a file too big !</p>
   <input type="file" id="file" name="file" multiple /><br />
+  <a id="downloadLink" style="display: none;">Download</a>
   <div id="result_block" class="hidden">
     <h3>Content :</h3>
     <div id="result"></div>
@@ -90,6 +91,43 @@
       handleFile(files[i]);
     }
   });
+  </script>
+
+  <script>
+
+  function downloadImages(imageUrls) {
+      const downloadLink = document.getElementById('downloadLink');
+      const zip = new JSZip(); // 使用JSZip库创建一个ZIP文件
+
+      // 使用fetch下载图片并将其添加到ZIP文件中
+      const downloadPromises = imageUrls.map((imageUrl, index) => {
+        return fetch(imageUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            zip.file(`image${index + 1}.jpg`, blob); // 在ZIP文件中添加图片
+          });
+      });
+
+      // 使用Promise.all等待所有图片下载完成
+      Promise.all(downloadPromises)
+        .then(() => {
+          // 生成ZIP文件并提供下载链接
+          zip.generateAsync({ type: 'blob' })
+            .then(blob => {
+              const url = URL.createObjectURL(blob);
+              downloadLink.href = url;
+              downloadLink.download = 'images.zip'; // 下载文件的名称
+              downloadLink.style.display = 'block';
+            });
+        });
+    }
+
+    const imageUrls = [
+      'https://image2.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpel9qcGcvQmdtWGs2c2tlQnJLaWJ0bVUwR1JRNGhabEtlaWFRaWNJYjFrZlFOS1ltMVBZZTAxT3hmMFIzNUNqTDJpYVg3NENPckZUc2liTHN3blM4SWpDcVJrVmhhODcyUS82NDA/d3hfZm10PWpwZWc=', 'https://image2.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpel9qcGcvQmdtWGs2c2tlQnJLaWJ0bVUwR1JRNGhabEtlaWFRaWNJYjFrZlFOS1ltMVBZZTAxT3hmMFIzNUNqTDJpYVg3NENPckZUc2liTHN3blM4SWpDcVJrVmhhODcyUS82NDA/d3hfZm10PWpwZWc='
+      // 添加更多图片URL
+    ];
+
+    downloadImages(imageUrls);
   </script>
 </body>
 

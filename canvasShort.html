@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+	<style>
+		.svg-container,
+		.img_box {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 9999;
+		}
+		#clipcanvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+				<h2><a href="">asdfasdfasd</a></h2>
+		 <table>
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>年龄</th>
+          <th>性别</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>张三</td>
+          <td>18</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>李四</td>
+          <td>20</td>
+          <td>男</td>
+        </tr>
+        <tr>
+          <td>王五</td>
+          <td>22</td>
+          <td>男</td>
+        </tr>
+    </table>
+		<img src="https://t7.baidu.com/it/u=1819248061,230866778&fm=193&f=GIF" alt="">
+	</div>
+	<div id="clip-img-w" class="img_box">
+		<canvas id="drawcanvas"></canvas>
+	</div>
+	</div>
+
+	<script>
+
+		/**
+		 * 核心原理：
+		 * 1. 使用html2canvas将body 保存为 canvas
+		 * 2. 实现蒙层和裁剪框（canvas, svg, dom）
+		 * 3. 把保存下来的canvas绘制到一个真的canvas(承载整个body)上 （drawImage）
+		 * 4. 🚩根据裁剪框的位置和宽高，获取裁剪区域的像素信息（getImageData）
+		 * 5. 把裁剪区域的像素信息绘制到新的canvas(最后输出的截图)上（putImageData）
+		 * 6. 将新的canvas转为base64 （toDataURL）
+		*/
+
+
+		let screenShortImage = null;
+		const drawcanvasCtx = drawcanvas.getContext('2d');
+
+		window.onload = () => {
+			// 不能使用100% 裁剪框偏移
+			drawcanvas.width = window.innerWidth;
+			drawcanvas.height = window.innerHeight;
+			html2canvas(document.body, {
+				allowTaint: true, 
+				useCORS: true,
+				scale: 1, 
+				width: window.innerWidth,
+				height: window.innerHeight,
+				scrollX: window.scrollX,
+				scrollY: -window.scrollY,
+				windowWidth: window.innerWidth,
+				windowHeight: window.innerHeight,
+				x: 0,
+				y: 0,
+				// foreignObjectRendering: true,
+			}).then(canvas => {
+				screenShortImage = canvas;
+				drawMask();
+			});
+		}
+
+
+		const drawMask = () => {
+			drawcanvasCtx.clearRect(0, 0, drawcanvas.width, drawcanvas.height);
+			drawcanvasCtx.save();
+			drawcanvasCtx.fillStyle = 'rgba(0,0,0,0.5)';
+			drawcanvasCtx.fillRect(0, 0, drawcanvas.width, drawcanvas.height);
+			drawcanvasCtx.restore();
+		}
+		// 定义用于存储鼠标位置的变量
+    var isDrawing = false; // 标志鼠标是否按下
+    var startX, startY; // 起始位置
+    var endX, endY; // 结束位置
+		var cutWidth, cutHeight; // 裁剪宽高
+
+    // 监听鼠标按下事件
+   function mouseDownHandler (e) {
+      isDrawing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+    };
+
+    // 监听鼠标移动事件
+		function mouseMoveHandler(e) {
+      if (!isDrawing) return;
+			
+      endX = e.clientX;
+      endY = e.clientY;
+			cutWidth = endX - startX;
+			cutHeight = endY - startY;
+			drawMask();
+      // 绘制矩形
+
+			// drawcanvasCtx.globalCompositeOperation = "source-atop"; // 重叠部分显示上层
+      drawcanvasCtx.clearRect(startX, startY, cutWidth, cutHeight);
+    
+			//  // 使用drawImage将图片绘制到蒙层下方
+			// drawcanvasCtx.save();
+			// drawcanvasCtx.globalCompositeOperation = "destination-over";
+			// console.log(screenShortImage)
+			// drawcanvasCtx.drawImage(
+			// 	screenShortImage,
+			// 	0,
+			// 	0,
+			// 	drawcanvas.width,
+			// 	drawcanvas.height
+			// );
+			// drawcanvasCtx.restore();
+
+		};
+
+    // 监听鼠标释放事件
+    function mouseUpHandler() {
+      isDrawing = false;
+			let base64 = saveCanvasToBase64();
+
+			const img = document.createElement('img');
+			img.src = base64;
+			document.body.appendChild(img);
+    };
+
+		drawcanvas.addEventListener('mousedown', mouseDownHandler);
+		drawcanvas.addEventListener('mousemove', mouseMoveHandler);
+		drawcanvas.addEventListener('mouseup', mouseUpHandler);
+
+		function saveCanvasToBase64() {
+			const dpr = window.devicePixelRatio || 1;
+			drawcanvasCtx.globalCompositeOperation = "destination-over"; // 重叠部分显示上层
+
+			// 把保存的body canvas绘制到蒙层下方
+			drawcanvasCtx.drawImage(
+				screenShortImage,
+				0,
+				0,
+				drawcanvas.width,
+				drawcanvas.height
+			);
+			drawcanvasCtx.restore();
+
+			// 获取裁剪区域的像素信息
+			const img = drawcanvasCtx.getImageData(
+				startX,
+				startY,
+				cutWidth,
+				cutHeight
+			);
+			const canvas = document.createElement('canvas');
+			canvas.width = cutWidth;
+			canvas.height = cutHeight;
+			const imgCtx = canvas.getContext("2d")
+
+			// 把裁剪区域的像素信息绘制到新的canvas上
+			imgCtx.putImageData(img, 0, 0);
+
+			const base64 = canvas.toDataURL('png');
+			return base64;
+		}
+	</script>
+
+</body>
+
+</html>

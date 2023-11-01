@@ -56,7 +56,9 @@ do{
 
 
 function *foo(x) {
-  let y = 2 * (yield (x + 1))
+  let y = 2 * (yield (x + 1)) 
+  // yield (x + 1) 作为返回值, yield 本身可以接收next传递的值，但是第一次next传递的值是无效的
+  // 这里可以写成 let y = 2 * 12; return 5 + 1;
   let z = yield (y / 3)
   return (x + y + z)
 }
@@ -64,6 +66,7 @@ let fooit = foo(5)
   // console.log(fooit.next())   // => {value: 6, done: false}
   // console.log(fooit.next(12)) // => {value: 8, done: false}
   // console.log(fooit.next(13)) // => {value: 42, done: true}
+
 
 const fs = require('fs').promises
 function * readFile() {

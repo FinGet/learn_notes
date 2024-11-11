@@ -1,0 +1,29 @@
+# build stage
+FROM node:18 as build-stage
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm config set registry https://registry.npmmirror.com/
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# production stage
+FROM node:18 as production-stage
+
+COPY --from=build-stage /app/dist /app
+COPY --from=build-stage /app/package.json /app/package.json
+
+WORKDIR /app
+
+RUN npm install --production
+
+# EXPOSE k控制了docker desktop的端口映射(:3000), 但是不会影响docker run -p 3000:3300, 尽可能保持一致
+EXPOSE 3300 
+
+CMD ["node", "/dist/main.js"]

@@ -2,14 +2,14 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title></title>
-  <link rel="stylesheet" href="">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
 </head>
 
 <body>
-  <!-- <script type="text/javascript">
+	<!-- <script type="text/javascript">
   const FLOWER = '✿';
   const arr = '0123✿✿✿4✿✿56✿✿✿'.split('');
   let i = 0; // 二叉树节点字符数组遍历索引
@@ -53,8 +53,8 @@
 
 	<script type="text/javascript">
 		var toString = function (node) {
-		  if (node == null) return '';
-		  return node.data+'('+toString(node.left)+','+toString(node.right)+')';
+			if (node == null) return '';
+			return node.data + '(' + toString(node.left) + ',' + toString(node.right) + ')';
 		}
 
 		let nodeTree = {
@@ -79,11 +79,11 @@
 
 		let str = 'A(B(C(,),),E(,))'
 		class Node {
-		  constructor(data, left, right) {
-		    this.data = data;
-		    this.left = left;
-		    this.right = right;
-		  }
+			constructor(data, left, right) {
+				this.data = data;
+				this.left = left;
+				this.right = right;
+			}
 		}
 
 		/**
@@ -92,11 +92,329 @@
 		 */
 		var result = function (str) {
 
-		  // TODO: Code Here
+			// TODO: Code Here
 
 		};
 		console.log(str.split(''))
 
+	</script>
+
+	<script>
+
+		function transformData(arr, item_id) {
+			const result = [];
+			const groupMap = new Map();
+
+			// 先建立每个 group_id 的结构
+			arr.forEach(item => {
+				const { group_id, parent_id, item_id } = item;
+
+				if (!groupMap.has(group_id)) {
+					groupMap.set(group_id, {
+						group_id,
+						items: [],
+						children: []
+					});
+				}
+
+				groupMap.get(group_id).items.push(item);
+
+				// 如果有 parent_id，记录子项
+				if (parent_id !== "_root_") {
+					const parentGroup = arr.find(i => i.item_id === parent_id);
+					if (parentGroup) {
+						const parentGroupId = parentGroup.group_id;
+						if (!groupMap.has(parentGroupId)) {
+							groupMap.set(parentGroupId, {
+								group_id: parentGroupId,
+								items: [],
+								children: []
+							});
+						}
+						groupMap.get(parentGroupId).children.push(item_id);
+					}
+				}
+			});
+
+			console.log('groupMap', groupMap)
+
+			// 将 groupMap 转换为数组
+			groupMap.forEach(group => {
+				result.push(group);
+			});
+			console.log('result', result)
+
+			// 如果传入了 item_id，过滤结果
+			if (item_id) {
+				const filteredResult = [];
+				result.forEach(group => {
+					if (group.items.some(item => item.item_id === item_id)) {
+						filteredResult.push(group);
+					} else {
+						const children = group.children.filter(childId => {
+							return result.some(g => g.group_id === childId && g.items.some(item => item.item_id === item_id));
+						});
+						if (children.length > 0) {
+							filteredResult.push({
+								...group,
+								children: children
+							});
+						}
+					}
+				});
+				return filteredResult;
+			} else {
+
+				// 如果没有传入 item_id, 则从第一个节点开始，按照子节点的第一个查找，直到没有子节点
+				const resultArr = [result[0]];
+				let currentGroup = result[0];
+				while (currentGroup.children.length > 0) {
+					currentGroup = result.find(g => g.group_id === currentGroup.children[0]);
+					resultArr.push(currentGroup);
+				}
+				return resultArr;
+			}
+		}
+
+		// 示例数据
+		// const data = [
+		// 	{ content: 'hello', chat_id: 1, item_id: 'a', group_id: 'a', parent_id: "_root_" },
+		// 	{ content: 'hello1', chat_id: 1, item_id: 'a1', group_id: 'a1', parent_id: "_root_" },
+		// 	{ content: '你好呀', chat_id: 1, item_id: 'b', group_id: 'b', parent_id: "a" },
+		// 	{ content: '你好呀a1', chat_id: 1, item_id: 'b2', group_id: 'b2', parent_id: "a1" },
+		// 	{ content: '你好呀1', chat_id: 1, item_id: 'b1', group_id: 'b1', parent_id: "a" },
+		// 	{ content: '再见', chat_id: 1, item_id: 'c', group_id: 'c', parent_id: "b" },
+		// 	{ content: '再见a1', chat_id: 1, item_id: 'c1', group_id: 'c1', parent_id: "a1" },
+		// 	{ content: '再见a1-ss', chat_id: 1, item_id: 'd1', group_id: 'd1', parent_id: "c1" },
+		// 	{ content: '再见12', chat_id: 1, item_id: 'd', group_id: 'd', parent_id: "c" },
+		// 	{ content: '再见123', chat_id: 1, item_id: 'e', group_id: 'd', parent_id: "c" },
+		// ];
+		const data = [
+			{ content: 'hello', chat_id: 1, item_id: 'a', group_id: 'a', parent_id: "_root_" },
+			{ content: 'hello1', chat_id: 1, item_id: 'a1', group_id: 'a1', parent_id: "_root_" },
+			{ content: '你好呀', chat_id: 1, item_id: 'b', group_id: 'b', parent_id: "a" },
+			{ content: '有趣的故事', chat_id: 1, item_id: 'c', group_id: 'c', parent_id: "b" },
+			{ content: '有趣的故事-1xxxxx', chat_id: 1, item_id: 'd', group_id: 'd', parent_id: "c" },
+			{ content: '有趣的故事-2xxxx', chat_id: 1, item_id: 'e', group_id: 'd', parent_id: "c" },
+			{ content: 'hello1-2', chat_id: 1, item_id: 'f', group_id: 'f', parent_id: "a1" },
+			{ content: '你好-2', chat_id: 1, item_id: 'g', group_id: 'g', parent_id: "f" },
+		];
+
+
+
+		console.log(setTree(data));
+
+		const formatGroups = (data) => {
+			const map = {};
+			const result = [];
+			data.forEach(item => {
+				if(!map[item.group_id]) {
+					map[item.group_id] = item
+				}
+			});
+			console.log(map)
+			data.forEach(item => {
+				const parent = map[item.group_id];
+				if (parent) {
+					if (!parent.items) {
+						parent.items = [];
+					}
+					parent.items.push(item);
+				}
+			})
+			return Object.values(map)
+		}
+
+		console.log(formatGroups(data))
+
+
+		// 将数据转换为树形结构
+		const tree = {
+			item_id: '_root_',
+			children: [
+				{ 
+					group_id: 'a',
+					items: [
+						{ content: 'hello', chat_id: 1, item_id: 'a', group_id: 'a', parent_id: "_root_"},
+					],
+					children: [
+						{
+							group_id: 'b',
+							items: [
+								{ content: '你好呀', chat_id: 1, item_id: 'b', group_id: 'b', parent_id: "a" },
+							],
+							children: [
+								{
+									group_id: 'c',
+									items: [
+										{ content: '有趣的故事', chat_id: 1, item_id: 'c', group_id: 'c', parent_id: "b" },
+									],
+									children: [
+										{
+											group_id: 'd',
+											items: [
+												{ content: '有趣的故事-1xxxxx', chat_id: 1, item_id: 'd', group_id: 'd', parent_id: "c" },
+												{ content: '有趣的故事-2xxxx', chat_id: 1, item_id: 'e', group_id: 'd', parent_id: "c" },
+											],
+											children: []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					group_id: 'a1',
+					items: [
+						{ content: 'hello1', chat_id: 1, item_id: 'a1', group_id: 'a1', parent_id: "_root_"},
+					],
+					children: [
+						{
+							group_id: 'f',
+							items: [
+								{ content: 'hello1-2', chat_id: 1, item_id: 'f', group_id: 'f', parent_id: "a1" },
+							],
+							children: [
+								{
+									group_id: 'g',
+									items: [
+										{ content: '你好-2', chat_id: 1, item_id: 'g', group_id: 'g', parent_id: "f" },
+									],
+									children: []
+								}
+							]
+						}
+					]
+				}
+			],
+			items: []
+		}
+
+
+		function arrToTree(data) {
+      const result = [];
+      const map = {};
+      // 先遍历一遍，把所有的数据都放到map中, 以id为key，这样id就会作为父级的pid
+      data.forEach((item) => {
+        map[item.item_id] = item;
+      });
+      console.log(map)
+      data.forEach((item) => {
+        const parent = map[item.parent_id];
+        // 因为是引用类型，比如已经把B放到A的children中，再循环到C的时候，
+        // B的children就会有C，那么A的B的children就会有C
+        // 之前一直卡在这里，因为我一直在想怎么把C放到A的B的children中，
+        // 其实不用，只要把C放到B的children中，A的B的children就会有C
+        if (parent) {
+          (parent.children || (parent.children = [])).push(item);
+        } else {
+          result.push(item);
+        }
+      });
+      return result;
+    }
+
+
+		// console.log(arrToTree(data))
+
+
+
+		const chatList = [
+  {
+    "feat": "CHAT",
+    "role": "user",
+    "content": "hello",
+    "item_id": "ch_5ff48c39-ad12-4596-b74f-c4acd7cd089c",
+    "parent_id": "_root_",
+    "group_id": "ch_5ff48c39-ad12-4596-b74f-c4acd7cd089c",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?",
+    "item_id": "ch_f4a174a7-ee94-4300-a9f5-f3c1403857dc",
+    "parent_id": "ch_5ff48c39-ad12-4596-b74f-c4acd7cd089c",
+    "group_id": "ch_f4a174a7-ee94-4300-a9f5-f3c1403857dc",
+  },
+  {
+    "feat": "CHAT",
+    "role": "user",
+    "content": "hello11",
+    "item_id": "ch_1fd7d46b-2da4-42a1-83c9-5ce22b1118cf",
+    "parent_id": "_root_",
+    "group_id": "ch_1fd7d46b-2da4-42a1-83c9-5ce22b1118cf",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?",
+    "item_id": "ch_1aac1560-6698-428f-a557-f52f7ed0605f",
+    "parent_id": "ch_1fd7d46b-2da4-42a1-83c9-5ce22b1118cf",
+    "group_id": "ch_1aac1560-6698-428f-a557-f52f7ed0605f",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?",
+    "item_id": "ch_ffd5b8ac-0a6b-4607-b4cc-36ed925b9f79",
+    "parent_id": "ch_1fd7d46b-2da4-42a1-83c9-5ce22b1118cf",
+    "group_id": "ch_ffd5b8ac-0a6b-4607-b4cc-36ed925b9f79",
+  },
+  {
+    "feat": "CHAT",
+    "role": "user",
+    "content": "有趣的",
+    "item_id": "ch_65abb17f-8cdf-4345-b726-f30c41794df9",
+    "parent_id": "ch_ffd5b8ac-0a6b-4607-b4cc-36ed925b9f79",
+    "group_id": "ch_65abb17f-8cdf-4345-b726-f30c41794df9",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "有什么特别有趣的事情想分享吗？或者是你想聊些什么有趣的话题呢？",
+    "item_id": "ch_d4cb41ac-6a5f-46b3-9d93-212b4df30611",
+    "parent_id": "ch_65abb17f-8cdf-4345-b726-f30c41794df9",
+    "group_id": "ch_d4cb41ac-6a5f-46b3-9d93-212b4df30611",
+  },
+  {
+    "feat": "CHAT",
+    "role": "user",
+    "content": "hello11 - 1 -yellow",
+    "item_id": "ch_ebfcca6f-303f-4873-8efa-65db323331f5",
+    "parent_id": "ch_1aac1560-6698-428f-a557-f52f7ed0605f",
+    "group_id": "ch_ebfcca6f-303f-4873-8efa-65db323331f5",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "It looks like you might be experimenting with a pattern or coding system. Could you clarify what you mean by \"hello11 - 1 - yellow\"? I'm here to help!",
+    "item_id": "ch_68b6012f-e4b9-4578-acd1-618232cd2bd7",
+    "parent_id": "ch_ebfcca6f-303f-4873-8efa-65db323331f5",
+    "group_id": "ch_68b6012f-e4b9-4578-acd1-618232cd2bd7",
+  },
+  {
+    "feat": "CHAT",
+    "role": "user",
+    "content": "hello - 1 - yellow",
+    "item_id": "ch_65dad9aa-79c7-4dcd-9920-9f0abce9030d",
+    "parent_id": "ch_f4a174a7-ee94-4300-a9f5-f3c1403857dc",
+    "group_id": "ch_65dad9aa-79c7-4dcd-9920-9f0abce9030d",
+  },
+  {
+    "feat": "CHAT",
+    "role": "assistant",
+    "content": "Hello! It seems like you might be referencing something specific with \"1\" and \"yellow.\" Could you please provide more context or clarify what you're looking for?",
+    "item_id": "ch_0be7abf3-7a8f-427b-9187-1fd8d1dcd9bf",
+    "parent_id": "ch_65dad9aa-79c7-4dcd-9920-9f0abce9030d",
+    "group_id": "ch_0be7abf3-7a8f-427b-9187-1fd8d1dcd9bf",
+  }
+]
+
+
+		// 测试
+		// console.log(JSON.stringify(transformData(chatList), null, 2)); // 不传入 item_id
+		// console.log(JSON.stringify(transformData(chatList, 'ch_65dad9aa-79c7-4dcd-9920-9f0abce9030d'), null, 2)); // 传入 item_id = 'b1'
 	</script>
 
 

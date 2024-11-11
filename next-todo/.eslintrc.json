@@ -1,0 +1,22 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-unused-vars": "off",
+    // 禁止使用未定义的变量
+    "no-undef": "error",
+    // 禁止使用未定义的导入
+    "no-unused-imports": "off",
+    // 末尾分号
+    "semi": ["error", "always"],
+    // 禁止使用 var
+    "no-var": "error",
+    // 禁止使用 console
+    "no-console": "off",
+    // 关键字间距
+    "keyword-spacing": ["error", { "before": true, "after": true }],
+    // 禁止混合使用不同的操作符风格
+    "no-mixed-operators": "error",
+    // 使用一致的引号风格
+    "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+  }
+}

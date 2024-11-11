@@ -45,6 +45,16 @@
 			width: 70%;
 			border: 1px solid #333;
 		}
+		.grid {
+			display: grid;
+			gap: 10px;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			grid-template-rows: masonry; /* 瀑布流布局 只有火狐 Nightly 支持 */
+		}
+		.grid div {
+			background: #f1f1f1;
+			border: 1px solid #333;
+		}
 	</style>
 </head>
 <body>
@@ -118,5 +128,17 @@
 		}
 		obj.fnc()
 	</script>
+	<div class="grid">
+		<div class="item" style="block-size: 2em;"></div>
+		<div class="item" style="block-size: 3em;"></div>
+		<div class="item" style="block-size: 1.6em;"></div>
+		<div class="item" style="block-size: 4em;"></div>
+		<div class="item" style="block-size: 2.2em;"></div>
+		<div class="item" style="block-size: 3em;"></div>
+		<div class="item" style="block-size: 4.5em;"></div>
+		<div class="item" style="block-size: 1em;"></div>
+		<div class="item" style="block-size: 3.5em;"></div>
+		<div class="item" style="block-size: 2.8em;"></div>
+	</div>
 </body>
 </html>

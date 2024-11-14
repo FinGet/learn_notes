@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+// import pool from '@/lib/db';
 import { comparePassword, generateToken } from '@/lib/auth';
 import { PrismaClient } from '@prisma/client';
 

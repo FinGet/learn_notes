@@ -8,9 +8,9 @@ export default function TodoItem({ id, title, completed, onToggle, onDelete }) {
           type="checkbox"
           checked={completed}
           onChange={(e) => onToggle(id, e.target.checked)}
-          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded bg-white"
         />
-        <span className={`ml-3 ${completed ? 'line-through text-gray-500' : ''}`}>
+        <span className={`ml-3 text-gray-900 ${completed ? 'line-through text-gray-500' : ''}`}>
           {title}
         </span>
       </div>

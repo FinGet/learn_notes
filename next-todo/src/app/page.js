@@ -12,7 +12,7 @@ export default async function Home() {
 
   return (
     <main>
-      <h1 className="text-2xl text-center mt-10">Todo List</h1>
+      <h1 className="text-2xl text-center mt-10 c-#333">Todo List</h1>
     </main>
   );
 }

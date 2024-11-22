@@ -21,7 +21,7 @@ export default function TodoForm({ onAdd }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="添加新的待办事项..."
-          className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
         />
         <button
           type="submit"

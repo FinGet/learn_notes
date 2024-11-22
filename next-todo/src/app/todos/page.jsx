@@ -126,8 +126,8 @@ export default function TodoList() {
         ))}
       </div>
       {todos.length === 0 && (
-<p className="text-center text-gray-500 mt-4">暂无待办事项</p>
-)}
-</div>
-);
+        <p className="text-center text-gray-500 mt-4">暂无待办事项</p>
+      )}
+    </div>
+  );
 }

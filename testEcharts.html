@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>认知层级金字塔</title>
+    <style>
+        .container {
+            width: 1000px;
+            margin: 50px auto;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .pyramid {
+            width: 500px;
+            position: relative;
+        }
+
+        .pyramid::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 50px solid #FFD700;
+        }
+
+        .pyramid-level {
+            margin: 2px auto;
+            padding: 12px;
+            text-align: center;
+            color: #333;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .pyramid-level:hover {
+            transform: translateX(5px);
+            box-shadow: -5px 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .level-text {
+            position: absolute;
+            left: 105%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            text-align: left;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .level-9 { width: 6%; background:transparent; margin-left: 47%; }
+        .level-8 { width: 16%; background: #FFA500; margin-left: 42%; }
+        .level-7 { width: 28%; background: #FF8C00; margin-left: 36%; }
+        .level-6 { width: 40%; background: #FF7F50; margin-left: 30%; }
+        .level-5 { width: 52%; background: #FF6347; margin-left: 24%; }
+        .level-4 { width: 64%; background: #FF4500; margin-left: 18%; }
+        .level-3 { width: 76%; background: #FF0000; margin-left: 12%; }
+        .level-2 { width: 88%; background: #DC143C; margin-left: 6%; }
+        .level-1 { width: 100%; background: #8B0000; margin-left: 0; }
+
+        .level-number {
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #666;
+        }
+
+        .level-9 {
+            border-radius: 2px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pyramid">
+            <div class="pyramid-level level-9">
+                <span class="level-number">9</span>
+                <span class="level-text">认识到人生的至高意义与价值</span>
+            </div>
+            <div class="pyramid-level level-8">
+                <span class="level-number">8</span>
+                <span class="level-text">认识到万古不变的人性与社会规律</span>
+            </div>
+            <div class="pyramid-level level-7">
+                <span class="level-number">7</span>
+                <span class="level-text">认识到人的发展性</span>
+            </div>
+            <div class="pyramid-level level-6">
+                <span class="level-number">6</span>
+                <span class="level-text">认识到现实资源的有限性</span>
+            </div>
+            <div class="pyramid-level level-5">
+                <span class="level-number">5</span>
+                <span class="level-text">认识到是非的局限性</span>
+            </div>
+            <div class="pyramid-level level-4">
+                <span class="level-number">4</span>
+                <span class="level-text">明是非，知大体</span>
+            </div>
+            <div class="pyramid-level level-3">
+                <span class="level-number">3</span>
+                <span class="level-text">认识到规矩的局限性</span>
+            </div>
+            <div class="pyramid-level level-2">
+                <span class="level-number">2</span>
+                <span class="level-text">默守成规</span>
+            </div>
+            <div class="pyramid-level level-1">
+                <span class="level-number">1</span>
+                <span class="level-text">只知好恶</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

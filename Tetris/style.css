@@ -1,0 +1,572 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #1e2a36;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    color: #ecf0f1;
+}
+
+.container {
+    background-color: #2c3e50;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    color: #ecf0f1;
+    margin-bottom: 15px;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.score-container {
+    display: flex;
+    justify-content: space-around;
+    background-color: #34495e;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.score-container p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ecf0f1;
+}
+
+.score-container span {
+    color: #e74c3c;
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+}
+
+.game-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.game-area {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+#tetris {
+    display: block;
+    background-color: #1a2a3a;
+    border: 3px solid #34495e;
+}
+
+.game-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.next-piece-container {
+    width: 80px;
+    height: 80px;
+    background-color: #1a2a3a;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.next-piece-container h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #ecf0f1;
+}
+
+#next-canvas {
+    width: 70px;
+    height: 70px;
+}
+
+.next-piece {
+    background-color: #34495e;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.next-piece h2 {
+    color: #ecf0f1;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+#next {
+    display: block;
+    margin: 0 auto;
+    background-color: #1a2a3a;
+    border: 2px solid #2c3e50;
+}
+
+.controls {
+    background-color: #34495e;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.controls h2 {
+    color: #ecf0f1;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.controls p {
+    margin: 8px 0;
+    color: #ecf0f1;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+#start-btn {
+    background-color: #2ecc71;
+}
+
+#start-btn:hover {
+    background-color: #27ae60;
+}
+
+#pause-btn {
+    background-color: #f39c12;
+}
+
+#pause-btn:hover {
+    background-color: #d35400;
+}
+
+#reset-btn {
+    background-color: #e74c3c;
+}
+
+#reset-btn:hover {
+    background-color: #c0392b;
+}
+
+#auto-btn {
+    background-color: #9b59b6;
+}
+
+#auto-btn:hover {
+    background-color: #8e44ad;
+}
+
+/* 自动模式激活时的高亮样式 */
+#auto-btn.active-mode {
+    background-color: #8e44ad;
+    box-shadow: 0 0 10px #8e44ad;
+    transform: scale(1.05);
+    border: 2px solid #ecf0f1;
+    font-weight: bold;
+}
+
+/* 移动端控制样式 */
+.mobile-controls {
+    display: none; /* 默认在桌面端隐藏 */
+    position: relative;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #233240;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.direction-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 15px;
+    margin-bottom: 25px;
+    justify-items: center;
+}
+
+#rotate-btn {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#left-btn {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#down-btn {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+#right-btn {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.mobile-btn {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: #4A81BD;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #395d88, 0 10px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.12s;
+    outline: none;
+    position: relative;
+    transform: translateY(-4px);
+}
+
+.mobile-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
+    pointer-events: none;
+}
+
+.mobile-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #395d88, 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#drop-btn {
+    background-color: #D06258;
+    width: 95px;
+    height: 95px;
+    box-shadow: 0 8px 0 #a84b42, 0 10px 15px rgba(0, 0, 0, 0.4);
+}
+
+#drop-btn:active {
+    box-shadow: 0 2px 0 #a84b42, 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    fill: white;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+#drop-btn .btn-icon {
+    width: 44px;
+    height: 44px;
+}
+
+/* 手机屏幕适配 */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* 防止页面滚动 */
+    }
+    
+    .container {
+        padding: 5px;
+        max-width: 100%;
+        background-color: #1e2a36;
+        margin: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .game-header {
+        margin-bottom: 5px;
+        flex-shrink: 0;
+    }
+    
+    .game-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+    
+    .score-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        padding: 5px;
+    }
+    
+    .score-container p {
+        font-size: 0.9rem;
+    }
+    
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        gap: 5px;
+        overflow: hidden;
+        display: flex;
+    }
+    
+    .game-panel {
+        width: 100%;
+        max-width: 100%;
+        gap: 5px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .mobile-game-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        flex-shrink: 0;
+        align-items: center;
+    }
+    
+    .next-piece-container {
+        width: 80px;
+        height: 80px;
+        padding: 5px;
+        margin: 5px 0;
+    }
+    
+    .next-piece {
+        padding: 5px;
+        flex: 0 0 auto;
+        width: 100px;
+    }
+    
+    .next-piece h2 {
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+    
+    #next {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .game-area {
+        background-color: #2c3e50;
+        padding: 5px;
+        border-radius: 5px;
+        margin-bottom: 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        min-height: 60vh; /* 确保游戏区域有足够高度 */
+    }
+    
+    #tetris {
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        flex: 1;
+    }
+    
+    /* 移动端按钮布局 */
+    .mobile-game-interface {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        flex-shrink: 0;
+    }
+    
+    .buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        margin: 0;
+        padding: 8px 0;
+        background-color: rgba(35, 50, 64, 0.8);
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 300px;
+        margin: 10px auto 5px auto;
+        flex-shrink: 0;
+        z-index: 5;
+    }
+    
+    button {
+        padding: 0;
+        font-size: 1rem;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* 在移动端按钮使用图标 */
+    button::before {
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+    
+    #start-btn::before {
+        content: "▶";
+    }
+    
+    #pause-btn::before {
+        content: "⏸";
+    }
+    
+    #reset-btn::before {
+        content: "↺";
+    }
+    
+    #auto-btn::before {
+        content: "A";
+    }
+    
+    /* 在移动端隐藏按钮文字 */
+    button span {
+        display: none;
+    }
+    
+    .controls {
+        display: none; /* 在移动端隐藏控制说明 */
+    }
+    
+    /* 移动端控制按钮样式优化 */
+    .mobile-controls {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-gap: 5px;
+        margin-top: 5px;
+        padding: 8px;
+        background-color: rgba(35, 50, 64, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        max-width: 100%;
+        width: 100%;
+        flex-shrink: 0;
+        margin: 5px auto 10px auto;
+        z-index: 4;
+    }
+    
+    .direction-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-gap: 5px;
+        margin-bottom: 0;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 0;
+    }
+    
+    .mobile-btn {
+        width: 45px;
+        height: 45px;
+        box-shadow: 0 3px 0 #395d88, 0 4px 6px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .mobile-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 0 #395d88, 0 2px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    #drop-btn {
+        width: 50px;
+        height: 50px;
+        box-shadow: 0 3px 0 #a84b42, 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    #drop-btn:active {
+        box-shadow: 0 1px 0 #a84b42, 0 2px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-icon {
+        width: 22px;
+        height: 22px;
+    }
+    
+    #drop-btn .btn-icon {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+.mobile-game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+} 

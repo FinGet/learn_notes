@@ -19,8 +19,9 @@ const rotateBtn = document.getElementById('rotate-btn');
 const dropBtn = document.getElementById('drop-btn');
 
 // 设置游戏常量
-let ROWS = 20; // 改为let，因为我们需要在init函数中根据画布高度调整行数
-const COLS = 17; // 增加列数以适应更宽的画布
+const TARGET_ROWS = 20; // 游戏的目标行数
+let ROWS = TARGET_ROWS; // 初始化为目标行数
+const COLS = 17; // 列数
 let BLOCK_SIZE = calculateBlockSize(); // 动态计算方块大小
 const EMPTY = '#1a2a3a'; // 空格的颜色
 
@@ -129,17 +130,21 @@ function drawBlock(x, y, color) {
     
     // 确保只在有效的画布区域内绘制方块
     if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
-        ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        // 计算实际绘制坐标，确保不超出画布
+        const pixelX = Math.min(x * BLOCK_SIZE, canvas.width - BLOCK_SIZE);
+        const pixelY = Math.min(y * BLOCK_SIZE, canvas.height - BLOCK_SIZE);
+        
+        ctx.fillRect(pixelX, pixelY, BLOCK_SIZE, BLOCK_SIZE);
         
         if (color !== 0) {
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 1;
-            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            ctx.strokeRect(pixelX, pixelY, BLOCK_SIZE, BLOCK_SIZE);
             
             // 添加一点光效
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.fillRect(x * BLOCK_SIZE + 1, y * BLOCK_SIZE + 1, BLOCK_SIZE - 2, 2);
-            ctx.fillRect(x * BLOCK_SIZE + 1, y * BLOCK_SIZE + 1, 2, BLOCK_SIZE - 2);
+            ctx.fillRect(pixelX + 1, pixelY + 1, BLOCK_SIZE - 2, 2);
+            ctx.fillRect(pixelX + 1, pixelY + 1, 2, BLOCK_SIZE - 2);
         }
     }
 }
@@ -469,12 +474,14 @@ function draw() {
 
 // 初始化游戏
 function init() {
+    // 优化设备显示设置
+    optimizeForDevice();
+    
     // 重新计算方块大小和调整画布尺寸
     BLOCK_SIZE = calculateBlockSize();
     
-    // 调整行数以匹配画布高度
-    const canvasHeight = canvas.height;
-    ROWS = Math.floor(canvasHeight / BLOCK_SIZE);
+    // 调整行数以匹配画布高度，确保不小于TARGET_ROWS
+    ROWS = Math.max(Math.floor(canvas.height / BLOCK_SIZE), TARGET_ROWS);
     
     // 重新创建游戏板
     board = createBoard();
@@ -920,24 +927,6 @@ autoBtn.addEventListener('click', toggleAutoMode); // 添加自动模式按钮�
 // 添加移动端控制
 addMobileControls();
 
-// 检测是否为移动设备
-function isMobileDevice() {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-}
-
-// 根据设备类型优化显示
-function optimizeForDevice() {
-    const isMobile = isMobileDevice();
-    
-    if (isMobile) {
-        // 在移动设备上可能需要调整一些设置
-        aiDecisionInterval = 400; // 在移动设备上降低AI决策频率以提高性能
-    }
-}
-
-// 初始化设备优化
-optimizeForDevice();
-
 // 计算合适的方块大小
 function calculateBlockSize() {
     // 获取游戏区域的宽度和高度
@@ -947,26 +936,82 @@ function calculateBlockSize() {
     // 计算基于宽度的方块大小
     const widthBasedSize = Math.floor(gameWidth / COLS);
     
-    // 计算基于高度的方块大小
-    const heightBasedSize = Math.floor(gameHeight / 20); // 默认使用20行作为参考
+    // 计算基于高度的方块大小, 使用TARGET_ROWS而不是硬编码20
+    const heightBasedSize = Math.floor(gameHeight / TARGET_ROWS);
     
     // 取两者的较小值，确保方块完全适合画布
     let size = Math.min(widthBasedSize, heightBasedSize);
     
-    // 确保方块大小在合理范围内
-    size = Math.max(Math.min(size, 25), 15);
+    // 根据设备类型调整大小，但确保方块能完整显示TARGET_ROWS行
+    if (isMobileDevice()) {
+        // 在移动设备上，确保方块大小不会太小也不会太大
+        size = Math.max(Math.min(size, 22), 15);
+    } else {
+        // 在桌面设备上使用更大的方块
+        size = Math.max(Math.min(size, 25), 15);
+    }
     
     return size;
 }
 
 // 调整游戏尺寸
 function resizeGame() {
+    // 先计算方块大小
     BLOCK_SIZE = calculateBlockSize();
     
-    // 如果游戏已经开始，重新绘制
+    // 确保计算的行数不小于预期的TARGET_ROWS
+    ROWS = Math.max(Math.floor(canvas.height / BLOCK_SIZE), TARGET_ROWS);
+    
+    // 如果游戏已经开始，重新创建游戏板并绘制
     if (gameStarted) {
+        board = createBoard();
         draw();
     }
+}
+
+// 检测是否为移动设备
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || 
+           (navigator.userAgent.indexOf('IEMobile') !== -1) ||
+           (window.innerWidth <= 768);
+}
+
+// 根据设备类型优化显示
+function optimizeForDevice() {
+    const isMobile = isMobileDevice();
+    
+    if (isMobile) {
+        // 在移动设备上调整设置
+        aiDecisionInterval = 400; // 降低AI决策频率以提高性能
+        
+        // 确保Canvas尺寸适合移动设备屏幕
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // 如果屏幕宽度小于350，调整Canvas尺寸
+        if (screenWidth < 350) {
+            canvas.width = Math.max(screenWidth * 0.85, 280);
+            // 保持宽高比，确保高度足够容纳TARGET_ROWS行
+            const minHeight = TARGET_ROWS * 15; // 最小方块大小为15
+            canvas.height = Math.max(Math.min(canvas.width * 1.5, screenHeight * 0.5), minHeight);
+        }
+        
+        // 在小屏设备上调整下落速度
+        if (screenWidth < 375) {
+            normalDropInterval = 1200; // 稍微降低速度，让移动设备上的用户有更多反应时间
+        }
+    }
+    
+    // 重新计算方块大小
+    BLOCK_SIZE = calculateBlockSize();
+    
+    // 调整行数，确保不小于TARGET_ROWS
+    ROWS = Math.max(Math.floor(canvas.height / BLOCK_SIZE), TARGET_ROWS);
+    
+    // 打印调试信息
+    console.log(`Canvas optimized: ${canvas.width}x${canvas.height}`);
+    console.log(`Block size: ${BLOCK_SIZE}`);
+    console.log(`Game rows: ${ROWS}, cols: ${COLS}`);
 }
 
 // 添加窗口大小变化监听
@@ -975,6 +1020,9 @@ window.addEventListener('resize', resizeGame);
 // 确保nextCanvas的大小与HTML中定义的一致
 nextCanvas.width = 70;
 nextCanvas.height = 70;
+
+// 初始化设备优化
+optimizeForDevice();
 
 // 初始化游戏
 init(); 

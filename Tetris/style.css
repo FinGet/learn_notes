@@ -323,7 +323,7 @@ button:hover {
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden; /* 防止页面滚动 */
+        overflow-x: hidden; /* 只阻止水平滚动，允许垂直滚动 */
     }
     
     .container {
@@ -334,7 +334,7 @@ button:hover {
         flex: 1;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-x: hidden; /* 只阻止水平滚动 */
     }
     
     .game-header {
@@ -363,7 +363,7 @@ button:hover {
         align-items: center;
         flex: 1;
         gap: 5px;
-        overflow: hidden;
+        overflow-x: hidden; /* 只阻止水平滚动 */
         display: flex;
     }
     
@@ -416,11 +416,11 @@ button:hover {
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         width: 100%;
         max-width: 100%;
-        flex: 1;
+        flex: 0 1 auto; /* 修改为自动高度，而不是强制填充 */
         display: flex;
         flex-direction: column;
         position: relative;
-        min-height: 60vh; /* 确保游戏区域有足够高度 */
+        min-height: 50vh; /* 确保游戏区域有合适高度但不过大 */
     }
     
     #tetris {
@@ -428,8 +428,8 @@ button:hover {
         margin: 0 auto;
         width: 100%;
         height: auto;
-        max-height: none;
-        flex: 1;
+        max-height: 55vh; /* 限制最大高度 */
+        flex: 0 0 auto; /* 不强制扩展 */
     }
     
     /* 移动端按钮布局 */
@@ -510,8 +510,8 @@ button:hover {
         background-color: rgba(35, 50, 64, 0.9);
         border-radius: 20px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        max-width: 100%;
-        width: 100%;
+        max-width: 95%;
+        width: 95%;
         flex-shrink: 0;
         margin: 5px auto 10px auto;
         z-index: 4;
@@ -533,8 +533,8 @@ button:hover {
     }
     
     .mobile-btn {
-        width: 45px;
-        height: 45px;
+        width: 40px; /* 减小按钮尺寸 */
+        height: 40px; /* 减小按钮尺寸 */
         box-shadow: 0 3px 0 #395d88, 0 4px 6px rgba(0, 0, 0, 0.3);
         transform: translateY(-2px);
     }
@@ -545,8 +545,8 @@ button:hover {
     }
     
     #drop-btn {
-        width: 50px;
-        height: 50px;
+        width: 45px; /* 减小按钮尺寸 */
+        height: 45px; /* 减小按钮尺寸 */
         box-shadow: 0 3px 0 #a84b42, 0 4px 6px rgba(0, 0, 0, 0.3);
     }
     
@@ -555,13 +555,45 @@ button:hover {
     }
     
     .btn-icon {
-        width: 22px;
-        height: 22px;
+        width: 20px; /* 减小图标尺寸 */
+        height: 20px; /* 减小图标尺寸 */
     }
     
     #drop-btn .btn-icon {
-        width: 26px;
-        height: 26px;
+        width: 24px; /* 减小图标尺寸 */
+        height: 24px; /* 减小图标尺寸 */
+    }
+}
+
+/* 额外增加小屏幕适配 */
+@media (max-width: 375px) {
+    .mobile-btn {
+        width: 35px; /* 进一步减小按钮尺寸 */
+        height: 35px; /* 进一步减小按钮尺寸 */
+    }
+    
+    #drop-btn {
+        width: 40px; /* 进一步减小按钮尺寸 */
+        height: 40px; /* 进一步减小按钮尺寸 */
+    }
+    
+    .btn-icon {
+        width: 18px; /* 进一步减小图标尺寸 */
+        height: 18px; /* 进一步减小图标尺寸 */
+    }
+    
+    #drop-btn .btn-icon {
+        width: 22px; /* 进一步减小图标尺寸 */
+        height: 22px; /* 进一步减小图标尺寸 */
+    }
+    
+    .mobile-controls {
+        padding: 5px;
+        grid-gap: 3px;
+    }
+    
+    .direction-buttons {
+        grid-gap: 3px;
     }
 }
 
